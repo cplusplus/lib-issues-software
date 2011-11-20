@@ -329,7 +329,7 @@ auto operator << (std::ostream& os, section_num const & sn) -> std::ostream & {
       }
 
       if (sub >= 100) {
-         os << char{sub - 100 + 'A'};
+         os << char(sub - 100 + 'A');
       }
       else {
          os << sub;
@@ -1217,7 +1217,7 @@ auto major_section(section_num const & sn) -> std::string {
       out << sn.num[0];
    }
    else {
-      out << char{sn.num[0] - 100 + 'A'};
+      out << char(sn.num[0] - 100 + 'A');
    }
    return out.str();
 }
