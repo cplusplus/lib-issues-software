@@ -10,36 +10,70 @@
 
 <body>
 
-<h1><code>How To Instructions</code></h1>
-<p><span style="font-weight: 400"><code>These instruction assume you have cloned 
-git@github.com:lwg/issues.git to a directory named &quot;issues&quot;.</code></span></p>
-<h3><code><u>How to p</u></code><u><code>ublish </code></u><code><u>the issues 
-list HTML files</u></code></h3>
-<p><b><code>Initial setup; do this once only:</code></b></p>
+<p>Revised: 
+<!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%d %B %Y" startspan -->21 November 2011<!--webbot bot="Timestamp" endspan i-checksum="39624" --></p>
+
+<h1>How To Instructions</h1>
+<p>These instruction assume you going to keep the issues lists source files in a directory named &quot;issues&quot;, 
+and the issues lists generated HTML files in a directory named &quot;issues-gh-pages&quot;.</p>
 <blockquote>
-<pre><code>cd issues
-git clone git@github.com:lwg/issues.git issues-gh-pages
+<p>Keeping the source files and generated HTML files in separate directories 
+falls out from the GitHub automatic web page approach: files in a branch named &quot;gh-pages&quot; 
+are automatically published by GitHub as web pages.</p>
+</blockquote>
+<h2>Prerequisites</h2>
+<ul>
+  <li>Git</li>
+  <li>A C++11 compiler. For the moment, that means GCC 4.6 or later.</li>
+  <li>Windows is a prerequisite to use the Windows <code>.bat</code> scripts. 
+  These are trivial scripts, so translation to a POSIX environment should also 
+  be trivial. If anyone does that, please commit the translated scripts to <code>
+  issues/bin</code>.</li>
+</ul>
+<h2>Initial setup</h2>
+<p><b>Do this once only:</b></p>
+<blockquote>
+<pre>cd path-to-where-you-want-to-keep-this-stuff
+git clone git@github.com:cplusplus/LWG.git issues
+git clone git@github.com:cplusplus/LWG.git issues-gh-pages
 cd issues-gh-pages
 git fetch origin
-git checkout -b gh-pages origin/gh-pages</code></pre>
+git checkout -b gh-pages origin/gh-pages</pre>
 </blockquote>
-<p><b><code>Normal update cycle:</code></b></p>
+<h2 dir="ltr">Build issues software</h2>
+<p dir="ltr">Do this after the initial setup, and then again whenever the source 
+code (in <code>issues/src</code>) changes.</p>
 <blockquote>
-  <p><code>Build fresh versions of the HTML files in the top-level issues 
-  directory, remembering to update the toc, 
-  then:</code></p>
-  <blockquote>
-   <pre><code>cd issues-gh-pages
-copy /y ..\issues\lwg*.html .  <i><b>// Windows</b></i>
-cp ../issues/lwg*.html .       <i><b>// POSIX</b></i>
-git commit -a -m&quot;your commit message here&quot;
-git push</code></pre>
-  </blockquote>
+  <pre dir="ltr">cd issues
+bin\build_pgms</pre>
+</blockquote>
+<h2>Add or change issues</h2>
+<p>There is one source file per issue, in <code>issues/xml</code>. The file
+<code>issues/xml/lwg-template.xml</code> can be used as a template to start a 
+new issue. Use any text editor to edit the files.</p>
+<p>Commit files locally as you update them:</p>
+<blockquote>
+  <pre dir="ltr">cd issues\xml
+edit-as-needed
+git commit -a -m&quot;your commit message here&quot;</pre>
+</blockquote>
+<p dir="ltr">Verify your changes had the desired effect by regenerating the 
+issues lists and inspecting your changes:</p>
+<blockquote>
+  <pre dir="ltr">cd issues
+bin\build_lists</pre>
+</blockquote>
+<p dir="ltr">Once you are happy with your changes, push them up to the GitHub 
+public repository:</p>
+<blockquote>
+  <pre dir="ltr">cd issues
+push</pre>
+</blockquote>
+<p dir="ltr">And finally, publish the new version of the lists on the web:</p>
+<blockquote>
+  <pre dir="ltr">cd issues
+bin\update_lists</pre>
 </blockquote>
 
 <hr>
-   <pre><code>Revised: <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%d %B %Y" startspan -->26 October 2010<!--webbot bot="Timestamp" endspan i-checksum="32127" --></code></pre>
-  
-</body>
-
-</html>
+   &nbsp;</body></html>
