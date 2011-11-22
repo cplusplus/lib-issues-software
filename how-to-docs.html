@@ -11,7 +11,7 @@
 <body>
 
 <p>Revised: 
-<!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%d %B %Y" startspan -->21 November 2011<!--webbot bot="Timestamp" endspan i-checksum="39624" --></p>
+<!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%d %B %Y" startspan -->22 November 2011<!--webbot bot="Timestamp" endspan i-checksum="39626" --></p>
 
 <h1>How To Instructions</h1>
 <p>These instruction assume you going to keep the issues lists source files in a directory named &quot;issues&quot;, 
@@ -40,11 +40,11 @@ cd issues-gh-pages
 git fetch origin
 git checkout -b gh-pages origin/gh-pages</pre>
 </blockquote>
-<h2 dir="ltr">Build issues software</h2>
-<p dir="ltr">Do this after the initial setup, and then again whenever the source 
+<h2>Build issues software</h2>
+<p>Do this after the initial setup, and then again whenever the source 
 code (in <code>issues/src</code>) changes.</p>
 <blockquote>
-  <pre dir="ltr">cd issues
+  <pre>cd issues
 bin\build_pgms</pre>
 </blockquote>
 <h2>Add or change issues</h2>
@@ -53,27 +53,36 @@ bin\build_pgms</pre>
 new issue. Use any text editor to edit the files.</p>
 <p>Commit files locally as you update them:</p>
 <blockquote>
-  <pre dir="ltr">cd issues\xml
+  <pre>cd issues\xml
 edit-as-needed
 git commit -a -m&quot;your commit message here&quot;</pre>
 </blockquote>
-<p dir="ltr">Verify your changes had the desired effect by regenerating the 
+<p>Verify your changes had the desired effect by regenerating the 
 issues lists and inspecting your changes:</p>
 <blockquote>
-  <pre dir="ltr">cd issues
+  <pre>cd issues
 bin\build_lists</pre>
 </blockquote>
-<p dir="ltr">Once you are happy with your changes, push them up to the GitHub 
+<p>Once you are happy with your changes, push them up to the GitHub 
 public repository:</p>
 <blockquote>
-  <pre dir="ltr">cd issues
+  <pre>cd issues
 push</pre>
 </blockquote>
-<p dir="ltr">And finally, publish the new version of the lists on the web:</p>
+<p>And finally, publish the new version of the lists on the web:</p>
 <blockquote>
-  <pre dir="ltr">cd issues
+  <pre>cd issues
 bin\update_lists</pre>
 </blockquote>
 
-<hr>
-   &nbsp;</body></html>
+  <h2>Update meta-data</h2>
+  <p>The files in <code>issues\meta-data</code> need to be updated whenever 
+  there is a new draft of the working paper.</p>
+  <p>The procedure begins when the project editor sends the LWG chair a new copy 
+  of Annex F.</p>
+  <p><span style="background-color: #FFFF00">TODO</span><span style="background-color: #FFFF00">:&nbsp; 
+  Now that the working paper is publicly available on </span>
+  <span style="background-color: #FFFF00">GitHub</span><span style="background-color: #FFFF00">, 
+  pulling an updated copy of Annex F can be automated.</span></p>
+  <p>To turn the raw annex-f file into fresh section data, see <code>bin/build_section_data.bat</code>.</p>
+<hr>&nbsp;</body></html>
