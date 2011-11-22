@@ -187,12 +187,16 @@ auto operator<<( std::ostream & out, discover_new_issues const & x) -> std::ostr
       }
    }
 
+   if (added_issues.empty()) {
+      out << "<li>No issues added.</li>\n";
+   }
+
    return out;
 }
 
 
 struct reverse_pair {
-   // member template means we cannot make thi a local class
+   // member template means we cannot make this a local class
    template <class T, class U>
    auto operator()(const T& x, const U& y) const noexcept -> bool {
       return static_cast<bool>(  x.second < y.second  or
@@ -231,6 +235,10 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
       }
    }
 
+   if (changed_issues.empty()) {
+      out << "<li>No issues changed.</li>\n";
+   }
+
    return out;
 }
 
@@ -239,7 +247,7 @@ void count_issues(std::vector<std::pair<int, std::string> > const & issues, unsi
    n_open = 0;
    n_closed = 0;
 
-   for(auto const & elem : issues) {
+   for (auto const & elem : issues) {
       if (is_active(elem.second)) {
          ++n_open;
       }
@@ -269,29 +277,32 @@ auto operator<<( std::ostream & out, write_summary const & x) -> std::ostream & 
 
    out << "<li>" << n_open_new << " open issues, ";
    if (n_open_new >= n_open_old) {
-      out << "up by " << n_open_new - n_open_old << ".</li>\n";
+      out << "up by " << n_open_new - n_open_old;
    }
    else {
-      out << "down by " << n_open_old - n_open_new << ".</li>\n";
+      out << "down by " << n_open_old - n_open_new;
    }
+   out << ".</li>\n";
 
    std::cout << "<li>" << n_closed_new << " closed issues, ";
    if (n_closed_new >= n_closed_old) {
-      out << "up by " << n_closed_new - n_closed_old << ".</li>\n";
+      out << "up by " << n_closed_new - n_closed_old;
    }
    else {
-      out << "down by " << n_closed_old - n_closed_new << ".</li>\n";
+      out << "down by " << n_closed_old - n_closed_new;
    }
+   out << ".</li>\n";
 
    unsigned n_total_new = n_open_new + n_closed_new;
    unsigned n_total_old = n_open_old + n_closed_old;
    out << "<li>" << n_total_new << " issues total, ";
    if (n_total_new >= n_total_old) {
-      out << "up by " << n_total_new - n_total_old << ".</li>\n";
+      out << "up by " << n_total_new - n_total_old;
    }
    else {
-      out << "down by " << n_total_old - n_total_new << ".</li>\n";
+      out << "down by " << n_total_old - n_total_new;
    }
+   out << ".</li>\n";
 
    return out;
 }

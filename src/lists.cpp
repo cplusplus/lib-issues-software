@@ -1,5 +1,5 @@
 // This program reads all the issues in the issues directory passed as the first command line argument.
-// If all documents are successfully parsed, it will generate the standard LWG Issues List  documents
+// If all documents are successfully parsed, it will generate the standard LWG Issues List documents
 // for an ISO SC22 WG21 mailing.
 
 // Based on code originally donated by Howard Hinnant
@@ -1786,6 +1786,10 @@ auto operator<<( std::ostream & out, discover_new_issues const & x) -> std::ostr
          out << "<li>Added the following " << item_count << " " << i.first << " issues: " << list_issues{i.second} << ".</li>\n";
       }
    }
+   
+   if (added_issues.empty()) {
+      out << "<li>No issues added.</li>\n";
+   }
 
    return out;
 }
@@ -1832,6 +1836,10 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
       }
    }
 
+   if (changed_issues.empty()) {
+      out << "<li>No issues changed.</li>\n";
+   }
+
    return out;
 }
 
@@ -1870,29 +1878,32 @@ auto operator<<( std::ostream & out, write_summary const & x) -> std::ostream & 
 
    out << "<li>" << n_open_new << " open issues, ";
    if (n_open_new >= n_open_old) {
-      out << "up by " << n_open_new - n_open_old << ".</li>\n";
+      out << "up by " << n_open_new - n_open_old;
    }
    else {
-      out << "down by " << n_open_old - n_open_new << ".</li>\n";
+      out << "down by " << n_open_old - n_open_new;
    }
+   out << ".</li>\n";
 
    out << "<li>" << n_closed_new << " closed issues, ";
    if (n_closed_new >= n_closed_old) {
-      out << "up by " << n_closed_new - n_closed_old << ".</li>\n";
+      out << "up by " << n_closed_new - n_closed_old;
    }
    else {
-      out << "down by " << n_closed_old - n_closed_new << ".</li>\n";
+      out << "down by " << n_closed_old - n_closed_new;
    }
+   out << ".</li>\n";
 
    unsigned n_total_new = n_open_new + n_closed_new;
    unsigned n_total_old = n_open_old + n_closed_old;
    out << "<li>" << n_total_new << " issues total, ";
    if (n_total_new >= n_total_old) {
-      out << "up by " << n_total_new - n_total_old << ".</li>\n";
+      out << "up by " << n_total_new - n_total_old;
    }
    else {
-      out << "down by " << n_total_old - n_total_new << ".</li>\n";
+      out << "down by " << n_total_old - n_total_new;
    }
+   out << ".</li>\n";
 
    return out;
 }
