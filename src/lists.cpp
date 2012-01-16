@@ -27,6 +27,12 @@
 // Waiting on external fix for preserving file-dates
 // .  sort-by-last-modified-date should offer some filter or separation to see only the issues modified since  the last meeting
 
+// Missing standard facilities that we work around
+// . Date
+// . Filesystem navigation
+
+// Missing standard library facilities that would probably not change this program
+// . XML parser
 
 // standard headers
 #include <sstream>
@@ -979,7 +985,7 @@ auto LwgIssuesXml::get_revisions(std::vector<issue> const & issues, std::string 
 
    r += "<li>";
 //   r += "R74: 2011-02-28 pre-Madrid mailing";   // This is the form we are copying
-   r += "D77: 2011-09-06 pre-Kona mailing";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
+   r += "R77: 2012-01-16 pre-Kona mailing";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
 //   r += "Madrid meeting resolutions";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
    r += diff_report;
    r += "</li>\n";
@@ -1132,7 +1138,7 @@ void make_sort_by_num(std::vector<issue>& issues, std::string const & filename, 
    out <<
 R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
 <h1>Table of Contents</h1>
-<p>Reference ISO/IEC IS 14882:2003(E)</p>
+<p>Reference ISO/IEC IS 14882:2011(E)</p>
 <p>This document is the Table of Contents for the <a href="lwg-active.html">Library Active Issues List</a>,
 <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
 )";
@@ -1155,7 +1161,7 @@ void make_sort_by_status(std::vector<issue>& issues, std::string const & filenam
    out <<
 R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
 <h1>Index by Status and Section</h1>
-<p>Reference ISO/IEC IS 14882:2003(E)</p>
+<p>Reference ISO/IEC IS 14882:2011(E)</p>
 <p>
 This document is the Index by Status and Section for the <a href="lwg-active.html">Library Active Issues List</a>,
 <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.
@@ -1188,7 +1194,7 @@ void make_sort_by_status_mod_date(std::vector<issue> & issues, std::string const
    out <<
 R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
 <h1>Index by Status and Date</h1>
-<p>Reference ISO/IEC IS 14882:2003(E)</p>
+<p>Reference ISO/IEC IS 14882:2011(E)</p>
 <p>
 This document is the Index by Status and Date for the <a href="lwg-active.html">Library Active Issues List</a>,
 <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.
@@ -1261,7 +1267,7 @@ void make_sort_by_section(std::vector<issue>& issues, std::string const & filena
 
    out << "<h1>C++ Standard Library Issues List (Revision " << lwg_issues_xml.get_revision() << ")</h1>\n";
    out << "<h1>Index by Section</h1>\n";
-   out << "<p>Reference ISO/IEC IS 14882:2003(E)</p>\n";
+   out << "<p>Reference ISO/IEC IS 14882:2011(E)</p>\n";
    out << "<p>This document is the Index by Section for the <a href=\"lwg-active.html\">Library Active Issues List</a>";
    if(!active_only) {
       out << ", <a href=\"lwg-defects.html\">Library Defect Reports List</a>, and <a href=\"lwg-closed.html\">Library Closed Issues List</a>";
