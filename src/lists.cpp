@@ -60,7 +60,7 @@
 
 namespace greg = gregorian;
 
-
+#if 1
 // This should be part of <string> in 0x lib
 // Should also be more efficient than using ostringstream!
 auto itos(int i) -> std::string {
@@ -68,7 +68,9 @@ auto itos(int i) -> std::string {
    t << i;
    return t.str();
 };
-
+#else
+using std::itos;
+#endif
 
 // Generic utilities that are useful and do not rely on context or types from our domain (issue-list processing)
 // =============================================================================================================
@@ -420,7 +422,7 @@ struct sort_by_num {
 struct sort_by_status {
    auto operator()(const issue& x, const issue& y) const noexcept -> bool {
       static constexpr
-      auto get_priority = []( std::string const & stat ) -> unsigned {
+      auto get_priority = []( std::string const & stat ) -> std::ptrdiff_t {
          static char const * const status_priority[] {
             "Voting",
             "Tentatively Voting",
@@ -454,12 +456,14 @@ struct sort_by_status {
             "Dup",
             "NAD Concepts"
          };
-         // Don't know why gcc 4.6 rejects this - cannot deduce iterators for 'find_if' algorithm
-         //static auto first = std::begin(status_priority);
-         //static auto last  = std::end(status_priority);
-         //return std::find_if( first, last), [&](char const * str){ return str == stat; } ) - first;
 
-         // Yet gcc 4.6 does work with this that should have identical semantics, other than an lvalue/rvalue switch
+
+#if !defined(DEBUG_SUPPORT)
+         static auto const first = std::begin(status_priority);
+         static auto const last  = std::end(status_priority);
+         return std::find_if( first, last, [&](char const * str){ return str == stat; } ) - first;
+#else
+         // Diagnose when unknown status strings are passed
          static auto const first = std::begin(status_priority);
          static auto const last  = std::end(status_priority);
          auto const i = std::find_if( first, last, [&](char const * str){ return str == stat; } );
@@ -467,6 +471,7 @@ struct sort_by_status {
             std::cout << "Unknown status: " << stat << std::endl;
          }
          return i - first;
+#endif
       };
 
       return get_priority(x.stat) < get_priority(y.stat);
