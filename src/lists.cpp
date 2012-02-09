@@ -859,6 +859,9 @@ struct LwgIssuesXml {
    auto get_statuses() const -> std::string;
 
 private:
+   // m_data is reparsed too many times in practice, and memory use is not a major concern.
+   // Should cache each of the reproducible calls in additional member strings, either at
+   // construction, or lazily on each function eval, checking if the cached string is 'empty'.
    std::string m_data;
 };
 
@@ -1570,7 +1573,7 @@ auto parse_issue_from_file(std::string const & filename) -> issue {
          throw bad_issue_file{filename, "Unable to find issue section"};
       }
       ++k;
-      is.tags.push_back(tx.substr(k, k2-k));
+      is.tags.emplace_back(tx.substr(k, k2-k));
       if (section_db.find(is.tags.back()) == section_db.end()) {
           section_num num{};
           num.num.push_back(100 + 'X' - 'A');
@@ -1651,11 +1654,9 @@ auto read_issues(std::string const & issues_path) -> std::vector<issue> {
    std::vector<issue> issues{};
    while ( dirent* entry = readdir(dir) ) {
       std::string const issue_file{ entry->d_name };
-      if (0 != issue_file.find("issue") ) {
-         continue;
+      if (0 == issue_file.find("issue") ) {
+         issues.emplace_back(parse_issue_from_file(issues_path + issue_file));
       }
-
-      issues.push_back(parse_issue_from_file(issues_path + issue_file));
    }
    closedir(dir);
    return issues;
@@ -1740,7 +1741,7 @@ auto read_issues_from_toc(std::string const & s) -> std::vector<std::pair<int, s
       if (j == std::string::npos) {
          throw std::runtime_error{"unable to parse issue status: can't find beginning bracket"};
       }
-      issues.push_back({num, s.substr(j+1, i-j-1)});
+      issues.emplace_back(num, s.substr(j+1, i-j-1));
    }
 
    //display_issues(issues);
@@ -1830,7 +1831,7 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
    for (auto const & i : new_issues ) {
       auto j = std::lower_bound(old_issues.begin(), old_issues.end(), i.first, find_num{});
       if (j != old_issues.end()  and  i.first == j->first  and  j->second != i.second) {
-         changed_issues[make_pair(j->second, i.second)].push_back(i.first);
+         changed_issues[{j->second, i.second}].push_back(i.first);
       }
    }
 
