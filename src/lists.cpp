@@ -60,7 +60,7 @@
 
 namespace greg = gregorian;
 
-
+#if 1
 // This should be part of <string> in 0x lib
 // Should also be more efficient than using ostringstream!
 auto itos(int i) -> std::string {
@@ -68,7 +68,9 @@ auto itos(int i) -> std::string {
    t << i;
    return t.str();
 };
-
+#else
+using std::itos;
+#endif
 
 // Generic utilities that are useful and do not rely on context or types from our domain (issue-list processing)
 // =============================================================================================================
@@ -420,7 +422,7 @@ struct sort_by_num {
 struct sort_by_status {
    auto operator()(const issue& x, const issue& y) const noexcept -> bool {
       static constexpr
-      auto get_priority = []( std::string const & stat ) -> unsigned {
+      auto get_priority = []( std::string const & stat ) -> std::ptrdiff_t {
          static char const * const status_priority[] {
             "Voting",
             "Tentatively Voting",
@@ -454,12 +456,14 @@ struct sort_by_status {
             "Dup",
             "NAD Concepts"
          };
-         // Don't know why gcc 4.6 rejects this - cannot deduce iterators for 'find_if' algorithm
-         //static auto first = std::begin(status_priority);
-         //static auto last  = std::end(status_priority);
-         //return std::find_if( first, last), [&](char const * str){ return str == stat; } ) - first;
 
-         // Yet gcc 4.6 does work with this that should have identical semantics, other than an lvalue/rvalue switch
+
+#if !defined(DEBUG_SUPPORT)
+         static auto const first = std::begin(status_priority);
+         static auto const last  = std::end(status_priority);
+         return std::find_if( first, last, [&](char const * str){ return str == stat; } ) - first;
+#else
+         // Diagnose when unknown status strings are passed
          static auto const first = std::begin(status_priority);
          static auto const last  = std::end(status_priority);
          auto const i = std::find_if( first, last, [&](char const * str){ return str == stat; } );
@@ -467,6 +471,7 @@ struct sort_by_status {
             std::cout << "Unknown status: " << stat << std::endl;
          }
          return i - first;
+#endif
       };
 
       return get_priority(x.stat) < get_priority(y.stat);
@@ -854,6 +859,9 @@ struct LwgIssuesXml {
    auto get_statuses() const -> std::string;
 
 private:
+   // m_data is reparsed too many times in practice, and memory use is not a major concern.
+   // Should cache each of the reproducible calls in additional member strings, either at
+   // construction, or lazily on each function eval, checking if the cached string is 'empty'.
    std::string m_data;
 };
 
@@ -1565,7 +1573,7 @@ auto parse_issue_from_file(std::string const & filename) -> issue {
          throw bad_issue_file{filename, "Unable to find issue section"};
       }
       ++k;
-      is.tags.push_back(tx.substr(k, k2-k));
+      is.tags.emplace_back(tx.substr(k, k2-k));
       if (section_db.find(is.tags.back()) == section_db.end()) {
           section_num num{};
           num.num.push_back(100 + 'X' - 'A');
@@ -1646,11 +1654,9 @@ auto read_issues(std::string const & issues_path) -> std::vector<issue> {
    std::vector<issue> issues{};
    while ( dirent* entry = readdir(dir) ) {
       std::string const issue_file{ entry->d_name };
-      if (0 != issue_file.find("issue") ) {
-         continue;
+      if (0 == issue_file.find("issue") ) {
+         issues.emplace_back(parse_issue_from_file(issues_path + issue_file));
       }
-
-      issues.push_back(parse_issue_from_file(issues_path + issue_file));
    }
    closedir(dir);
    return issues;
@@ -1735,7 +1741,7 @@ auto read_issues_from_toc(std::string const & s) -> std::vector<std::pair<int, s
       if (j == std::string::npos) {
          throw std::runtime_error{"unable to parse issue status: can't find beginning bracket"};
       }
-      issues.push_back({num, s.substr(j+1, i-j-1)});
+      issues.emplace_back(num, s.substr(j+1, i-j-1));
    }
 
    //display_issues(issues);
@@ -1825,7 +1831,7 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
    for (auto const & i : new_issues ) {
       auto j = std::lower_bound(old_issues.begin(), old_issues.end(), i.first, find_num{});
       if (j != old_issues.end()  and  i.first == j->first  and  j->second != i.second) {
-         changed_issues[make_pair(j->second, i.second)].push_back(i.first);
+         changed_issues[{j->second, i.second}].push_back(i.first);
       }
    }
 
