@@ -63,13 +63,13 @@ namespace greg = gregorian;
 #if 1
 // This should be part of <string> in 0x lib
 // Should also be more efficient than using ostringstream!
-auto itos(int i) -> std::string {
+auto to_string(int i) -> std::string {
    std::ostringstream t;
    t << i;
    return t.str();
 };
 #else
-using std::itos;
+using std::to_string;
 #endif
 
 // Generic utilities that are useful and do not rely on context or types from our domain (issue-list processing)
@@ -571,7 +571,7 @@ auto read_section_db(std::string const & path) -> SectionMap {
 
 
 auto make_ref_string(issue const & iss) -> std::string {
-   auto temp = itos(iss.num);
+   auto temp = to_string(iss.num);
 
    std::string result{"<a href=\""};
    result += filename_for_status(iss.stat);
