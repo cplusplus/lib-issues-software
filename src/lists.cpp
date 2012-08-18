@@ -38,6 +38,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <vector>
 #include <map>
@@ -89,7 +90,7 @@ auto parse_month(std::string const & m) -> greg::month {
         : (m == "Oct") ? greg::oct
         : (m == "Nov") ? greg::nov
         : (m == "Dec") ? greg::dec
-        : throw std::runtime_error{"unknown month"};
+        : throw std::runtime_error{"unknown month " + m};
 }
 
 auto parse_date(std::istream & temp) -> greg::date {
@@ -126,7 +127,7 @@ auto make_date(std::tm const & mod) -> greg::date {
 auto report_date_file_last_modified(std::string const & filename) -> greg::date {
    struct stat buf;
    if (stat(filename.c_str(), &buf) == -1) {
-      throw std::runtime_error{"call to stat failed"};
+      throw std::runtime_error{"call to stat failed for " + filename};
    }
 
    return make_date(*std::localtime(&buf.st_mtime));
@@ -138,12 +139,11 @@ auto format_time(std::string const & format, std::tm const & t) -> std::string {
    std::size_t maxsize{format.size() + 256};
   //for (std::size_t maxsize = format.size() + 64; s.size() == 0 ; maxsize += 64)
   //{
-      char * buf{new char[maxsize]};
-      std::size_t size{std::strftime( buf, maxsize, format.c_str(), &t ) };
+      std::unique_ptr<char[]> buf{new char[maxsize]};
+      std::size_t size{std::strftime( buf.get(), maxsize, format.c_str(), &t ) };
       if(size > 0) {
-         s += buf;
+         s += buf.get();
       }
-      delete[] buf;
  // }
    return s;
 }
@@ -385,7 +385,7 @@ struct issue {
    auto operator=(issue const &) -> issue & = default;
 
    // Uncomment these lines to test if GCC bug has been fixed (not yet confirmed if issue is compiler or lib)
-   // Last vefified: Bug still present in 2010-11-13 build
+   // Last verified: Bug still present in 2010-11-13 build
    //issue(issue &&) = default;
    //auto operator=(issue &&) -> issue & = default;
 };
@@ -505,7 +505,7 @@ auto read_section_db(std::string const & path) -> SectionMap {
    auto filename = path + "section.data";
    std::ifstream infile{filename.c_str()};
    if (!infile.is_open()) {
-      throw std::runtime_error{"Can't open section.data\n"};
+      throw std::runtime_error{"Can't open section.data at " + path};
    }
    std::cout << "Reading section-tag index from: " << filename << std::endl;
 
@@ -605,7 +605,8 @@ void replace_all_irefs(std::vector<issue> const & issues, std::string & s) {
    // in its appropriate issue list, as determined by the issue's status.
    // Format of an issue reference: <iref ref="ISS"/>
    // Format of anchor: <a href="lwg-INDEX.html#ISS">ISS</a>
-
+   std::ostringstream er;
+ 
    for (auto i = s.find("<iref ref=\""); i != std::string::npos; i = s.find("<iref ref=\"") ) {
       auto j = s.find('>', i);
       if (j == std::string::npos) {
@@ -632,7 +633,10 @@ void replace_all_irefs(std::vector<issue> const & issues, std::string & s) {
 
       auto n = std::lower_bound(issues.begin(), issues.end(), num, sort_by_num{});
       if (n->num != num) {
-         throw std::runtime_error{"couldn't find number in iref"};
+         er.clear();
+         er.str("");
+         er << "couldn't find number " << num << " in iref";
+         throw std::runtime_error{er.str()};
       }
 
       std::string r{make_ref_string(*n)};
@@ -790,7 +794,7 @@ void format(std::vector<issue> & issues, issue & is) {
                if (n->num != num) {
                   er.clear();
                   er.str("");
-                  er << "couldn't find number in iref in issue " << issue_num;
+                  er << "couldn't find number " << num << " in iref in issue " << issue_num;
                   throw std::runtime_error{er.str()};
                }
 
