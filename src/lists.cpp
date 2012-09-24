@@ -995,9 +995,11 @@ auto LwgIssuesXml::get_revisions(std::vector<issue> const & issues, std::string 
    // Probably not - string will not be *that* big, and stringstream pays the cost of locales
    std::string r = "<ul>\n";
 
+   // TBD: Fix this to use metadata in an external file
+   // update the lines below and recompile for every mailing
    r += "<li>";
 //   r += "R74: 2011-02-28 pre-Madrid mailing";   // This is the form we are copying
-   r += "D79: 2012-02-28 pre-Portland mailing";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
+   r += "R79: 2012-09-24 pre-Portland mailing";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
    r += diff_report;
    r += "</li>\n";
 
