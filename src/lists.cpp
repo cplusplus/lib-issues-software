@@ -421,7 +421,7 @@ struct sort_by_num {
 
 struct sort_by_status {
    auto operator()(const issue& x, const issue& y) const noexcept -> bool {
-      static constexpr
+      static const // constexpr not supported by clang, permitted by g++
       auto get_priority = []( std::string const & stat ) -> std::ptrdiff_t {
          static char const * const status_priority[] {
             "Voting",
