@@ -61,6 +61,19 @@
 
 namespace greg = gregorian;
 
+#if 1
+// This should be part of <string> in 0x lib
+// Should also be more efficient than using ostringstream!
+// Will be available soon when assuming libc++, or gcc 4.8 and later
+auto to_string(int i) -> std::string {
+   std::ostringstream t;
+   t << i;
+   return t.str();
+}
+#else
+using std::to_string;
+#endif
+
 
 // Generic utilities that are useful and do not rely on context or types from our domain (issue-list processing)
 // =============================================================================================================
