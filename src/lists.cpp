@@ -14,6 +14,11 @@
 //    constexpr
 //    new function syntax (late specified return type)
 //    noexcept
+//    new type-alias syntax (using my_name = type)
+
+// Likewise, the following C++11 library facilities are used:
+//    to_string
+
 // Its coding style assumes a standard library optimized with move-semantics
 // The only known compiler to support all of this today is the experimental gcc trunk (4.6)
 
@@ -423,7 +428,7 @@ struct sort_by_num {
 
 
 struct sort_by_status {
-   auto operator()(const issue& x, const issue& y) const noexcept -> bool {
+   auto operator()(issue const & x, issue const & y) const noexcept -> bool {
       static const // constexpr not supported by clang, permitted by g++
       auto get_priority = []( std::string const & stat ) -> std::ptrdiff_t {
          static char const * const status_priority[] {
@@ -500,7 +505,7 @@ struct equal_issue_num {
 
 
 #ifdef DEBUG_SUPPORT
-void display(const std::vector<issue>& issues) {
+void display(std::vector<issue> const & issues) {
     for (auto const & i : issues) { std::cout << i; }
 }
 #endif
@@ -1248,7 +1253,7 @@ auto major_section(section_num const & sn) -> std::string {
 }
 
 struct sort_by_mjr_section {
-    auto operator()(const issue& x, const issue& y) const -> bool {
+    auto operator()(issue const & x,issue const & y) const -> bool {
 assert(!x.tags.empty());
 assert(!y.tags.empty());
         section_num const & xn = section_db[x.tags[0]];
