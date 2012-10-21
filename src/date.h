@@ -22,23 +22,23 @@ namespace detail
 struct spec {
     spec() noexcept : id_{id_next++} {}
 
-    bool operator == (const spec& y) const noexcept {return id_ == y.id_;}
-    bool operator != (const spec& y) const noexcept {return id_ != y.id_;}
+    bool operator == (const spec& y) const noexcept { return id_ == y.id_; }
+    bool operator != (const spec& y) const noexcept { return id_ != y.id_; }
 
 private:
     unsigned id_;
     static unsigned id_next;
 
-    friend class gregorian::day;
+    friend struct gregorian::day;
 };
 
 }  // detail
 
-extern const detail::spec last;
-extern const detail::spec first;
+extern detail::spec const last;
+extern detail::spec const first;
 
 struct bad_date : std::exception {
-   virtual const char* what() const  noexcept {return "bad_date";}
+   char const * what() const noexcept override { return "bad_date"; }
 };
 
 
@@ -52,9 +52,9 @@ struct week_day
 private:
     int d_;
 
-    friend class ::gregorian::date;
+    friend struct ::gregorian::date;
     friend day operator*(detail::spec s, week_day wd);
-    friend day operator*(int n, week_day wd);
+    friend day operator*(         int n, week_day wd);
 };
 
 
@@ -69,9 +69,9 @@ struct day {
 private:
     unsigned char d_;
 
-    friend class gregorian::date;
+    friend struct gregorian::date;
     friend day operator*(detail::spec s, week_day wd);
-    friend day operator*(int n, week_day wd);
+    friend day operator*(         int n, week_day wd);
 };
 
 
@@ -118,7 +118,7 @@ private:
     day   d_;
     month m_;
 
-    friend class gregorian::date;
+    friend struct gregorian::date;
 };
 
 inline constexpr
@@ -136,7 +136,7 @@ private:
     month m_;
     year  y_;
 
-    friend class gregorian::date;
+    friend struct gregorian::date;
 };
 
 inline constexpr
@@ -148,8 +148,8 @@ month_year_spec::month_year_spec(month m, year y)
 
 }  // detail
 
-date operator+(const date&, month);
-date operator+(const date&, year);
+date operator+(date const &, month);
+date operator+(date const &, year);
 
 struct date {
     date();
@@ -275,7 +275,7 @@ auto operator/(detail::month_year_spec my, int d) -> date {
 
 }  // detail
 
-template<class charT, class traits>
+template<typename charT, typename traits>
 auto operator >>(std::basic_istream<charT,traits> & is, date & item) -> std::basic_istream<charT,traits> & {
    typename std::basic_istream<charT,traits>::sentry ok(is);
    if (ok) {
@@ -296,7 +296,7 @@ auto operator >>(std::basic_istream<charT,traits> & is, date & item) -> std::bas
    return is;
 }
 
-template<class charT, class traits>
+template<typename charT, typename traits>
 auto operator <<(std::basic_ostream<charT, traits> & os, date const & item) -> std::basic_ostream<charT, traits> & {
    typename std::basic_ostream<charT, traits>::sentry ok{os};
    if (ok) {

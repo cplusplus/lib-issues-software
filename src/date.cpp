@@ -105,8 +105,8 @@ void date::fix_from_ymd() {
    int d = day();
    int m = month();
    int y = year();
-   if (0 <= dow && dow <= 6) {
-      if (n == 0 || n >  6) {
+   if (0 <= dow  and  dow <= 6) {
+      if (n == 0  or  n >  6) {
          throw bad_date{};
       }
       date tmp1 = gregorian::day(1) / m / y;
@@ -172,7 +172,7 @@ void date::fix_from_ymd() {
    }
 
    if (y > 0) {
-      jdate = 365U * y + 1;   // Jan 1, 0 == 1 && y 0 is leap y
+      jdate = 365U * y + 1;   // Jan 1, 0 == 1  and  y 0 is leap y
       --y;
       jdate += y / 4;
       if (y >= 1700) {

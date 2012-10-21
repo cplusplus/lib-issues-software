@@ -35,43 +35,32 @@
 // . XML parser
 
 // standard headers
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <memory>
-#include <string>
-#include <vector>
-#include <map>
-#include <set>
-#include <iterator>
-#include <stdexcept>
 #include <algorithm>
+#include <cassert>
 #include <cctype>
 #include <ctime>
-#include <cassert>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <memory>
+#include <set>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 // platform headers - requires a Posix compatible platform
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 // solution specific headers
 #include "date.h"
 
 namespace greg = gregorian;
 
-#if 1
-// This should be part of <string> in 0x lib
-// Should also be more efficient than using ostringstream!
-auto to_string(int i) -> std::string {
-   std::ostringstream t;
-   t << i;
-   return t.str();
-};
-#else
-using std::to_string;
-#endif
 
 // Generic utilities that are useful and do not rely on context or types from our domain (issue-list processing)
 // =============================================================================================================
@@ -183,7 +172,7 @@ std::string build_timestamp(
 
 // Functions to "normalize" a status string
 auto remove_pending(std::string stat) -> std::string {
-   typedef std::string::size_type size_type;
+   using size_type = std::string::size_type;
    if(0 == stat.find("Pending")) {
       stat.erase(size_type{0}, size_type{8});
    }
@@ -191,7 +180,7 @@ auto remove_pending(std::string stat) -> std::string {
 }
 
 auto remove_tentatively(std::string stat) -> std::string {
-   typedef std::string::size_type size_type;
+   using size_type = std::string::size_type;
    if(0 == stat.find("Tentatively")) {
       stat.erase(size_type{0}, size_type{12});
    }
@@ -233,6 +222,8 @@ auto filename_for_status(std::string stat) -> std::string {
         : (stat == "Review")        ? LWG_ACTIVE
         : (stat == "New")           ? LWG_ACTIVE
         : (stat == "Open")          ? LWG_ACTIVE
+        : (stat == "EWG")           ? LWG_ACTIVE
+        : (stat == "Core")          ? LWG_ACTIVE
         : (stat == "Deferred")      ? LWG_ACTIVE
         : throw std::runtime_error("unknown status " + stat);
 }
@@ -259,7 +250,7 @@ auto is_tentative(std::string const & stat) -> bool {
 }
 
 auto is_not_resolved(std::string const & stat) -> bool {
-   for( auto s : {"Deferred", "New", "Open", "Review"}) { if(s == stat) return true; }
+   for( auto s : {"Core", "Deferred", "EWG", "New", "Open", "Review"}) { if(s == stat) return true; }
    return false;
 }
 
@@ -363,7 +354,7 @@ auto operator!=(section_num const & x, section_num const & y) noexcept -> bool {
    return !(x == y);
 }
 
-typedef std::string section_tag;
+using section_tag = std::string;
 
 
 struct issue {
@@ -374,7 +365,6 @@ struct issue {
    std::string                submitter;
    greg::date                 date;
    greg::date                 mod_date;
-//   std::vector<std::string>   duplicates;
    std::set<std::string>      duplicates;
    std::string                text;
    bool                       has_resolution;
@@ -391,8 +381,8 @@ struct issue {
 };
 
 
-typedef std::map<section_tag, section_num> SectionMap;
-SectionMap section_db;
+using section_map = std::map<section_tag, section_num>;
+section_map section_db;
 
 
 auto remove_square_brackets(section_tag const & tag) -> section_tag {
@@ -435,6 +425,8 @@ struct sort_by_status {
             "Review",
             "New",
             "Open",
+            "EWG",
+            "Core",
             "Deferred",
             "Tentatively Resolved",
             "Pending DR",
@@ -501,7 +493,7 @@ void display(const std::vector<issue>& issues) {
 #endif
 
 
-auto read_section_db(std::string const & path) -> SectionMap {
+auto read_section_db(std::string const & path) -> section_map {
    auto filename = path + "section.data";
    std::ifstream infile{filename.c_str()};
    if (!infile.is_open()) {
@@ -509,7 +501,7 @@ auto read_section_db(std::string const & path) -> SectionMap {
    }
    std::cout << "Reading section-tag index from: " << filename << std::endl;
 
-   SectionMap section_db;
+   section_map section_db;
    while (infile) {
       ws(infile);
       std::string line;
@@ -560,7 +552,7 @@ auto read_section_db(std::string const & path) -> SectionMap {
 
 
 // Is this simply a debugging aid?
-//void check_against_index(SectionMap const & section_db) {
+//void check_against_index(section_map const & section_db) {
 //   for (auto const & elem : section_db ) {
 //      std::string temp = elem.first;
 //      temp.erase(temp.end()-1);
@@ -571,7 +563,7 @@ auto read_section_db(std::string const & path) -> SectionMap {
 
 
 auto make_ref_string(issue const & iss) -> std::string {
-   auto temp = to_string(iss.num);
+   auto temp = std::to_string(iss.num);
 
    std::string result{"<a href=\""};
    result += filename_for_status(iss.stat);
@@ -678,7 +670,7 @@ void format(std::vector<issue> & issues, issue & is) {
 
          if (tag[0] == '/') { // closing tag
              tag.erase(tag.begin());
-             if (tag == "issue" || tag == "revision") {
+             if (tag == "issue"  or  tag == "revision") {
                 s.erase(i, j-i + 1);
                 --i;
                 return;
