@@ -581,7 +581,7 @@ auto read_section_db(std::string const & path) -> section_map {
 
 
 auto make_ref_string(issue const & iss) -> std::string {
-   auto temp = std::to_string(iss.num);
+   auto temp = to_string(iss.num);
 
    std::string result{"<a href=\""};
    result += filename_for_status(iss.stat);
