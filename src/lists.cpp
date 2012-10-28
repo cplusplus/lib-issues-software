@@ -426,64 +426,62 @@ struct sort_by_num {
     bool operator()(int x,           issue const & y) const noexcept   {  return x     < y.num;   }
 };
 
-
-struct sort_by_status {
-   auto operator()(issue const & x, issue const & y) const noexcept -> bool {
-      static const // constexpr not supported by clang, permitted by g++
-      auto get_priority = []( std::string const & stat ) -> std::ptrdiff_t {
-         static char const * const status_priority[] {
-            "Voting",
-            "Tentatively Voting",
-            "Immediate",
-            "Ready",
-            "Tentatively Ready",
-            "Tentatively NAD Editorial",
-            "Tentatively NAD Future",
-            "Tentatively NAD",
-            "Review",
-            "New",
-            "Open",
-            "EWG",
-            "Core",
-            "Deferred",
-            "Tentatively Resolved",
-            "Pending DR",
-            "Pending WP",
-            "Pending Resolved",
-            "Pending NAD Future",
-            "Pending NAD Editorial",
-            "Pending NAD",
-            "NAD Future",
-            "DR",
-            "WP",
-            "CD1",
-            "C++11",
-            "TC1",
-            "Resolved",
-            "TRDec",
-            "NAD Editorial",
-            "NAD",
-            "Dup",
-            "NAD Concepts"
-         };
+auto get_priority(std::string const & stat) noexcept -> std::ptrdiff_t {
+   static char const * const status_priority[] {
+      "Voting",
+      "Tentatively Voting",
+      "Immediate",
+      "Ready",
+      "Tentatively Ready",
+      "Tentatively NAD Editorial",
+      "Tentatively NAD Future",
+      "Tentatively NAD",
+      "Review",
+      "New",
+      "Open",
+      "EWG",
+      "Core",
+      "Deferred",
+      "Tentatively Resolved",
+      "Pending DR",
+      "Pending WP",
+      "Pending Resolved",
+      "Pending NAD Future",
+      "Pending NAD Editorial",
+      "Pending NAD",
+      "NAD Future",
+      "DR",
+      "WP",
+      "C++11",
+      "CD1",
+      "TC1",
+      "Resolved",
+      "TRDec",
+      "NAD Editorial",
+      "NAD",
+      "Dup",
+      "NAD Concepts"
+   };
 
 
 #if !defined(DEBUG_SUPPORT)
-         static auto const first = std::begin(status_priority);
-         static auto const last  = std::end(status_priority);
-         return std::find_if( first, last, [&](char const * str){ return str == stat; } ) - first;
+   static auto const first = std::begin(status_priority);
+   static auto const last  = std::end(status_priority);
+   return std::find_if( first, last, [&](char const * str){ return str == stat; } ) - first;
 #else
-         // Diagnose when unknown status strings are passed
-         static auto const first = std::begin(status_priority);
-         static auto const last  = std::end(status_priority);
-         auto const i = std::find_if( first, last, [&](char const * str){ return str == stat; } );
-         if(last == i) {
-            std::cout << "Unknown status: " << stat << std::endl;
-         }
-         return i - first;
+   // Diagnose when unknown status strings are passed
+   static auto const first = std::begin(status_priority);
+   static auto const last  = std::end(status_priority);
+   auto const i = std::find_if( first, last, [&](char const * str){ return str == stat; } );
+   if(last == i) {
+      std::cout << "Unknown status: " << stat << std::endl;
+   }
+   return i - first;
 #endif
-      };
+}
 
+struct sort_by_status {
+   auto operator()(issue const & x, issue const & y) const noexcept -> bool {
       return get_priority(x.stat) < get_priority(y.stat);
    }
 };
@@ -1441,7 +1439,7 @@ R"(<table>
 void make_active(std::vector<issue> const & issues, std::string const & path, LwgIssuesXml const & lwg_issues_xml, std::string const & diff_report) {
    assert(is_sorted(issues.begin(), issues.end(), sort_by_num{}));
 
-   std::ofstream out{(path + "lwg-active.html").c_str()};
+   std::ofstream out{(path + "mailing/lwg-active.html").c_str()};
    print_file_header(out, "C++ Standard Library Active Issues List");
    print_paper_heading(out, "active", lwg_issues_xml);
    out << lwg_issues_xml.get_intro("active") << '\n';
@@ -1456,7 +1454,7 @@ void make_active(std::vector<issue> const & issues, std::string const & path, Lw
 void make_defect(std::vector<issue> const & issues, std::string const & path, LwgIssuesXml const & lwg_issues_xml, std::string const & diff_report) {
    assert(is_sorted(issues.begin(), issues.end(), sort_by_num{}));
 
-   std::ofstream out((path + "lwg-defects.html").c_str());
+   std::ofstream out((path + "mailing/lwg-defects.html").c_str());
    print_file_header(out, "C++ Standard Library Defect Report List");
    print_paper_heading(out, "defect", lwg_issues_xml);
    out << lwg_issues_xml.get_intro("defect") << '\n';
@@ -1470,7 +1468,7 @@ void make_defect(std::vector<issue> const & issues, std::string const & path, Lw
 void make_closed(std::vector<issue> const & issues, std::string const & path, LwgIssuesXml const & lwg_issues_xml, std::string const & diff_report) {
    assert(is_sorted(issues.begin(), issues.end(), sort_by_num{}));
 
-   std::ofstream out{(path + "lwg-closed.html").c_str()};
+   std::ofstream out{(path + "mailing/lwg-closed.html").c_str()};
    print_file_header(out, "C++ Standard Library Closed Issues List");
    print_paper_heading(out, "closed", lwg_issues_xml);
    out << lwg_issues_xml.get_intro("closed") << '\n';
@@ -1486,7 +1484,7 @@ void make_tentative(std::vector<issue> const & issues, std::string const & path,
    // publish a document listing all tentative issues that may be acted on during a meeting.
    assert(is_sorted(issues.begin(), issues.end(), sort_by_num{}));
 
-   std::ofstream out{(path + "lwg-tentative.html").c_str()};
+   std::ofstream out{(path + "mailing/lwg-tentative.html").c_str()};
    print_file_header(out, "C++ Standard Library Tentative Issues");
 //   print_paper_heading(out, "active", lwg_issues_xml);
 //   out << lwg_issues_xml.get_intro("active") << '\n';
@@ -1503,7 +1501,7 @@ void make_unresolved(std::vector<issue> const & issues, std::string const & path
    // publish a document listing all non-tentative, non-ready issues that must be reviewed during a meeting.
    assert(is_sorted(issues.begin(), issues.end(), sort_by_num{}));
 
-   std::ofstream out{(path + "lwg-unresolved.html").c_str()};
+   std::ofstream out{(path + "mailing/lwg-unresolved.html").c_str()};
    print_file_header(out, "C++ Standard Library Unresolved Issues");
 //   print_paper_heading(out, "active", lwg_issues_xml);
 //   out << lwg_issues_xml.get_intro("active") << '\n';
@@ -1519,8 +1517,8 @@ void make_immediate(std::vector<issue> const & issues, std::string const & path,
    // publish a document listing all non-tentative, non-ready issues that must be reviewed during a meeting.
    assert(is_sorted(issues.begin(), issues.end(), sort_by_num{}));
 
-   std::ofstream out{(path + "lwg-immediate.html").c_str()};
-   print_file_header(out, "C++ Standard Library Issues Resolved Directly In Madrid");
+   std::ofstream out{(path + "mailing/lwg-immediate.html").c_str()};
+   print_file_header(out, "C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
 //   print_paper_heading(out, "active", lwg_issues_xml);
 //   out << lwg_issues_xml.get_intro("active") << '\n';
 //   out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues) << '\n';
@@ -1781,6 +1779,7 @@ auto operator<<( std::ostream & out, list_issues const & x) -> std::ostream & {
 
 
 struct find_num {
+   // Predidate functor useful to find issue 'y' in a mapping of issue-number -> some string.
    constexpr bool operator()(std::pair<int, std::string> const & x, int y) const noexcept {
       return x.first < y;
    }
@@ -1797,7 +1796,14 @@ auto operator<<( std::ostream & out, discover_new_issues const & x) -> std::ostr
    std::vector<std::pair<int, std::string> > const & old_issues = x.old_issues;
    std::vector<std::pair<int, std::string> > const & new_issues = x.new_issues;
 
-   std::map<std::string, std::vector<int> > added_issues;
+   struct status_order {
+      using status_string = std::string;
+      auto operator()(status_string const & x, status_string const & y) const noexcept -> bool {
+         return { get_priority(x) < get_priority(y) };
+      }
+   };
+
+   std::map<std::string, std::vector<int>, status_order> added_issues;
    for( auto const & i : new_issues ) {
       auto j = std::lower_bound(old_issues.cbegin(), old_issues.cend(), i.first, find_num{});
       if(j == old_issues.end()) {
@@ -1823,16 +1829,6 @@ auto operator<<( std::ostream & out, discover_new_issues const & x) -> std::ostr
 }
 
 
-struct reverse_pair {
-   // member template means we cannot make thi a local class
-   template <class T, class U>
-   constexpr
-   auto operator()(T const & x, U const & y) const noexcept -> bool {
-      return static_cast<bool>(  x.second < y.second  or
-                              (!(y.second < x.second)  and  x.first < y.first));
-   }
-};
-
 struct discover_changed_issues {
    std::vector<std::pair<int, std::string> > const & old_issues;
    std::vector<std::pair<int, std::string> > const & new_issues;
@@ -1843,7 +1839,18 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
    std::vector<std::pair<int, std::string> > const & old_issues = x.old_issues;
    std::vector<std::pair<int, std::string> > const & new_issues = x.new_issues;
 
-   std::map<std::pair<std::string, std::string>, std::vector<int>, reverse_pair> changed_issues;
+   struct status_transition_order {
+      using status_string = std::string;
+      using from_status_to_status = std::pair<status_string, status_string>;
+
+      auto operator()(from_status_to_status const & x, from_status_to_status const & y) const noexcept -> bool {
+         auto const xp2 = get_priority(x.second);
+         auto const yp2 = get_priority(y.second);
+         return xp2 < yp2  or  (!(yp2 < xp2)  and  get_priority(x.first) < get_priority(y.first));
+      }
+   };
+
+   std::map<std::pair<std::string, std::string>, std::vector<int>, status_transition_order> changed_issues;
    for (auto const & i : new_issues ) {
       auto j = std::lower_bound(old_issues.begin(), old_issues.end(), i.first, find_num{});
       if (j != old_issues.end()  and  i.first == j->first  and  j->second != i.second) {
@@ -1854,13 +1861,12 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
    for (auto const & i : changed_issues ) {
       auto const item_count = i.second.size();
       if(1 == item_count) {
-         out << "<li>Changed the following issue from " << i.first.first << " to " << i.first.second
-             << ": <iref ref=\"" << i.second.front() << "\"/>.</li>\n";
+         out << "<li>Changed the following issue to " << i.first.second
+             << " (from " << i.first.first << "): <iref ref=\"" << i.second.front() << "\"/>.</li>\n";
       }
       else {
-         out << "<li>Changed the following " << item_count << " issues from " << i.first.first << " to " << i.first.second
-             << ": " << list_issues{i.second}
-             << ".</li>\n";
+         out << "<li>Changed the following " << item_count << " issues to " << i.first.second
+             << " (from " << i.first.first << "): " << list_issues{i.second} << ".</li>\n";
       }
    }
 
@@ -2021,31 +2027,31 @@ int main(int argc, char* argv[]) {
 
       // Now we have a parsed and formatted set of issues, we can write the standard set of HTML documents
       // Note that each of these functions is going to re-sort the 'issues' vector for its own purposes
-      make_sort_by_num            (issues, {path + "lwg-toc.html"},         lwg_issues_xml);
-      make_sort_by_status         (issues, {path + "lwg-status.html"},      lwg_issues_xml);
-      make_sort_by_status_mod_date(issues, {path + "lwg-status-date.html"}, lwg_issues_xml);
-      make_sort_by_section        (issues, {path + "lwg-index.html"},       lwg_issues_xml);
+      make_sort_by_num            (issues, {path + "mailing/lwg-toc.html"},         lwg_issues_xml);
+      make_sort_by_status         (issues, {path + "mailing/lwg-status.html"},      lwg_issues_xml);
+      make_sort_by_status_mod_date(issues, {path + "mailing/lwg-status-date.html"}, lwg_issues_xml);
+      make_sort_by_section        (issues, {path + "mailing/lwg-index.html"},       lwg_issues_xml);
 
       // Note that this additional document is very similar to unresolved-index.html below
-      make_sort_by_section        (issues, {path + "lwg-index-open.html"},  lwg_issues_xml, true);
+      make_sort_by_section        (issues, {path + "mailing/lwg-index-open.html"},  lwg_issues_xml, true);
 
       // Make a similar set of index documents for the issues that are 'live' during a meeting
       // Note that these documents want to reference each other, rather than lwg- equivalents,
       // although it may not be worth attempting fix-ups as the per-issue level
       // During meetings, it would be good to list newly-Ready issues here
-      make_sort_by_num            (unresolved_issues, {path + "unresolved-toc.html"},         lwg_issues_xml);
-      make_sort_by_status         (unresolved_issues, {path + "unresolved-status.html"},      lwg_issues_xml);
-      make_sort_by_status_mod_date(unresolved_issues, {path + "unresolved-status-date.html"}, lwg_issues_xml);
-      make_sort_by_section        (unresolved_issues, {path + "unresolved-index.html"},       lwg_issues_xml);
+      make_sort_by_num            (unresolved_issues, {path + "mailing/unresolved-toc.html"},         lwg_issues_xml);
+      make_sort_by_status         (unresolved_issues, {path + "mailing/unresolved-status.html"},      lwg_issues_xml);
+      make_sort_by_status_mod_date(unresolved_issues, {path + "mailing/unresolved-status-date.html"}, lwg_issues_xml);
+      make_sort_by_section        (unresolved_issues, {path + "mailing/unresolved-index.html"},       lwg_issues_xml);
 
       // Make another set of index documents for the issues that are up for a vote during a meeting
       // Note that these documents want to reference each other, rather than lwg- equivalents,
       // although it may not be worth attempting fix-ups as the per-issue level
       // Between meetings, it would be good to list Ready issues here
-      make_sort_by_num            (votable_issues, {path + "votable-toc.html"},         lwg_issues_xml);
-      make_sort_by_status         (votable_issues, {path + "votable-status.html"},      lwg_issues_xml);
-      make_sort_by_status_mod_date(votable_issues, {path + "votable-status-date.html"}, lwg_issues_xml);
-      make_sort_by_section        (votable_issues, {path + "votable-index.html"},       lwg_issues_xml);
+      make_sort_by_num            (votable_issues, {path + "mailing/votable-toc.html"},         lwg_issues_xml);
+      make_sort_by_status         (votable_issues, {path + "mailing/votable-status.html"},      lwg_issues_xml);
+      make_sort_by_status_mod_date(votable_issues, {path + "mailing/votable-status-date.html"}, lwg_issues_xml);
+      make_sort_by_section        (votable_issues, {path + "mailing/votable-index.html"},       lwg_issues_xml);
 
       std::cout << "Made all documents\n";
    }
