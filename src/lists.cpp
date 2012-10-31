@@ -661,7 +661,7 @@ void format(std::vector<issue> & issues, issue & is) {
    std::vector<std::string> tag_stack;
    std::ostringstream er;
    // cannot rewrite as range-based for-loop as the string 's' is modified within the loop
-   for (unsigned i = 0; i < s.size(); ++i) {
+    for (std::string::size_type i{0}; i < s.size(); ++i) {
       if (s[i] == '<') {
          auto j = s.find('>', i);
          if (j == std::string::npos) {
@@ -1343,7 +1343,7 @@ assert(!i->tags.empty());
 }
 
 
-template <class Pred>
+template <typename Pred>
 void print_issues(std::ostream & out, std::vector<issue> const & issues, Pred pred) {
    std::multiset<issue, sort_by_first_tag> const  all_issues{ issues.begin(), issues.end()} ;
    std::multiset<issue, sort_by_status>    const  issues_by_status{ issues.begin(), issues.end() };
@@ -1975,14 +1975,14 @@ void print_current_revisions( std::ostream & out
                             , std::vector<std::pair<int, std::string> > const & new_issues
                             ) {
    out << "<ul>\n"
-       << "<li><b>Summary:</b><ul>\n"
+          "<li><b>Summary:</b><ul>\n"
        << write_summary{old_issues, new_issues}
        << "</ul></li>\n"
-       << "<li><b>Details:</b><ul>\n"
+          "<li><b>Details:</b><ul>\n"
        << discover_new_issues{old_issues, new_issues}
        << discover_changed_issues{old_issues, new_issues}
        << "</ul></li>\n"
-       << "</ul>\n";
+          "</ul>\n";
 }
 
 void check_directory(std::string const & directory) {
@@ -2057,9 +2057,9 @@ int main(int argc, char* argv[]) {
       make_closed(issues, target_path, lwg_issues_xml, diff_report);
 
       // unofficial documents
-      make_tentative(issues, target_path, lwg_issues_xml);
+      make_tentative (issues, target_path, lwg_issues_xml);
       make_unresolved(issues, target_path, lwg_issues_xml);
-      make_immediate(issues, target_path, lwg_issues_xml);
+      make_immediate (issues, target_path, lwg_issues_xml);
 
 
       // Now we have a parsed and formatted set of issues, we can write the standard set of HTML documents

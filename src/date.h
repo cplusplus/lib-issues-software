@@ -4,11 +4,11 @@
 #ifndef DATE_H
 #define DATE_H
 
+#include <ctime>
 #include <exception>
 #include <istream>
-#include <ostream>
 #include <locale>
-#include <ctime>
+#include <ostream>
 
 namespace gregorian
 {
