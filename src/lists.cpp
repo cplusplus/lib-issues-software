@@ -2013,8 +2013,8 @@ int main(int argc, char* argv[]) {
       if (path.back() != '/') { path += '/'; }
       check_directory(path);
 	  
-	  const std::string target_path{path + "mailing/"};
-	  check_directory(target_path);
+      const std::string target_path{path + "mailing/"};
+      check_directory(target_path);
 	  
       section_db = read_section_db(path + "meta-data/");
       //    check_against_index(section_db);
