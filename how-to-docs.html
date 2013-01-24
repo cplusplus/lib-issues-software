@@ -35,13 +35,9 @@ are automatically published by GitHub as web pages.</p>
 <blockquote>
 <pre>cd path-to-where-you-want-to-keep-this-stuff
 git clone git@github.com:cplusplus/LWG.git issues
-git clone git@github.com:cplusplus/LWG.git issues-gh-pages
+git clone -b gh-pages git@github.com:cplusplus/LWG.git issues-gh-pages
 cd issues
-mkdir mailing
-cd..
-cd issues-gh-pages
-git fetch origin
-git checkout -b gh-pages origin/gh-pages</pre>
+mkdir mailing</pre>
 </blockquote>
 <h2>Build issues software</h2>
 <p>Do this after the initial setup, and then again whenever the source 
