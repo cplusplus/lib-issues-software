@@ -1046,7 +1046,7 @@
         24.6.4 [ostreambuf.iterator]
             24.6.4.1 [ostreambuf.iter.cons]
             24.6.4.2 [ostreambuf.iter.ops]
-        24.6.5 [iterator.range]
+        24.7 [iterator.range]
 25 [algorithms]
     25.1 [algorithms.general]
     25.2 [alg.nonmodifying]
