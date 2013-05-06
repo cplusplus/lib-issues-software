@@ -1008,7 +1008,7 @@ auto LwgIssuesXml::get_revisions(std::vector<issue> const & issues, std::string 
    // update the lines below and recompile for every mailing
    r += "<li>";
 //   r += "R74: 2011-02-28 pre-Madrid mailing";   // This is the form we are copying
-   r += "R83: 2013-05 post-Bristol mailing";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
+   r += "R84: 2013-07 mid-summer mailing";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
    r += diff_report;
    r += "</li>\n";
 
