@@ -24,7 +24,7 @@ are automatically published by GitHub as web pages.</p>
 <h2>Prerequisites</h2>
 <ul>
   <li>Git</li>
-  <li>A C++11 compiler. For the moment, that means GCC 4.6 or later.</li>
+  <li>A C++11 compiler. For the moment, that means GCC 4.7 or later.</li>
   <li>Windows is a prerequisite to use the Windows <code>.bat</code> scripts, or
   a POSIX environment is a prerequisite to use the equivalent <code>.sh</code>
   scripts.</li>
@@ -74,7 +74,7 @@ bin\update_lists</pre>
 </blockquote>
 
   <h2>Update meta-data</h2>
-  <p>The files in <code>issues\meta-data</code> need to be updated whenever 
+  <p>The files in <code>issues/meta-data</code> need to be updated whenever 
   there is a new draft of the working paper.</p>
   <p>The procedure begins when the project editor sends the LWG chair a new copy 
   of Annex F.</p>
@@ -82,5 +82,32 @@ bin\update_lists</pre>
   Now that the working paper is publicly available on </span>
   <span style="background-color: #FFFF00">GitHub</span><span style="background-color: #FFFF00">, 
   pulling an updated copy of Annex F can be automated.</span></p>
-  <p>To turn the raw annex-f file into fresh section data, see <code>bin/build_section_data.bat</code>.</p>
+  <p>If such a copy is absent, proceed as follows:</p>
+  <ol>
+  <li>
+  <p>Copy the section data from the pdf of the working drafts Annex F with section id [xref] into it 
+  an empty text file named <code>annex-f</code> as pairs of section-ids and section numbers (one per line, 
+  the result of Copy&amp;Paste usually works depending on your pdf reader).</p>
+  </li>
+  <li>
+  <p>Manually add the missing section numbers to all entries starting with <code>defns.</code> (which have no
+  corresponding section numbers)</p>
+  </li>
+  </ol>
+  <p>Once the <code>annex-f</code> file exists in the proper format, perform the following steps:</p>
+  <ol>
+  <li>
+  <p>Copy file <code>annex-f</code> into the <code>bin</code> directory.</p>
+  </li>
+  <li>
+  <p>Execute the file <code>bin/build_section_data.bat</code>. This will produce the files <code>bin/index</code> and
+  <code>bin/section.data</code></p>
+  </li>
+  <li>
+  <p>Double-check that both files look OK. Especially take care to compare <code>bin/section.data</code> with
+  <code>meta-data/section.data</code> for suspecious changes. If you are happy with the deltas, replace the
+  the current <code>meta-data/section.data</code> by the freshly generated <code>bin/section.data</code>.
+  </p>
+  </li>
+  </ol>
 <hr>&nbsp;</body></html>
