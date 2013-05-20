@@ -6,3 +6,7 @@
 /bin/toc_diff.exe
 /bin/toc_diff
 /mailing
+/bin/build_pgms_with_env.bat
+/bin/annex-f
+/bin/section.data
+/bin/index
