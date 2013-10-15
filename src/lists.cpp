@@ -871,6 +871,8 @@ struct LwgIssuesXml {
    auto get_statuses() const -> std::string;
 
 private:
+   auto get_attribute(std::string const & attribute) const -> std::string;
+
    // m_data is reparsed too many times in practice, and memory use is not a major concern.
    // Should cache each of the reproducible calls in additional member strings, either at
    // construction, or lazily on each function eval, checking if the cached string is 'empty'.
@@ -893,28 +895,19 @@ LwgIssuesXml::LwgIssuesXml(std::string const & path)
 
 auto LwgIssuesXml::get_doc_number(std::string doc) const -> std::string {
     if (doc == "active") {
-        doc = "active_docno=\"";
+        doc = "active_docno";
     }
     else if (doc == "defect") {
-        doc = "defect_docno=\"";
+        doc = "defect_docno";
     }
     else if (doc == "closed") {
-        doc = "closed_docno=\"";
+        doc = "closed_docno";
     }
     else {
         throw std::runtime_error{"unknown argument to get_doc_number: " + doc};
     }
 
-    auto i = m_data.find(doc);
-    if (i == std::string::npos) {
-        throw std::runtime_error{"Unable to find docno in lwg-issues.xml"};
-    }
-    i += doc.size();
-    auto j = m_data.find('\"', i+1);
-    if (j == std::string::npos) {
-        throw std::runtime_error{"Unable to parse docno in lwg-issues.xml"};
-    }
-    return m_data.substr(i, j-i);
+    return get_attribute(doc);
 }
 
 auto LwgIssuesXml::get_intro(std::string doc) const -> std::string {
@@ -945,16 +938,7 @@ auto LwgIssuesXml::get_intro(std::string doc) const -> std::string {
 
 
 auto LwgIssuesXml::get_maintainer() const -> std::string {
-   auto i = m_data.find("maintainer=\"");
-   if (i == std::string::npos) {
-      throw std::runtime_error{"Unable to find maintainer in lwg-issues.xml"};
-   }
-   i += sizeof("maintainer=\"") - 1;
-   auto j = m_data.find('\"', i);
-   if (j == std::string::npos) {
-      throw std::runtime_error{"Unable to parse maintainer in lwg-issues.xml"};
-   }
-   std::string r = m_data.substr(i, j-i);
+   std::string r = get_attribute("maintainer");
    auto m = r.find("&lt;");
    if (m == std::string::npos) {
       throw std::runtime_error{"Unable to parse maintainer email address in lwg-issues.xml"};
@@ -971,18 +955,8 @@ auto LwgIssuesXml::get_maintainer() const -> std::string {
    return r;
 }
 
-
 auto LwgIssuesXml::get_revision() const -> std::string {
-    auto i = m_data.find("revision=\"");
-    if (i == std::string::npos) {
-        throw std::runtime_error{"Unable to find revision in lwg-issues.xml"};
-    }
-    i += sizeof("revision=\"") - 1;
-    auto j = m_data.find('\"', i);
-    if (j == std::string::npos) {
-        throw std::runtime_error{"Unable to parse revision in lwg-issues.xml"};
-    }
-    return m_data.substr(i, j-i);
+   return get_attribute("revision");
 }
 
 
@@ -1004,11 +978,8 @@ auto LwgIssuesXml::get_revisions(std::vector<issue> const & issues, std::string 
    // Probably not - string will not be *that* big, and stringstream pays the cost of locales
    std::string r = "<ul>\n";
 
-   // TBD: Fix this to use metadata in an external file
-   // update the lines below and recompile for every mailing
    r += "<li>";
-//   r += "R74: 2011-02-28 pre-Madrid mailing";   // This is the form we are copying
-   r += "D86: 2014-01 pre-Issaquah mailing";   // We should date and *timestamp* this reference, as we expect to generate several documents per day
+   r += get_revision() + ": " + get_attribute("date") + " " + get_attribute("title");   // We should date and *timestamp* this reference, as we expect to generate several documents per day
    r += diff_report;
    r += "</li>\n";
 
@@ -1048,6 +1019,21 @@ auto LwgIssuesXml::get_statuses() const -> std::string {
       throw std::runtime_error{"Unable to parse statuses in lwg-issues.xml"};
    }
    return m_data.substr(i, j-i);
+}
+
+
+auto LwgIssuesXml::get_attribute(std::string const & attribute) const -> std::string {
+    std::string search_string{attribute + "=\""};
+    auto i = m_data.find(search_string);
+    if (i == std::string::npos) {
+        throw std::runtime_error{"Unable to find " + attribute + " in lwg-issues.xml"};
+    }
+    i += search_string.size();
+    auto j = m_data.find('\"', i);
+    if (j == std::string::npos) {
+        throw std::runtime_error{"Unable to parse " + attribute + " in lwg-issues.xml"};
+    }
+    return m_data.substr(i, j-i);
 }
 
 
