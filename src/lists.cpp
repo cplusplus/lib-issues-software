@@ -56,6 +56,7 @@
 #include <vector>
 
 // platform headers - requires a Posix compatible platform
+// The hope is to replace all of this with the filesystem TS
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -64,10 +65,33 @@
 // solution specific headers
 #include "date.h"
 
+#if 0
+// Revisit this after I work out linker issues on my Mac
+#if 1
+// workaround until <experimental/filesystem> is widely available:
+##include <boost/filesystem.hpp>
+namespace std {
+namespace experimental {
+namespace filesystem {
+using namespace boost::filesystem;
+}
+}
+}
+#else
+#include <experimental/filesystem>
+#endif
+#endif
+
+#define REFACTOR_ISSUE_CODE
+#if defined REFACTOR_ISSUE_CODE
+#include "issues.h"
+#include "mailing_info.h"
+#endif
+
 namespace greg = gregorian;
 
-#if 1
-// This should be part of <string> in 0x lib
+#if 0
+// This should be part of <string> in C++11 lib
 // Should also be more efficient than using ostringstream!
 // Will be available soon when assuming libc++, or gcc 4.8 and later
 auto to_string(int i) -> std::string {
@@ -79,6 +103,15 @@ auto to_string(int i) -> std::string {
 using std::to_string;
 #endif
 
+#if 0
+using lwg::issue;
+using lwg::section_map;
+using lwg::section_num;
+using lwg::section_tag;
+using lwg::sort_by_num;
+#else
+using namespace lwg;
+#endif
 
 // Generic utilities that are useful and do not rely on context or types from our domain (issue-list processing)
 // =============================================================================================================
@@ -188,6 +221,7 @@ auto read_file_into_string(std::string const & filename) -> std::string {
 std::string build_timestamp(
   format_time("<p>Revised %Y-%m-%d at %H:%m:%S UTC</p>\n", utc_timestamp()));
 
+#if !defined(REFACTOR_ISSUE_CODE)
 // Functions to "normalize" a status string
 auto remove_pending(std::string stat) -> std::string {
    using size_type = std::string::size_type;
@@ -342,7 +376,7 @@ auto operator << (std::ostream& os, section_num const & sn) -> std::ostream & {
 
    bool use_period{false};
    for (auto sub : sn.num ) {
-      if(use_period++) {
+      if (exchange(use_period, true)) {
          os << '.';
       }
 
@@ -400,6 +434,14 @@ struct issue {
 
 
 using section_map = std::map<section_tag, section_num>;
+
+struct sort_by_num {
+    bool operator()(issue const & x, issue const & y) const noexcept   {  return x.num < y.num;   }
+    bool operator()(issue const & x, int y)           const noexcept   {  return x.num < y;       }
+    bool operator()(int x,           issue const & y) const noexcept   {  return x     < y.num;   }
+};
+#endif // REFACTOR_ISSUE_CODE
+
 section_map section_db;
 
 
@@ -420,13 +462,7 @@ struct sort_by_section {
 };
 
 
-struct sort_by_num {
-    bool operator()(issue const & x, issue const & y) const noexcept   {  return x.num < y.num;   }
-    bool operator()(issue const & x, int y)           const noexcept   {  return x.num < y;       }
-    bool operator()(int x,           issue const & y) const noexcept   {  return x     < y.num;   }
-};
-
-auto get_priority(std::string const & stat) noexcept -> std::ptrdiff_t {
+auto get_status_priority(std::string const & stat) noexcept -> std::ptrdiff_t {
    static char const * const status_priority[] {
       "Voting",
       "Tentatively Voting",
@@ -482,7 +518,7 @@ auto get_priority(std::string const & stat) noexcept -> std::ptrdiff_t {
 
 struct sort_by_status {
    auto operator()(issue const & x, issue const & y) const noexcept -> bool {
-      return get_priority(x.stat) < get_priority(y.stat);
+      return get_status_priority(x.stat) < get_status_priority(y.stat);
    }
 };
 
@@ -577,20 +613,6 @@ auto read_section_db(std::string const & path) -> section_map {
 //   }
 //}
 
-
-auto make_ref_string(issue const & iss) -> std::string {
-   auto temp = to_string(iss.num);
-
-   std::string result{"<a href=\""};
-   result += filename_for_status(iss.stat);
-   result += '#';
-   result += temp;
-   result += "\">";
-   result += temp;
-   result += "</a>";
-   return result;
-}
-
 //void synchronize_dupicates(std::vector<issue> & issues) {
 //   for( auto & iss : issues ) {
 //      if(iss.duplicates.empty()) {
@@ -607,6 +629,20 @@ auto make_ref_string(issue const & iss) -> std::string {
 //      }
 //   }
 //}
+
+#if !defined(REFACTOR_ISSUE_CODE)
+auto make_ref_string(issue const & iss) -> std::string {
+   auto temp = to_string(iss.num);
+
+   std::string result{"<a href=\""};
+   result += filename_for_status(iss.stat);
+   result += '#';
+   result += temp;
+   result += "\">";
+   result += temp;
+   result += "</a>";
+   return result;
+}
 
 void replace_all_irefs(std::vector<issue> const & issues, std::string & s) {
    // Replace all tagged "issues references" in string 's' with an HTML anchor-link to the live issue
@@ -654,6 +690,182 @@ void replace_all_irefs(std::vector<issue> const & issues, std::string & s) {
    }
 }
 
+struct LwgIssuesXml {
+   explicit LwgIssuesXml(std::string const & path);
+
+   auto get_doc_number(std::string doc) const -> std::string;
+   auto get_intro(std::string doc) const -> std::string;
+   auto get_maintainer() const -> std::string;
+   auto get_revision() const -> std::string;
+   auto get_revisions(std::vector<issue> const & issues, std::string const & diff_report) const -> std::string;
+   auto get_statuses() const -> std::string;
+
+private:
+   auto get_attribute(std::string const & attribute) const -> std::string;
+
+   // m_data is reparsed too many times in practice, and memory use is not a major concern.
+   // Should cache each of the reproducible calls in additional member strings, either at
+   // construction, or lazily on each function eval, checking if the cached string is 'empty'.
+   std::string m_data;
+};
+
+LwgIssuesXml::LwgIssuesXml(std::string const & path)
+   : m_data{}
+   {
+   std::string filename{path + "lwg-issues.xml"};
+   std::ifstream infile{filename.c_str()};
+   if (!infile.is_open()) {
+      throw std::runtime_error{"Unable to open " + filename};
+   }
+
+   std::istreambuf_iterator<char> first{infile}, last{};
+   m_data.assign(first, last);
+}
+
+
+auto LwgIssuesXml::get_doc_number(std::string doc) const -> std::string {
+    if (doc == "active") {
+        doc = "active_docno";
+    }
+    else if (doc == "defect") {
+        doc = "defect_docno";
+    }
+    else if (doc == "closed") {
+        doc = "closed_docno";
+    }
+    else {
+        throw std::runtime_error{"unknown argument to get_doc_number: " + doc};
+    }
+
+    return get_attribute(doc);
+}
+
+auto LwgIssuesXml::get_intro(std::string doc) const -> std::string {
+    if (doc == "active") {
+        doc = "<intro list=\"Active\">";
+    }
+    else if (doc == "defect") {
+        doc = "<intro list=\"Defects\">";
+    }
+    else if (doc == "closed") {
+        doc = "<intro list=\"Closed\">";
+    }
+    else {
+        throw std::runtime_error{"unknown argument to intro: " + doc};
+    }
+
+    auto i = m_data.find(doc);
+    if (i == std::string::npos) {
+        throw std::runtime_error{"Unable to find intro in lwg-issues.xml"};
+    }
+    i += doc.size();
+    auto j = m_data.find("</intro>", i);
+    if (j == std::string::npos) {
+        throw std::runtime_error{"Unable to parse intro in lwg-issues.xml"};
+    }
+    return m_data.substr(i, j-i);
+}
+
+
+auto LwgIssuesXml::get_maintainer() const -> std::string {
+   std::string r = get_attribute("maintainer");
+   auto m = r.find("&lt;");
+   if (m == std::string::npos) {
+      throw std::runtime_error{"Unable to parse maintainer email address in lwg-issues.xml"};
+   }
+   m += sizeof("&lt;") - 1;
+   auto me = r.find("&gt;", m);
+   if (me == std::string::npos) {
+      throw std::runtime_error{"Unable to parse maintainer email address in lwg-issues.xml"};
+   }
+   std::string email = r.substr(m, me-m);
+   // &lt;                                    lwgchair@gmail.com    &gt;
+   // &lt;<a href="mailto:lwgchair@gmail.com">lwgchair@gmail.com</a>&gt;
+   r.replace(m, me-m, "<a href=\"mailto:" + email + "\">" + email + "</a>");
+   return r;
+}
+
+auto LwgIssuesXml::get_revision() const -> std::string {
+   return get_attribute("revision");
+}
+
+
+auto LwgIssuesXml::get_revisions(std::vector<issue> const & issues, std::string const & diff_report) const -> std::string {
+   auto i = m_data.find("<revision_history>");
+   if (i == std::string::npos) {
+      throw std::runtime_error{"Unable to find <revision_history> in lwg-issues.xml"};
+   }
+   i += sizeof("<revision_history>") - 1;
+
+   auto j = m_data.find("</revision_history>", i);
+   if (j == std::string::npos) {
+      throw std::runtime_error{"Unable to find </revision_history> in lwg-issues.xml"};
+   }
+   auto s = m_data.substr(i, j-i);
+   j = 0;
+
+   // bulding a potentially large string, would a stringstream be a better solution?
+   // Probably not - string will not be *that* big, and stringstream pays the cost of locales
+   std::string r = "<ul>\n";
+
+   r += "<li>";
+   r += get_revision() + ": " + get_attribute("date") + " " + get_attribute("title");   // We should date and *timestamp* this reference, as we expect to generate several documents per day
+   r += diff_report;
+   r += "</li>\n";
+
+   while (true) {
+      i = s.find("<revision tag=\"", j);
+      if (i == std::string::npos) {
+         break;
+      }
+      i += sizeof("<revision tag=\"") - 1;
+      j = s.find('\"', i);
+      std::string const rv = s.substr(i, j-i);
+      i = j+2;
+      j = s.find("</revision>", i);
+
+      r += "<li>";
+      r += rv + ": ";
+      r += s.substr(i, j-i);
+      r += "</li>\n";
+   }
+   r += "</ul>\n";
+
+   replace_all_irefs(issues, r);
+
+   return r;
+}
+
+
+auto LwgIssuesXml::get_statuses() const -> std::string {
+   auto i = m_data.find("<statuses>");
+   if (i == std::string::npos) {
+      throw std::runtime_error{"Unable to find statuses in lwg-issues.xml"};
+   }
+   i += sizeof("<statuses>") - 1;
+
+   auto j = m_data.find("</statuses>", i);
+   if (j == std::string::npos) {
+      throw std::runtime_error{"Unable to parse statuses in lwg-issues.xml"};
+   }
+   return m_data.substr(i, j-i);
+}
+
+
+auto LwgIssuesXml::get_attribute(std::string const & attribute) const -> std::string {
+    std::string search_string{attribute + "=\""};
+    auto i = m_data.find(search_string);
+    if (i == std::string::npos) {
+        throw std::runtime_error{"Unable to find " + attribute + " in lwg-issues.xml"};
+    }
+    i += search_string.size();
+    auto j = m_data.find('\"', i);
+    if (j == std::string::npos) {
+        throw std::runtime_error{"Unable to parse " + attribute + " in lwg-issues.xml"};
+    }
+    return m_data.substr(i, j-i);
+}
+#endif // REFACTOR_ISSUE_CODE
 
 void format(std::vector<issue> & issues, issue & is) {
    std::string & s = is.text;
@@ -857,183 +1069,6 @@ void format(std::vector<issue> & issues, issue & is) {
          }
       }
    }
-}
-
-
-struct LwgIssuesXml {
-   explicit LwgIssuesXml(std::string const & path);
-
-   auto get_doc_number(std::string doc) const -> std::string;
-   auto get_intro(std::string doc) const -> std::string;
-   auto get_maintainer() const -> std::string;
-   auto get_revision() const -> std::string;
-   auto get_revisions(std::vector<issue> const & issues, std::string const & diff_report) const -> std::string;
-   auto get_statuses() const -> std::string;
-
-private:
-   auto get_attribute(std::string const & attribute) const -> std::string;
-
-   // m_data is reparsed too many times in practice, and memory use is not a major concern.
-   // Should cache each of the reproducible calls in additional member strings, either at
-   // construction, or lazily on each function eval, checking if the cached string is 'empty'.
-   std::string m_data;
-};
-
-LwgIssuesXml::LwgIssuesXml(std::string const & path)
-   : m_data{}
-   {
-   std::string filename{path + "lwg-issues.xml"};
-   std::ifstream infile{filename.c_str()};
-   if (!infile.is_open()) {
-      throw std::runtime_error{"Unable to open " + filename};
-   }
-
-   std::istreambuf_iterator<char> first{infile}, last{};
-   m_data.assign(first, last);
-}
-
-
-auto LwgIssuesXml::get_doc_number(std::string doc) const -> std::string {
-    if (doc == "active") {
-        doc = "active_docno";
-    }
-    else if (doc == "defect") {
-        doc = "defect_docno";
-    }
-    else if (doc == "closed") {
-        doc = "closed_docno";
-    }
-    else {
-        throw std::runtime_error{"unknown argument to get_doc_number: " + doc};
-    }
-
-    return get_attribute(doc);
-}
-
-auto LwgIssuesXml::get_intro(std::string doc) const -> std::string {
-    if (doc == "active") {
-        doc = "<intro list=\"Active\">";
-    }
-    else if (doc == "defect") {
-        doc = "<intro list=\"Defects\">";
-    }
-    else if (doc == "closed") {
-        doc = "<intro list=\"Closed\">";
-    }
-    else {
-        throw std::runtime_error{"unknown argument to intro: " + doc};
-    }
-
-    auto i = m_data.find(doc);
-    if (i == std::string::npos) {
-        throw std::runtime_error{"Unable to find intro in lwg-issues.xml"};
-    }
-    i += doc.size();
-    auto j = m_data.find("</intro>", i);
-    if (j == std::string::npos) {
-        throw std::runtime_error{"Unable to parse intro in lwg-issues.xml"};
-    }
-    return m_data.substr(i, j-i);
-}
-
-
-auto LwgIssuesXml::get_maintainer() const -> std::string {
-   std::string r = get_attribute("maintainer");
-   auto m = r.find("&lt;");
-   if (m == std::string::npos) {
-      throw std::runtime_error{"Unable to parse maintainer email address in lwg-issues.xml"};
-   }
-   m += sizeof("&lt;") - 1;
-   auto me = r.find("&gt;", m);
-   if (me == std::string::npos) {
-      throw std::runtime_error{"Unable to parse maintainer email address in lwg-issues.xml"};
-   }
-   std::string email = r.substr(m, me-m);
-   // &lt;                                    lwgchair@gmail.com    &gt;
-   // &lt;<a href="mailto:lwgchair@gmail.com">lwgchair@gmail.com</a>&gt;
-   r.replace(m, me-m, "<a href=\"mailto:" + email + "\">" + email + "</a>");
-   return r;
-}
-
-auto LwgIssuesXml::get_revision() const -> std::string {
-   return get_attribute("revision");
-}
-
-
-auto LwgIssuesXml::get_revisions(std::vector<issue> const & issues, std::string const & diff_report) const -> std::string {
-   auto i = m_data.find("<revision_history>");
-   if (i == std::string::npos) {
-      throw std::runtime_error{"Unable to find <revision_history> in lwg-issues.xml"};
-   }
-   i += sizeof("<revision_history>") - 1;
-
-   auto j = m_data.find("</revision_history>", i);
-   if (j == std::string::npos) {
-      throw std::runtime_error{"Unable to find </revision_history> in lwg-issues.xml"};
-   }
-   auto s = m_data.substr(i, j-i);
-   j = 0;
-
-   // bulding a potentially large string, would a stringstream be a better solution?
-   // Probably not - string will not be *that* big, and stringstream pays the cost of locales
-   std::string r = "<ul>\n";
-
-   r += "<li>";
-   r += get_revision() + ": " + get_attribute("date") + " " + get_attribute("title");   // We should date and *timestamp* this reference, as we expect to generate several documents per day
-   r += diff_report;
-   r += "</li>\n";
-
-   while (true) {
-      i = s.find("<revision tag=\"", j);
-      if (i == std::string::npos) {
-         break;
-      }
-      i += sizeof("<revision tag=\"") - 1;
-      j = s.find('\"', i);
-      std::string const rv = s.substr(i, j-i);
-      i = j+2;
-      j = s.find("</revision>", i);
-
-      r += "<li>";
-      r += rv + ": ";
-      r += s.substr(i, j-i);
-      r += "</li>\n";
-   }
-   r += "</ul>\n";
-
-   replace_all_irefs(issues, r);
-
-   return r;
-}
-
-
-auto LwgIssuesXml::get_statuses() const -> std::string {
-   auto i = m_data.find("<statuses>");
-   if (i == std::string::npos) {
-      throw std::runtime_error{"Unable to find statuses in lwg-issues.xml"};
-   }
-   i += sizeof("<statuses>") - 1;
-
-   auto j = m_data.find("</statuses>", i);
-   if (j == std::string::npos) {
-      throw std::runtime_error{"Unable to parse statuses in lwg-issues.xml"};
-   }
-   return m_data.substr(i, j-i);
-}
-
-
-auto LwgIssuesXml::get_attribute(std::string const & attribute) const -> std::string {
-    std::string search_string{attribute + "=\""};
-    auto i = m_data.find(search_string);
-    if (i == std::string::npos) {
-        throw std::runtime_error{"Unable to find " + attribute + " in lwg-issues.xml"};
-    }
-    i += search_string.size();
-    auto j = m_data.find('\"', i);
-    if (j == std::string::npos) {
-        throw std::runtime_error{"Unable to parse " + attribute + " in lwg-issues.xml"};
-    }
-    return m_data.substr(i, j-i);
 }
 
 
@@ -1812,7 +1847,7 @@ auto operator<<( std::ostream & out, discover_new_issues const & x) -> std::ostr
    struct status_order {
       using status_string = std::string;
       auto operator()(status_string const & x, status_string const & y) const noexcept -> bool {
-         return { get_priority(x) < get_priority(y) };
+         return { get_status_priority(x) < get_status_priority(y) };
       }
    };
 
@@ -1857,9 +1892,9 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
       using from_status_to_status = std::pair<status_string, status_string>;
 
       auto operator()(from_status_to_status const & x, from_status_to_status const & y) const noexcept -> bool {
-         auto const xp2 = get_priority(x.second);
-         auto const yp2 = get_priority(y.second);
-         return xp2 < yp2  or  (!(yp2 < xp2)  and  get_priority(x.first) < get_priority(y.first));
+         auto const xp2 = get_status_priority(x.second);
+         auto const yp2 = get_status_priority(y.second);
+         return xp2 < yp2  or  (!(yp2 < xp2)  and  get_status_priority(x.first) < get_status_priority(y.first));
       }
    };
 
