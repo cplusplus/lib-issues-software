@@ -5,7 +5,7 @@
 // Based on code originally donated by Howard Hinnant
 // Since modified by Alisdair Meredith
 
-// Note that this program requires a reasonably conformant C++0x compiler, supporting at least:
+// Note that this program requires a reasonably conformant C++11 compiler, supporting at least:
 //    auto
 //    lambda expressions
 //    brace-initialization
@@ -18,6 +18,19 @@
 
 // Likewise, the following C++11 library facilities are used:
 //    to_string
+//    consistent overloading of 'char const *' and 'std::string'
+
+// Following the planned removal of (deprecated) bool post-increment operator, we now
+// require the following C++14 library facilities:
+//    exchange
+
+// The following C++14 features are being considered for future cleanup/refactoring:
+//    polymorphic lambdas
+//    string UDLs
+
+// The following TS features are also desirable
+//    filesystem
+//    string_view
 
 // Its coding style assumes a standard library optimized with move-semantics
 // The only known compiler to support all of this today is the experimental gcc trunk (4.6)
@@ -30,7 +43,7 @@
 // .  Split 'format' function and usage to that the issues vector can pass by const-ref in the common cases
 // .  Document the purpose amd contract on each function
 // Waiting on external fix for preserving file-dates
-// .  sort-by-last-modified-date should offer some filter or separation to see only the issues modified since  the last meeting
+// .  sort-by-last-modified-date should offer some filter or separation to see only the issues modified since the last meeting
 
 // Missing standard facilities that we work around
 // . Date
@@ -88,63 +101,140 @@ using namespace boost::filesystem;
 #endif
 #endif
 
-#ifdef DEBUG_SUPPORT
-void display(std::vector<issue> const & issues) {
-    for (auto const & i : issues) { std::cout << i; }
-}
-#endif
 
+auto read_file_into_string(std::string const & filename) -> std::string {
+   // read a text file completely into memory, and return its contents as
+   // a 'string' for further manipulation.
+
+   std::ifstream infile{filename.c_str()};
+   if (!infile.is_open()) {
+      throw std::runtime_error{"Unable to open file " + filename};
+   }
+
+   std::istreambuf_iterator<char> first{infile}, last{};
+   return std::string {first, last};
+}
 
 // Issue-list specific functionality for the rest of this file
 // ===========================================================
 
-auto read_section_db(std::string const & path) -> lwg::section_map {
-   auto filename = path + "section.data";
-   std::ifstream infile{filename};
-   if (!infile.is_open()) {
-      throw std::runtime_error{"Can't open section.data at " + path};
-   }
-   std::cout << "Reading section-tag index from: " << filename << std::endl;
+auto read_issues(std::string const & issues_path, lwg::section_map & section_db) -> std::vector<lwg::issue> {
+   // Open the specified directory, 'issues_path', and iterate all the '.xml' files
+   // it contains, parsing each such file as an LWG issue document.  Return the set
+   // of issues as a vector.
+   //
+   // The current implementation relies directly on POSIX headers, but the preferred
+   // direction for the future is to switch over to the filesystem TS using directory
+   // iterators.
 
-   return lwg::read_section_db(infile);
+   std::unique_ptr<DIR, int(&)(DIR*)> dir{opendir(issues_path.c_str()), closedir};
+   if (!dir) {
+      throw std::runtime_error{"Unable to open issues dir"};
+   }
+
+   std::vector<lwg::issue> issues{};
+   while ( dirent* entry = readdir(dir.get()) ) {
+      std::string const issue_file{ entry->d_name };
+      if (0 == issue_file.find("issue") ) {
+         auto const filename = issues_path + issue_file;
+         issues.emplace_back(parse_issue_from_file(read_file_into_string(filename), filename, section_db));
+      }
+   }
+
+   return issues;
 }
 
 
-// Is this simply a debugging aid?
-//void check_against_index(section_map const & section_db) {
-//   for (auto const & elem : section_db ) {
-//      std::string temp = elem.first;
-//      temp.erase(temp.end()-1);
-//      temp.erase(temp.begin());
-//      std::cout << temp << ' ' << elem.second << '\n';
-//   }
-//}
+auto read_issues_from_toc(std::string const & s) -> std::vector<std::tuple<int, std::string> > {
+   // parse all issues from the specified stream, 'is'.
+   // Throws 'runtime_error' if *any* parse step fails
+   //
+   // We assume 'is' refers to a "toc" html document, for either the current or a previous issues list.
+   // The TOC file consists of a sequence of HTML <tr> elements - each element is one issue/row in the table
+   //    First we read the whole stream into a single 'string'
+   //    Then we search the string for the first <tr> marker
+   //       The first row is the title row and does not contain an issue.
+   //       If cannt find the first row, we flag an error and exit
+   //    Next we loop through the string, searching for <tr> markers to indicate the start of each issue
+   //       We parse the issue number and status from each row, and append a record to the result vector
+   //       If any parse fails, throw a runtime_error
+   //    If debugging, display the results to 'cout'
 
-//void synchronize_dupicates(std::vector<issue> & issues) {
-//   for( auto & iss : issues ) {
-//      if(iss.duplicates.empty()) {
-//         continue;
-//      }
-//
-//      // This self-reference looks worth preserving, as can be used to substitute in revision history etc.
-//      std::string self_ref = make_ref_string(iss);
-//
-//      for( auto const & dup : iss.duplicates ) {
-//         n->duplicates.insert(self_ref); // This is only reason vector is not const
-//         is.duplicates.insert(make_ref_string(*n));
-//         r.clear();
-//      }
-//   }
-//}
+   // Skip the title row
+   auto i = s.find("<tr>");
+   if (std::string::npos == i) {
+      throw std::runtime_error{"Unable to find the first (title) row"};
+   }
+
+   // Read all issues in table
+   std::vector<std::tuple<int, std::string> > issues;
+   for(;;) {
+      i = s.find("<tr>", i+4);
+      if (i == std::string::npos) {
+         break;
+      }
+      i = s.find("</a>", i);
+      auto j = s.rfind('>', i);
+      if (j == std::string::npos) {
+         throw std::runtime_error{"unable to parse issue number: can't find beginning bracket"};
+      }
+      std::istringstream instr{s.substr(j+1, i-j-1)};
+      int num;
+      instr >> num;
+      if (instr.fail()) {
+         throw std::runtime_error{"unable to parse issue number"};
+      }
+      i = s.find("</a>", i+4);
+      if (i == std::string::npos) {
+         throw std::runtime_error{"partial issue found"};
+      }
+      j = s.rfind('>', i);
+      if (j == std::string::npos) {
+         throw std::runtime_error{"unable to parse issue status: can't find beginning bracket"};
+      }
+      issues.emplace_back(num, s.substr(j+1, i-j-1));
+   }
+
+   return issues;
+}
 
 
-void format(std::vector<lwg::issue> & issues, lwg::issue & is, lwg::section_map & section_db) {
-   std::string & s = is.text;
-   int issue_num = is.num;
-   std::vector<std::string> tag_stack;
-   std::ostringstream er;
+// ============================================================================================================
+
+void format_issue_as_html(lwg::issue & is,
+                          std::vector<lwg::issue>::iterator first_issue,
+                          std::vector<lwg::issue>::iterator last_issue,
+                          lwg::section_map & section_db) {
+   // Reformt the issue text for the specified 'is' as valid HTML, replacing all the issue-list
+   // specific XML markup as appropriate:
+   //   tag             replacement
+   //   ---             ----------- 
+   //   iref            internal reference to another issue, replace with an anchor tag to that issue
+   //   sref            section-tag reference, replace with formatted tag and section-number
+   //   discussion      <p><b>Discussion:</b></p>CONTENTS
+   //   resolution      <p><b>Proposed resolution:</b></p>CONTENTS
+   //   rationale       <p><b>Rationale:</b></p>CONTENTS
+   //   duplicate       tags are erased, leaving just CONTENTS
+   //   note            <p><i>[NOTE CONTENTS]</i></p>
+   //   !--             comments are simply erased
+   //
+   // In addition, as duplicate issues are discovered, the duplicates are marked up
+   // in the supplied range [first_issue,last_issue).  Similarly, if an unexpected
+   // (unknown) section is discovered, it will be inserted into the supplied
+   // section index, 'section_db'.
+   //
+   // The behavior is undefined unless the issues in the supplied vector range are sorted by issue-number.
+   //
+   // Essentially, this function is a tiny xml-parser driven by a stack of open tags, that pops as tags
+   // are closed.
+
+   std::string & s = is.text;  // convenience alias for string to be reformatted
+   int issue_num = is.num;     // current issue number for the issue being formatted
+   std::vector<std::string> tag_stack;   // stack of open XML tags as we parse
+   std::ostringstream er;      // stream to format error messages
+
    // cannot rewrite as range-based for-loop as the string 's' is modified within the loop
-    for (std::string::size_type i{0}; i < s.size(); ++i) {
+   for (std::string::size_type i{0}; i < s.size(); ++i) {
       if (s[i] == '<') {
          auto j = s.find('>', i);
          if (j == std::string::npos) {
@@ -281,21 +371,21 @@ void format(std::vector<lwg::issue> & issues, lwg::issue & is, lwg::section_map 
                   throw std::runtime_error{er.str()};
                }
 
-               auto n = std::lower_bound(issues.begin(), issues.end(), num, lwg::sort_by_num{});
-               if (n->num != num) {
+               auto n = std::lower_bound(first_issue, last_issue, num, lwg::order_by_issue_number{});
+               if (n == last_issue  or  n->num != num) {
                   er.clear();
                   er.str("");
-                  er << "couldn't find number " << num << " in iref in issue " << issue_num;
+                  er << "could not find issue " << num << " for iref in issue " << issue_num;
                   throw std::runtime_error{er.str()};
                }
 
                if (!tag_stack.empty()  and  tag_stack.back() == "duplicate") {
-                  n->duplicates.insert(make_ref_string(is)); // This is only reason vector is not const
-                  is.duplicates.insert(make_ref_string(*n));
+                  n->duplicates.insert(make_html_anchor(is));
+                  is.duplicates.insert(make_html_anchor(*n));
                   r.clear();
                }
                else {
-                  r = make_ref_string(*n);
+                  r = make_html_anchor(*n);
                }
 
                j -= i - 1;
@@ -343,29 +433,9 @@ void format(std::vector<lwg::issue> & issues, lwg::issue & is, lwg::section_map 
 }
 
 
-auto read_issues(std::string const & issues_path, lwg::section_map & section_db) -> std::vector<lwg::issue> {
-   std::cout << "Reading issues from: " << issues_path << std::endl;
-
-   std::unique_ptr<DIR, int(&)(DIR*)> dir{opendir(issues_path.c_str()), closedir};
-   if (!dir) {
-      throw std::runtime_error{"Unable to open issues dir"};
-   }
-
-   std::vector<lwg::issue> issues{};
-   while ( dirent* entry = readdir(dir.get()) ) {
-      std::string const issue_file{ entry->d_name };
-      if (0 == issue_file.find("issue") ) {
-         issues.emplace_back(parse_issue_from_file(issues_path + issue_file, section_db));
-      }
-   }
-
-   return issues;
-}
-
-
 void prepare_issues(std::vector<lwg::issue> & issues, lwg::section_map & section_db) {
    // Initially sort the issues by issue number, so each issue can be correctly 'format'ted
-   sort(issues.begin(), issues.end(), lwg::sort_by_num{});
+   sort(issues.begin(), issues.end(), lwg::order_by_issue_number{});
 
    // Then we format the issues, which should be the last time we need to touch the issues themselves
    // We may turn this into a two-stage process, analysing duplicates and then applying the links
@@ -373,7 +443,7 @@ void prepare_issues(std::vector<lwg::issue> & issues, lwg::section_map & section
    // Currently, the 'format' function takes a reference-to-non-const-vector-of-issues purely to
    // mark up information related to duplicates, so processing duplicates in a separate pass may
    // clarify the code.
-   for (auto & i : issues) { format(issues, i, section_db); }
+   for (auto & i : issues) { format_issue_as_html(i, issues.begin(), issues.end(), section_db); }
 
    // Issues will be routinely re-sorted in later code, but contents should be fixed after formatting.
    // This suggests we may want to be storing some kind of issue handle in the functions that keep
@@ -383,71 +453,18 @@ void prepare_issues(std::vector<lwg::issue> & issues, lwg::section_map & section
 
 // ============================================================================================================
 
-
 auto prepare_issues_for_diff_report(std::vector<lwg::issue> const & issues) -> std::vector<std::tuple<int, std::string> > {
    std::vector<std::tuple<int, std::string> > result;
    std::transform( issues.begin(), issues.end(), back_inserter(result),
-                   [](lwg::issue const & iss) {
-                      return std::make_tuple(iss.num, iss.stat);
-                   }
+#if 1
+                   [](lwg::issue const & iss) { return std::make_tuple(iss.num, iss.stat); }
+#else
+                   // This form does not work because tuple constructors are explicit
+                   [](lwg::issue const & iss) -> std::tuple<int, std::string> { return {iss.num, iss.stat}; }
+#endif
                  );
    return result;
 }
-
-auto read_issues_from_toc(std::string const & s) -> std::vector<std::tuple<int, std::string> > {
-   // parse all issues from the specified stream, 'is'.
-   // Throws 'runtime_error' if *any* parse step fails
-   //
-   // We assume 'is' refers to a "toc" html document, for either the current or a previous issues list.
-   // The TOC file consists of a sequence of HTML <tr> elements - each element is one issue/row in the table
-   //    First we read the whole stream into a single 'string'
-   //    Then we search the string for the first <tr> marker
-   //       The first row is the title row and does not contain an issue.
-   //       If cannt find the first row, we flag an error and exit
-   //    Next we loop through the string, searching for <tr> markers to indicate the start of each issue
-   //       We parse the issue number and status from each row, and append a record to the result vector
-   //       If any parse fails, throw a runtime_error
-   //    If debugging, display the results to 'cout'
-
-   // Skip the title row
-   auto i = s.find("<tr>");
-   if (std::string::npos == i) {
-      throw std::runtime_error{"Unable to find the first (title) row"};
-   }
-
-   // Read all issues in table
-   std::vector<std::tuple<int, std::string> > issues;
-   for(;;) {
-      i = s.find("<tr>", i+4);
-      if (i == std::string::npos) {
-         break;
-      }
-      i = s.find("</a>", i);
-      auto j = s.rfind('>', i);
-      if (j == std::string::npos) {
-         throw std::runtime_error{"unable to parse issue number: can't find beginning bracket"};
-      }
-      std::istringstream instr{s.substr(j+1, i-j-1)};
-      int num;
-      instr >> num;
-      if (instr.fail()) {
-         throw std::runtime_error{"unable to parse issue number"};
-      }
-      i = s.find("</a>", i+4);
-      if (i == std::string::npos) {
-         throw std::runtime_error{"partial issue found"};
-      }
-      j = s.rfind('>', i);
-      if (j == std::string::npos) {
-         throw std::runtime_error{"unable to parse issue status: can't find beginning bracket"};
-      }
-      issues.emplace_back(num, s.substr(j+1, i-j-1));
-   }
-
-   //display_issues(issues);
-   return issues;
-}
-
 
 struct list_issues {
    std::vector<int> const & issues;
@@ -466,7 +483,7 @@ auto operator<<( std::ostream & out, list_issues const & x) -> std::ostream & {
 
 struct find_num {
    // Predidate functor useful to find issue 'y' in a mapping of issue-number -> some string.
-   constexpr bool operator()(std::tuple<int, std::string> const & x, int y) const noexcept {
+    bool operator()(std::tuple<int, std::string> const & x, int y) const noexcept {
       return std::get<0>(x) < y;
    }
 };
@@ -523,7 +540,7 @@ struct discover_changed_issues {
 };
 
 
-auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream & {
+auto operator << (std::ostream & out, discover_changed_issues x) -> std::ostream & {
    std::vector<std::tuple<int, std::string> > const & old_issues = x.old_issues;
    std::vector<std::tuple<int, std::string> > const & new_issues = x.new_issues;
 
@@ -587,7 +604,7 @@ struct write_summary {
 };
 
 
-auto operator<<( std::ostream & out, write_summary const & x) -> std::ostream & {
+auto operator << (std::ostream & out, write_summary const & x) -> std::ostream & {
    std::vector<std::tuple<int, std::string> > const & old_issues = x.old_issues;
    std::vector<std::tuple<int, std::string> > const & new_issues = x.new_issues;
 
@@ -646,14 +663,13 @@ void print_current_revisions( std::ostream & out
           "</ul>\n";
 }
 
-void check_directory(std::string const & directory) {
-  struct stat sb;
-  if (stat(directory.c_str(), &sb) != 0 || !S_ISDIR(sb.st_mode))
-    throw std::runtime_error(directory + " is no existing directory");
-}
-
 // ============================================================================================================
 
+void check_is_directory(std::string const & directory) {
+  struct stat sb;
+  if (stat(directory.c_str(), &sb) != 0 || !S_ISDIR(sb.st_mode))
+    throw std::runtime_error(directory + " is not an existing directory");
+}
 
 int main(int argc, char* argv[]) {
    try {
@@ -672,25 +688,56 @@ int main(int argc, char* argv[]) {
       }
 
       if (path.back() != '/') { path += '/'; }
-      check_directory(path);
+      check_is_directory(path);
 	  
       const std::string target_path{path + "mailing/"};
-      check_directory(target_path);
+      check_is_directory(target_path);
 	  
 
-      lwg::section_map section_db = read_section_db(path + "meta-data/");
-      //    check_against_index(section_db);
+      lwg::section_map section_db =[&path]() {
+         auto filename = path + "meta-data/section.data";
+         std::ifstream infile{filename};
+         if (!infile.is_open()) {
+            throw std::runtime_error{"Can't open section.data at " + path + "meta-data"};
+         }
+         std::cout << "Reading section-tag index from: " << filename << std::endl;
 
-      auto const old_issues = read_issues_from_toc(lwg::read_file_into_string(path + "meta-data/lwg-toc.old.html"));
+         return lwg::read_section_db(infile);
+      }();
+#if defined (DEBUG_LOGGING)
+      // dump the contents of the section index
+      for (auto const & elem : section_db ) {
+         std::string temp = elem.first;
+         temp.erase(temp.end()-1);
+         temp.erase(temp.begin());
+         std::cout << temp << ' ' << elem.second << '\n';
+      }
+#endif
+ 
+      auto const old_issues = read_issues_from_toc(read_file_into_string(path + "meta-data/lwg-toc.old.html"));
 
       auto const issues_path = path + "xml/";
-      lwg::mailing_info lwg_issues_xml{issues_path};
 
+      lwg::mailing_info lwg_issues_xml = [&path](){
+         std::string filename{path + "lwg-issues.xml"};
+         std::ifstream infile{filename};
+         if (!infile.is_open()) {
+            throw std::runtime_error{"Unable to open " + filename};
+         }
+
+         return lwg::mailing_info{infile};
+      }();
+
+      //lwg::mailing_info lwg_issues_xml{issues_path};
+
+
+      std::cout << "Reading issues from: " << issues_path << std::endl;
       auto issues = read_issues(issues_path, section_db);
       prepare_issues(issues, section_db);
 
+
       // issues must be sorted by number before making the mailing list documents
-      //sort(issues.begin(), issues.end(), sort_by_num{});
+      //sort(issues.begin(), issues.end(), order_by_issue_number{});
 
       // Collect a report on all issues that have changed status
       // This will be added to the revision history of the 3 standard documents

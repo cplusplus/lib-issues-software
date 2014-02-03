@@ -31,7 +31,11 @@ auto operator != (section_num const & x, section_num const & y) noexcept -> bool
 auto operator >> (std::istream & is, section_num & sn) -> std::istream &;
 auto operator << (std::ostream & os, section_num const & sn) -> std::ostream &;
 
-auto read_section_db(std::istream & infile) -> section_map;
+
+auto read_section_db(std::istream & stream) -> section_map;
+   // Read the current C++ standard tag -> section number index
+   // from the specified 'stream', and return it as a new
+   // 'section_map' object.
 
 } // close namespace lwg
 

@@ -3,7 +3,7 @@
 #include "issues.h"
 
 #include <algorithm>
-#include <fstream>
+#include <istream>
 #include <sstream>
 
 namespace {
@@ -13,8 +13,7 @@ void replace_all_irefs(std::vector<lwg::issue> const & issues, std::string & s) 
    // in its appropriate issue list, as determined by the issue's status.
    // Format of an issue reference: <iref ref="ISS"/>
    // Format of anchor: <a href="lwg-INDEX.html#ISS">ISS</a>
-   std::ostringstream er;
- 
+
    for (auto i = s.find("<iref ref=\""); i != std::string::npos; i = s.find("<iref ref=\"") ) {
       auto j = s.find('>', i);
       if (j == std::string::npos) {
@@ -39,15 +38,14 @@ void replace_all_irefs(std::vector<lwg::issue> const & issues, std::string & s) 
          throw std::runtime_error{"bad number in iref"};
       }
 
-      auto n = std::lower_bound(issues.begin(), issues.end(), num, lwg::sort_by_num{});
+      auto n = std::lower_bound(issues.begin(), issues.end(), num, lwg::order_by_issue_number{});
       if (n->num != num) {
-         er.clear();
-         er.str("");
+         std::ostringstream er;
          er << "couldn't find number " << num << " in iref";
          throw std::runtime_error{er.str()};
       }
 
-      std::string r{make_ref_string(*n)};
+      std::string r{make_html_anchor(*n)};
       j -= i - 1;
       s.replace(i, j, r);
       i += r.size() - 1;
@@ -56,22 +54,27 @@ void replace_all_irefs(std::vector<lwg::issue> const & issues, std::string & s) 
 
 } // close unnamed namespace
 
+auto lwg::make_html_anchor(lwg::issue const & iss) -> std::string {
+   auto temp = std::to_string(iss.num);
+
+   std::string result{"<a href=\""};
+   result += filename_for_status(iss.stat);
+   result += '#';
+   result += temp;
+   result += "\">";
+   result += temp;
+   result += "</a>";
+   return result;
+}
+
 namespace lwg
 {
 
-mailing_info::mailing_info(std::string const & path)
-   : m_data{}
+mailing_info::mailing_info(std::istream & stream)
+   : m_data{std::istreambuf_iterator<char>{stream},
+            std::istreambuf_iterator<char>{}}
    {
-   std::string filename{path + "lwg-issues.xml"};
-   std::ifstream infile{filename.c_str()};
-   if (!infile.is_open()) {
-      throw std::runtime_error{"Unable to open " + filename};
-   }
-
-   std::istreambuf_iterator<char> first{infile}, last{};
-   m_data.assign(first, last);
 }
-
 
 auto mailing_info::get_doc_number(std::string doc) const -> std::string {
     if (doc == "active") {
@@ -202,16 +205,16 @@ auto mailing_info::get_statuses() const -> std::string {
 }
 
 
-auto mailing_info::get_attribute(std::string const & attribute) const -> std::string {
-    std::string search_string{attribute + "=\""};
+auto mailing_info::get_attribute(std::string const & attribute_name) const -> std::string {
+    std::string search_string{attribute_name + "=\""};
     auto i = m_data.find(search_string);
     if (i == std::string::npos) {
-        throw std::runtime_error{"Unable to find " + attribute + " in lwg-issues.xml"};
+        throw std::runtime_error{"Unable to find " + attribute_name + " in lwg-issues.xml"};
     }
     i += search_string.size();
     auto j = m_data.find('\"', i);
     if (j == std::string::npos) {
-        throw std::runtime_error{"Unable to parse " + attribute + " in lwg-issues.xml"};
+        throw std::runtime_error{"Unable to parse " + attribute_name + " in lwg-issues.xml"};
     }
     return m_data.substr(i, j-i);
 }

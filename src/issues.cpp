@@ -8,24 +8,10 @@
 #include <ostream>
 #include <stdexcept>
 
-#include <fstream>  // plan to factor this dependency out
 #include <sstream>
 
 #include <ctime>
 #include <sys/stat.h>  // plan to factor this dependency out
-
-#if 0
-// This should be part of <string> in C++11 lib
-// Should also be more efficient than using ostringstream!
-// Will be available soon when assuming libc++, or gcc 4.8 and later
-auto to_string(int i) -> std::string {
-   std::ostringstream t;
-   t << i;
-   return t.str();
-}
-#else
-using std::to_string;
-#endif
 
 namespace {
 static constexpr char const * LWG_ACTIVE {"lwg-active.html" };
@@ -149,20 +135,7 @@ auto lwg::is_ready(std::string stat) -> bool {
    return "Ready" == remove_tentatively(stat);
 }
 
-auto lwg::make_ref_string(lwg::issue const & iss) -> std::string {
-   auto temp = to_string(iss.num);
-
-   std::string result{"<a href=\""};
-   result += filename_for_status(iss.stat);
-   result += '#';
-   result += temp;
-   result += "\">";
-   result += temp;
-   result += "</a>";
-   return result;
-}
-
-auto lwg::parse_issue_from_file(std::string const & filename, lwg::section_map & section_db) -> issue {
+auto lwg::parse_issue_from_file(std::string tx, std::string const & filename, lwg::section_map & section_db) -> issue {
    struct bad_issue_file : std::runtime_error {
       bad_issue_file(std::string const & filename, char const * error_message)
          : runtime_error{"Error parsing issue file " + filename + ": " + error_message}
@@ -171,8 +144,6 @@ auto lwg::parse_issue_from_file(std::string const & filename, lwg::section_map &
    };
 
    issue is;
-   is.text = read_file_into_string(filename);
-   auto & tx = is.text; // eliminates need for a redundant copy at the end of the function, while preserving existing names and logic
 
    // Get issue number
    auto k = tx.find("<issue num=\"");
@@ -285,6 +256,7 @@ auto lwg::parse_issue_from_file(std::string const & filename, lwg::section_map &
       is.has_resolution = true;
    }
 
+   is.text = std::move(tx);
    return is;
 }
 
@@ -307,16 +279,6 @@ auto lwg::remove_tentatively(std::string stat) -> std::string {
 
 auto lwg::remove_qualifier(std::string const & stat) -> std::string {
    return remove_tentatively(remove_pending(stat));
-}
-
-auto lwg::read_file_into_string(std::string const & filename) -> std::string {
-   std::ifstream infile{filename.c_str()};
-   if (!infile.is_open()) {
-      throw std::runtime_error{"Unable to open file " + filename};
-   }
-
-   std::istreambuf_iterator<char> first{infile}, last{};
-   return std::string {first, last};
 }
 
 auto lwg::get_status_priority(std::string const & stat) noexcept -> std::ptrdiff_t {
