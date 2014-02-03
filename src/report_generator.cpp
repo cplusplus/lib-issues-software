@@ -335,11 +335,14 @@ R"(<table>
 
 } // close unnamed namespace
 
+namespace lwg
+{
+
 // Functions to make the 3 standard published issues list documents
 // A precondition for calling any of these functions is that the list of issues is sorted in numerical order, by issue number.
 // While nothing disasterous will happen if this precondition is violated, the published issues list will list items
 // in the wrong order.
-void lwg::make_active(std::vector<issue> const & issues, std::string const & path, mailing_info const & lwg_issues_xml, section_map & section_db, std::string const & diff_report) {
+void report_generator::make_active(std::vector<issue> const & issues, std::string const & path, std::string const & diff_report) {
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
 
    std::string filename{path + "lwg-active.html"};
@@ -357,7 +360,7 @@ void lwg::make_active(std::vector<issue> const & issues, std::string const & pat
 }
 
 
-void lwg::make_defect(std::vector<issue> const & issues, std::string const & path, mailing_info const & lwg_issues_xml, section_map & section_db, std::string const & diff_report) {
+void report_generator::make_defect(std::vector<issue> const & issues, std::string const & path, std::string const & diff_report) {
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
 
    std::string filename{path + "lwg-defects.html"};
@@ -374,7 +377,7 @@ void lwg::make_defect(std::vector<issue> const & issues, std::string const & pat
 }
 
 
-void lwg::make_closed(std::vector<issue> const & issues, std::string const & path, mailing_info const & lwg_issues_xml, section_map & section_db, std::string const & diff_report) {
+void report_generator::make_closed(std::vector<issue> const & issues, std::string const & path, std::string const & diff_report) {
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
 
    std::string filename{path + "lwg-closed.html"};
@@ -392,7 +395,7 @@ void lwg::make_closed(std::vector<issue> const & issues, std::string const & pat
 
 
 // Additional non-standard documents, useful for running LWG meetings
-void lwg::make_tentative(std::vector<issue> const & issues, std::string const & path, mailing_info const & lwg_issues_xml, section_map & section_db) {
+void report_generator::make_tentative(std::vector<issue> const & issues, std::string const & path) {
    // publish a document listing all tentative issues that may be acted on during a meeting.
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
 
@@ -412,7 +415,7 @@ void lwg::make_tentative(std::vector<issue> const & issues, std::string const & 
 }
 
 
-void lwg::make_unresolved(std::vector<issue> const & issues, std::string const & path, mailing_info const & lwg_issues_xml, section_map & section_db) {
+void report_generator::make_unresolved(std::vector<issue> const & issues, std::string const & path) {
    // publish a document listing all non-tentative, non-ready issues that must be reviewed during a meeting.
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
 
@@ -431,7 +434,7 @@ void lwg::make_unresolved(std::vector<issue> const & issues, std::string const &
    print_file_trailer(out);
 }
 
-void lwg::make_immediate(std::vector<issue> const & issues, std::string const & path, mailing_info const & lwg_issues_xml, section_map & section_db) {
+void report_generator::make_immediate(std::vector<issue> const & issues, std::string const & path) {
    // publish a document listing all non-tentative, non-ready issues that must be reviewed during a meeting.
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
 
@@ -451,7 +454,7 @@ void lwg::make_immediate(std::vector<issue> const & issues, std::string const & 
 }
 
 
-void lwg::make_sort_by_num(std::vector<issue>& issues, std::string const & filename, mailing_info const & lwg_issues_xml, section_map & section_db) {
+void report_generator::make_sort_by_num(std::vector<issue>& issues, std::string const & filename) {
    sort(issues.begin(), issues.end(), order_by_issue_number{});
 
    std::ofstream out{filename.c_str()};
@@ -473,7 +476,7 @@ R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revis
 }
 
 
-void lwg::make_sort_by_status(std::vector<issue>& issues, std::string const & filename, mailing_info const & lwg_issues_xml, section_map & section_db) {
+void report_generator::make_sort_by_status(std::vector<issue>& issues, std::string const & filename) {
    sort(issues.begin(), issues.end(), order_by_issue_number{});
    stable_sort(issues.begin(), issues.end(), [](issue const & x, issue const & y) { return x.mod_date > y.mod_date; } );
    stable_sort(issues.begin(), issues.end(), order_by_section{section_db});
@@ -508,7 +511,7 @@ This document is the Index by Status and Section for the <a href="lwg-active.htm
 }
 
 
-void lwg::make_sort_by_status_mod_date(std::vector<issue> & issues, std::string const & filename, mailing_info const & lwg_issues_xml, section_map & section_db) {
+void report_generator::make_sort_by_status_mod_date(std::vector<issue> & issues, std::string const & filename) {
    sort(issues.begin(), issues.end(), order_by_issue_number{});
    stable_sort(issues.begin(), issues.end(), order_by_section{section_db});
    stable_sort(issues.begin(), issues.end(), [](issue const & x, issue const & y) { return x.mod_date > y.mod_date; } );
@@ -542,7 +545,7 @@ This document is the Index by Status and Date for the <a href="lwg-active.html">
 }
 
 
-void lwg::make_sort_by_section(std::vector<issue>& issues, std::string const & filename, mailing_info const & lwg_issues_xml, section_map & section_db, bool active_only) {
+void report_generator::make_sort_by_section(std::vector<issue>& issues, std::string const & filename, bool active_only) {
    sort(issues.begin(), issues.end(), order_by_issue_number{});
    stable_sort(issues.begin(), issues.end(), [](issue const & x, issue const & y) { return x.mod_date > y.mod_date; } );
    stable_sort(issues.begin(), issues.end(), order_by_status{});
@@ -616,5 +619,5 @@ assert(!i->tags.empty());
    print_file_trailer(out);
 }
 
-
+} // close namespace lwg
 
