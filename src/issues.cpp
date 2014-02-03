@@ -1,7 +1,15 @@
 #include "issues.h"
 
+#include <algorithm>
 #include <istream>
 #include <ostream>
+#include <stdexcept>
+
+#include <fstream>  // plan to factor this dependency out
+#include <sstream>
+
+#include <ctime>
+#include <sys/stat.h>  // plan to factor this dependency out
 
 #if 1
 // This should be part of <utility> in C++14 lib
@@ -39,6 +47,53 @@ namespace {
 static constexpr char const * LWG_ACTIVE {"lwg-active.html" };
 static constexpr char const * LWG_CLOSED {"lwg-closed.html" };
 static constexpr char const * LWG_DEFECTS{"lwg-defects.html"};
+
+// date utilites may factor out again
+auto parse_month(std::string const & m) -> gregorian::month {
+   // This could be turned into an efficient map lookup with a suitable indexed container
+   return (m == "Jan") ? gregorian::jan
+        : (m == "Feb") ? gregorian::feb
+        : (m == "Mar") ? gregorian::mar
+        : (m == "Apr") ? gregorian::apr
+        : (m == "May") ? gregorian::may
+        : (m == "Jun") ? gregorian::jun
+        : (m == "Jul") ? gregorian::jul
+        : (m == "Aug") ? gregorian::aug
+        : (m == "Sep") ? gregorian::sep
+        : (m == "Oct") ? gregorian::oct
+        : (m == "Nov") ? gregorian::nov
+        : (m == "Dec") ? gregorian::dec
+        : throw std::runtime_error{"unknown month " + m};
+}
+
+auto parse_date(std::istream & temp) -> gregorian::date {
+   int d;
+   temp >> d;
+   if (temp.fail()) {
+      throw std::runtime_error{"date format error"};
+   }
+
+   std::string month;
+   temp >> month;
+
+   auto m = parse_month(month);
+   int y{ 0 };
+   temp >> y;
+   return m/gregorian::day{d}/y;
+}
+
+auto make_date(std::tm const & mod) -> gregorian::date {
+   return gregorian::year((unsigned short)(mod.tm_year+1900)) / (mod.tm_mon+1) / mod.tm_mday;
+}
+
+auto report_date_file_last_modified(std::string const & filename) -> gregorian::date {
+   struct stat buf;
+   if (stat(filename.c_str(), &buf) == -1) {
+      throw std::runtime_error{"call to stat failed for " + filename};
+   }
+
+   return make_date(*std::localtime(&buf.st_mtime));
+}
 
 } // close unnamed namespace
 
@@ -228,3 +283,192 @@ auto lwg::remove_qualifier(std::string const & stat) -> std::string {
    return remove_tentatively(remove_pending(stat));
 }
 
+auto lwg::parse_issue_from_file(std::string const & filename, lwg::section_map & section_db) -> issue {
+   struct bad_issue_file : std::runtime_error {
+      bad_issue_file(std::string const & filename, char const * error_message)
+         : runtime_error{"Error parsing issue file " + filename + ": " + error_message}
+         {
+      }
+   };
+
+   issue is;
+   is.text = read_file_into_string(filename);
+   auto & tx = is.text; // saves a redundant copy at the end of the function, while preserving existing names and logic
+
+   // Get issue number
+   auto k = tx.find("<issue num=\"");
+   if (k == std::string::npos) {
+      throw bad_issue_file{filename, "Unable to find issue number"};
+   }
+   k += sizeof("<issue num=\"") - 1;
+   auto l = tx.find('\"', k);
+   std::istringstream temp{tx.substr(k, l-k)};
+   temp >> is.num;
+
+   // Get issue status
+   k = tx.find("status=\"", l);
+   if (k == std::string::npos) {
+      throw bad_issue_file{filename, "Unable to find issue status"};
+   }
+   k += sizeof("status=\"") - 1;
+   l = tx.find('\"', k);
+   is.stat = tx.substr(k, l-k);
+
+   // Get issue title
+   k = tx.find("<title>", l);
+   if (k == std::string::npos) {
+      throw bad_issue_file{filename, "Unable to find issue title"};
+   }
+   k +=  sizeof("<title>") - 1;
+   l = tx.find("</title>", k);
+   is.title = tx.substr(k, l-k);
+
+   // Get issue sections
+   k = tx.find("<section>", l);
+   if (k == std::string::npos) {
+      throw bad_issue_file{filename, "Unable to find issue section"};
+   }
+   k += sizeof("<section>") - 1;
+   l = tx.find("</section>", k);
+   while (k < l) {
+      k = tx.find('\"', k);
+      if (k >= l) {
+          break;
+      }
+      auto k2 = tx.find('\"', k+1);
+      if (k2 >= l) {
+         throw bad_issue_file{filename, "Unable to find issue section"};
+      }
+      ++k;
+      is.tags.emplace_back(tx.substr(k, k2-k));
+      if (section_db.find(is.tags.back()) == section_db.end()) {
+          section_num num{};
+          num.num.push_back(100 + 'X' - 'A');
+          section_db[is.tags.back()] = num;
+      }
+      k = k2;
+      ++k;
+   }
+
+   if (is.tags.empty()) {
+      throw bad_issue_file{filename, "Unable to find issue section"};
+   }
+
+   // Get submitter
+   k = tx.find("<submitter>", l);
+   if (k == std::string::npos) {
+      throw bad_issue_file{filename, "Unable to find issue submitter"};
+   }
+   k += sizeof("<submitter>") - 1;
+   l = tx.find("</submitter>", k);
+   is.submitter = tx.substr(k, l-k);
+
+   // Get date
+   k = tx.find("<date>", l);
+   if (k == std::string::npos) {
+      throw bad_issue_file{filename, "Unable to find issue date"};
+   }
+   k += sizeof("<date>") - 1;
+   l = tx.find("</date>", k);
+   temp.clear();
+   temp.str(tx.substr(k, l-k));
+
+   try {
+      is.date = parse_date(temp);
+
+      // Get modification date
+      is.mod_date = report_date_file_last_modified(filename);
+   }
+   catch(std::exception const & ex) {
+      throw bad_issue_file{filename, ex.what()};
+   }
+
+   // Trim text to <discussion>
+   k = tx.find("<discussion>", l);
+   if (k == std::string::npos) {
+      throw bad_issue_file{filename, "Unable to find issue discussion"};
+   }
+   tx.erase(0, k);
+
+   // Find out if issue has a proposed resolution
+   if (is_active(is.stat)) {
+      auto k2 = tx.find("<resolution>", 0);
+      if (k2 == std::string::npos) {
+         is.has_resolution = false;
+      }
+      else {
+         k2 += sizeof("<resolution>") - 1;
+         auto l2 = tx.find("</resolution>", k2);
+         is.has_resolution = l2 - k2 > 15;
+      }
+   }
+   else {
+      is.has_resolution = true;
+   }
+
+   return is;
+}
+
+auto lwg::read_file_into_string(std::string const & filename) -> std::string {
+   std::ifstream infile{filename.c_str()};
+   if (!infile.is_open()) {
+      throw std::runtime_error{"Unable to open file " + filename};
+   }
+
+   std::istreambuf_iterator<char> first{infile}, last{};
+   return std::string {first, last};
+}
+
+auto lwg::get_status_priority(std::string const & stat) noexcept -> std::ptrdiff_t {
+   static char const * const status_priority[] {
+      "Voting",
+      "Tentatively Voting",
+      "Immediate",
+      "Ready",
+      "Tentatively Ready",
+      "Tentatively NAD Editorial",
+      "Tentatively NAD Future",
+      "Tentatively NAD",
+      "Review",
+      "New",
+      "Open",
+      "EWG",
+      "Core",
+      "Deferred",
+      "Tentatively Resolved",
+      "Pending DR",
+      "Pending WP",
+      "Pending Resolved",
+      "Pending NAD Future",
+      "Pending NAD Editorial",
+      "Pending NAD",
+      "NAD Future",
+      "DR",
+      "WP",
+      "C++11",
+      "CD1",
+      "TC1",
+      "Resolved",
+      "TRDec",
+      "NAD Editorial",
+      "NAD",
+      "Dup",
+      "NAD Concepts"
+   };
+
+
+#if !defined(DEBUG_SUPPORT)
+   static auto const first = std::begin(status_priority);
+   static auto const last  = std::end(status_priority);
+   return std::find_if( first, last, [&](char const * str){ return str == stat; } ) - first;
+#else
+   // Diagnose when unknown status strings are passed
+   static auto const first = std::begin(status_priority);
+   static auto const last  = std::end(status_priority);
+   auto const i = std::find_if( first, last, [&](char const * str){ return str == stat; } );
+   if(last == i) {
+      std::cout << "Unknown status: " << stat << std::endl;
+   }
+   return i - first;
+#endif
+}

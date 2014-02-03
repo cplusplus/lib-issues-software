@@ -17,15 +17,6 @@ namespace lwg
 struct section_num {
    std::string       prefix;
    std::vector<int>  num;
-
-   // implicitly defined special operations are all that we need
-   section_num() = default;
-   section_num(section_num const &) = default;
-   section_num(section_num      &&) = default;
-   ~section_num() = default;
-
-   auto operator=(section_num const &) -> section_num & = default;
-   auto operator=(section_num      &&) -> section_num & = default;
 };
 
 auto operator <  (section_num const & x, section_num const & y) noexcept -> bool;
@@ -50,19 +41,12 @@ struct issue {
    std::set<std::string>      duplicates;
    std::string                text;
    bool                       has_resolution;
-
-   // implicitly defined special operations are all that we need
-   issue() = default;
-   issue(issue const &) = default;
-   issue(issue      &&) = default;
-   ~issue() = default;
-
-   auto operator=(issue const &) -> issue & = default;
-   auto operator=(issue      &&) -> issue & = default;
 };
 
 // this predicate API should probably switch to 'std::experimental::string_view'
 auto filename_for_status(std::string stat) -> std::string;
+
+auto get_status_priority(std::string const & stat) noexcept -> std::ptrdiff_t;
 
 auto is_active(std::string const & stat) -> bool;
 auto is_active_not_ready(std::string const & stat) -> bool;
@@ -74,6 +58,13 @@ auto is_votable(std::string stat) -> bool;
 auto is_ready(std::string stat) -> bool;
 
 auto make_ref_string(issue const & iss) -> std::string;
+
+auto parse_issue_from_file(std::string const & filename, lwg::section_map & section_db) -> issue;
+  // Seems appropriate constructor behavior
+  // Note that 'section_db' is modifiable as new (unkonwn) sections may be inserted,
+  // typically for issues reported against older documents with sections that have
+  // since been removed, replaced or merged.
+auto read_file_into_string(std::string const & filename) -> std::string;  // Really belongs in a deeper utility
 
 // Functions to "normalize" a status string
 auto remove_pending(std::string stat) -> std::string;
