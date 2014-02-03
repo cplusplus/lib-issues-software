@@ -2,7 +2,7 @@
 #define INCLUDE_LWG_ISSUES_H
 
 // standard headers
-#include <iosfwd>
+//#include <iosfwd>
 #include <map>
 #include <set>
 #include <string>
@@ -14,21 +14,7 @@
 namespace lwg
 {
 
-struct section_num {
-   std::string       prefix;
-   std::vector<int>  num;
-};
-
-auto operator <  (section_num const & x, section_num const & y) noexcept -> bool;
-auto operator == (section_num const & x, section_num const & y) noexcept -> bool;
-auto operator != (section_num const & x, section_num const & y) noexcept -> bool;
-
-auto operator >> (std::istream& is, section_num& sn) -> std::istream &;
-auto operator << (std::ostream& os, section_num const & sn) -> std::ostream &;
-
-
 using section_tag = std::string;
-using section_map = std::map<section_tag, section_num>;
 
 struct issue {
    int num;
@@ -37,11 +23,12 @@ struct issue {
    std::vector<section_tag>   tags;
    std::string                submitter;
    gregorian::date            date;
-   gregorian::date            mod_date;
+   gregorian::date            mod_date;  // this no longer appears useful
    std::set<std::string>      duplicates;
    std::string                text;
    bool                       has_resolution;
 };
+
 
 // this predicate API should probably switch to 'std::experimental::string_view'
 auto filename_for_status(std::string stat) -> std::string;
@@ -59,14 +46,21 @@ auto is_ready(std::string stat) -> bool;
 
 auto make_ref_string(issue const & iss) -> std::string;
 
+struct section_num;
+
+using section_tag = std::string;
+using section_map = std::map<section_tag, section_num>;
+
 auto parse_issue_from_file(std::string const & filename, lwg::section_map & section_db) -> issue;
   // Seems appropriate constructor behavior
   // Note that 'section_db' is modifiable as new (unkonwn) sections may be inserted,
   // typically for issues reported against older documents with sections that have
   // since been removed, replaced or merged.
+
 auto read_file_into_string(std::string const & filename) -> std::string;  // Really belongs in a deeper utility
 
 // Functions to "normalize" a status string
+// Might profitable switch to 'experimental/string_view'
 auto remove_pending(std::string stat) -> std::string;
 auto remove_tentatively(std::string stat) -> std::string;
 auto remove_qualifier(std::string const & stat) -> std::string;

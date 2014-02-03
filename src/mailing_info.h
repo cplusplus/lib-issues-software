@@ -30,6 +30,6 @@ private:
 
 }
 
-using LwgIssuesXml = lwg::mailing_info;
+//using LwgIssuesXml = lwg::mailing_info;
 
 #endif // INCLUDE_LWG_MAILING_INFO_H

@@ -1,6 +1,7 @@
 #include "report_generator.h"
 
 #include "mailing_info.h"
+#include "sections.h"
 
 #include <algorithm>
 #include <cassert>

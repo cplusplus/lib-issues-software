@@ -68,6 +68,7 @@
 #include "issues.h"
 #include "mailing_info.h"
 #include "report_generator.h"
+#include "sections.h"
 
 
 #if 0
@@ -87,26 +88,6 @@ using namespace boost::filesystem;
 #endif
 #endif
 
-#if 0
-using lwg::issue;
-using lwg::section_map;
-using lwg::section_num;
-using lwg::section_tag;
-using lwg::sort_by_num;
-#else
-using namespace lwg;
-#endif
-
-// Issue-list specific functionality for the rest of this file
-// ===========================================================
-
-
-struct equal_issue_num {
-    bool operator()(issue const & x, int y) const noexcept {return x.num == y;}
-    bool operator()(int x, issue const & y) const noexcept {return x == y.num;}
-};
-
-
 #ifdef DEBUG_SUPPORT
 void display(std::vector<issue> const & issues) {
     for (auto const & i : issues) { std::cout << i; }
@@ -114,61 +95,18 @@ void display(std::vector<issue> const & issues) {
 #endif
 
 
-auto read_section_db(std::string const & path) -> section_map {
+// Issue-list specific functionality for the rest of this file
+// ===========================================================
+
+auto read_section_db(std::string const & path) -> lwg::section_map {
    auto filename = path + "section.data";
-   std::ifstream infile{filename.c_str()};
+   std::ifstream infile{filename};
    if (!infile.is_open()) {
       throw std::runtime_error{"Can't open section.data at " + path};
    }
    std::cout << "Reading section-tag index from: " << filename << std::endl;
 
-   section_map section_db;
-   while (infile) {
-      ws(infile);
-      std::string line;
-      getline(infile, line);
-      if (!line.empty()) {
-         assert(line.back() == ']');
-         auto p = line.rfind('[');
-         assert(p != std::string::npos);
-         section_tag tag = line.substr(p);
-         assert(tag.size() > 2);
-         assert(tag[0] == '[');
-         assert(tag[tag.size()-1] == ']');
-         line.erase(p-1);
-
-         section_num num;
-         if (tag.find("[trdec.") != std::string::npos) {
-            num.prefix = "TRDecimal";
-            line.erase(0, 10);
-         }
-         else if (tag.find("[tr.") != std::string::npos) {
-            num.prefix = "TR1";
-            line.erase(0, 4);
-         }
-
-         std::istringstream temp(line);
-         if (!std::isdigit(line[0])) {
-            char c;
-            temp >> c;
-            num.num.push_back(100 + c - 'A');
-            temp >> c;
-         }
-
-         while (temp) {
-            int n;
-            temp >> n;
-            if (!temp.fail()) {
-               num.num.push_back(n);
-               char dot;
-               temp >> dot;
-            }
-         }
-
-         section_db[tag] = num;
-      }
-   }
-   return section_db;
+   return lwg::read_section_db(infile);
 }
 
 
@@ -200,7 +138,7 @@ auto read_section_db(std::string const & path) -> section_map {
 //}
 
 
-void format(std::vector<issue> & issues, issue & is, section_map & section_db) {
+void format(std::vector<lwg::issue> & issues, lwg::issue & is, lwg::section_map & section_db) {
    std::string & s = is.text;
    int issue_num = is.num;
    std::vector<std::string> tag_stack;
@@ -343,7 +281,7 @@ void format(std::vector<issue> & issues, issue & is, section_map & section_db) {
                   throw std::runtime_error{er.str()};
                }
 
-               auto n = std::lower_bound(issues.begin(), issues.end(), num, sort_by_num{});
+               auto n = std::lower_bound(issues.begin(), issues.end(), num, lwg::sort_by_num{});
                if (n->num != num) {
                   er.clear();
                   er.str("");
@@ -405,29 +343,29 @@ void format(std::vector<issue> & issues, issue & is, section_map & section_db) {
 }
 
 
-auto read_issues(std::string const & issues_path, section_map & section_db) -> std::vector<issue> {
+auto read_issues(std::string const & issues_path, lwg::section_map & section_db) -> std::vector<lwg::issue> {
    std::cout << "Reading issues from: " << issues_path << std::endl;
 
-   DIR* dir = opendir(issues_path.c_str());
-   if (dir == 0) {
+   std::unique_ptr<DIR, int(&)(DIR*)> dir{opendir(issues_path.c_str()), closedir};
+   if (!dir) {
       throw std::runtime_error{"Unable to open issues dir"};
    }
 
-   std::vector<issue> issues{};
-   while ( dirent* entry = readdir(dir) ) {
+   std::vector<lwg::issue> issues{};
+   while ( dirent* entry = readdir(dir.get()) ) {
       std::string const issue_file{ entry->d_name };
       if (0 == issue_file.find("issue") ) {
          issues.emplace_back(parse_issue_from_file(issues_path + issue_file, section_db));
       }
    }
-   closedir(dir);
+
    return issues;
 }
 
 
-void prepare_issues(std::vector<issue> & issues, section_map & section_db) {
+void prepare_issues(std::vector<lwg::issue> & issues, lwg::section_map & section_db) {
    // Initially sort the issues by issue number, so each issue can be correctly 'format'ted
-   sort(issues.begin(), issues.end(), sort_by_num{});
+   sort(issues.begin(), issues.end(), lwg::sort_by_num{});
 
    // Then we format the issues, which should be the last time we need to touch the issues themselves
    // We may turn this into a two-stage process, analysing duplicates and then applying the links
@@ -435,7 +373,7 @@ void prepare_issues(std::vector<issue> & issues, section_map & section_db) {
    // Currently, the 'format' function takes a reference-to-non-const-vector-of-issues purely to
    // mark up information related to duplicates, so processing duplicates in a separate pass may
    // clarify the code.
-   for( auto & i : issues ) { format(issues, i, section_db); }
+   for (auto & i : issues) { format(issues, i, section_db); }
 
    // Issues will be routinely re-sorted in later code, but contents should be fixed after formatting.
    // This suggests we may want to be storing some kind of issue handle in the functions that keep
@@ -446,10 +384,10 @@ void prepare_issues(std::vector<issue> & issues, section_map & section_db) {
 // ============================================================================================================
 
 
-auto prepare_issues_for_diff_report(std::vector<issue> const & issues) -> std::vector<std::tuple<int, std::string> > {
+auto prepare_issues_for_diff_report(std::vector<lwg::issue> const & issues) -> std::vector<std::tuple<int, std::string> > {
    std::vector<std::tuple<int, std::string> > result;
    std::transform( issues.begin(), issues.end(), back_inserter(result),
-                   [](issue const & iss) {
+                   [](lwg::issue const & iss) {
                       return std::make_tuple(iss.num, iss.stat);
                    }
                  );
@@ -545,9 +483,11 @@ auto operator<<( std::ostream & out, discover_new_issues const & x) -> std::ostr
    std::vector<std::tuple<int, std::string> > const & new_issues = x.new_issues;
 
    struct status_order {
+      // predicate for 'map'
+
       using status_string = std::string;
       auto operator()(status_string const & x, status_string const & y) const noexcept -> bool {
-         return { get_status_priority(x) < get_status_priority(y) };
+         return { lwg::get_status_priority(x) < lwg::get_status_priority(y) };
       }
    };
 
@@ -592,9 +532,9 @@ auto operator<<( std::ostream & out, discover_changed_issues x) -> std::ostream 
       using from_status_to_status = std::tuple<status_string, status_string>;
 
       auto operator()(from_status_to_status const & x, from_status_to_status const & y) const noexcept -> bool {
-         auto const xp2 = get_status_priority(std::get<1>(x));
-         auto const yp2 = get_status_priority(std::get<1>(y));
-         return xp2 < yp2  or  (!(yp2 < xp2)  and  get_status_priority(std::get<0>(x)) < get_status_priority(std::get<0>(y)));
+         auto const xp2 = lwg::get_status_priority(std::get<1>(x));
+         auto const yp2 = lwg::get_status_priority(std::get<1>(y));
+         return xp2 < yp2  or  (!(yp2 < xp2)  and  lwg::get_status_priority(std::get<0>(x)) < lwg::get_status_priority(std::get<0>(y)));
       }
    };
 
@@ -631,7 +571,7 @@ void count_issues(std::vector<std::tuple<int, std::string> > const & issues, uns
    n_closed = 0;
 
    for(auto const & elem : issues) {
-      if (is_active(std::get<1>(elem))) {
+      if (lwg::is_active(std::get<1>(elem))) {
          ++n_open;
       }
       else {
@@ -738,13 +678,13 @@ int main(int argc, char* argv[]) {
       check_directory(target_path);
 	  
 
-      section_map section_db = read_section_db(path + "meta-data/");
+      lwg::section_map section_db = read_section_db(path + "meta-data/");
       //    check_against_index(section_db);
 
-      auto const old_issues = read_issues_from_toc(read_file_into_string(path + "meta-data/lwg-toc.old.html"));
+      auto const old_issues = read_issues_from_toc(lwg::read_file_into_string(path + "meta-data/lwg-toc.old.html"));
 
       auto const issues_path = path + "xml/";
-      LwgIssuesXml lwg_issues_xml(issues_path);
+      lwg::mailing_info lwg_issues_xml{issues_path};
 
       auto issues = read_issues(issues_path, section_db);
       prepare_issues(issues, section_db);
@@ -760,18 +700,18 @@ int main(int argc, char* argv[]) {
       print_current_revisions(os_diff_report, old_issues, new_issues );
       auto const diff_report = os_diff_report.str();
 
-      std::vector<issue> unresolved_issues;
-      std::vector<issue> votable_issues;
+      std::vector<lwg::issue> unresolved_issues;
+      std::vector<lwg::issue> votable_issues;
 
-      std::copy_if(issues.begin(), issues.end(), std::back_inserter(unresolved_issues), [](issue const & iss){ return is_not_resolved(iss.stat); } );
-      std::copy_if(issues.begin(), issues.end(), std::back_inserter(votable_issues),    [](issue const & iss){ return is_votable(iss.stat); } );
+      std::copy_if(issues.begin(), issues.end(), std::back_inserter(unresolved_issues), [](lwg::issue const & iss){ return lwg::is_not_resolved(iss.stat); } );
+      std::copy_if(issues.begin(), issues.end(), std::back_inserter(votable_issues),    [](lwg::issue const & iss){ return lwg::is_votable(iss.stat); } );
 
       // If votable list is empty, we are between meetings and should list Ready issues instead
       // Otherwise, issues moved to Ready during a meeting will remain 'unresolved' by that meeting
       auto ready_inserter = votable_issues.empty()
                           ? std::back_inserter(votable_issues)
                           : std::back_inserter(unresolved_issues);
-      std::copy_if(issues.begin(), issues.end(), ready_inserter, [](issue const & iss){ return is_ready(iss.stat); } );
+      std::copy_if(issues.begin(), issues.end(), ready_inserter, [](lwg::issue const & iss){ return lwg::is_ready(iss.stat); } );
 
       // First generate the primary 3 standard issues lists
       make_active(issues, target_path, lwg_issues_xml, section_db, diff_report);
@@ -788,7 +728,7 @@ int main(int argc, char* argv[]) {
       // Note that each of these functions is going to re-sort the 'issues' vector for its own purposes
       make_sort_by_num            (issues, {target_path + "lwg-toc.html"},         lwg_issues_xml, section_db);
       make_sort_by_status         (issues, {target_path + "lwg-status.html"},      lwg_issues_xml, section_db);
-      make_sort_by_status_mod_date(issues, {target_path + "lwg-status-date.html"}, lwg_issues_xml, section_db);
+      make_sort_by_status_mod_date(issues, {target_path + "lwg-status-date.html"}, lwg_issues_xml, section_db);  // this report is useless, as git checkouts touch filestamps
       make_sort_by_section        (issues, {target_path + "lwg-index.html"},       lwg_issues_xml, section_db);
 
       // Note that this additional document is very similar to unresolved-index.html below

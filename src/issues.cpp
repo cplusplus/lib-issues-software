@@ -1,6 +1,9 @@
 #include "issues.h"
 
+#include "sections.h"
+
 #include <algorithm>
+#include <cassert>
 #include <istream>
 #include <ostream>
 #include <stdexcept>
@@ -10,25 +13,6 @@
 
 #include <ctime>
 #include <sys/stat.h>  // plan to factor this dependency out
-
-#if 1
-// This should be part of <utility> in C++14 lib
-// Should also be more efficient than using ostringstream!
-// Will be available soon when assuming libc++ with Clang 3.4, or gcc 4.9 and later
-namespace {
-
-template <typename TYPE, typename V_TYPE>
-auto exchange(TYPE & object, V_TYPE && value) -> TYPE {
-   auto result = object;
-   object = std::forward<V_TYPE>(value);
-   return result;
-}
-
-} // close unnamed namespace
-#else
-#include <utility>
-using std::exchange;
-#endif
 
 #if 0
 // This should be part of <string> in C++11 lib
@@ -96,90 +80,6 @@ auto report_date_file_last_modified(std::string const & filename) -> gregorian::
 }
 
 } // close unnamed namespace
-
-auto lwg::operator < (section_num const & x, section_num const & y) noexcept -> bool {
-   return (x.prefix < y.prefix) ?  true
-        : (y.prefix < x.prefix) ? false
-        : x.num < y.num;
-}
-
-auto lwg::operator == (section_num const & x, section_num const & y) noexcept -> bool {
-   return (x.prefix != y.prefix)
-        ? false
-        : x.num == y.num;
-}
-
-auto lwg::operator != (section_num const & x, section_num const & y) noexcept -> bool {
-   return !(x == y);
-}
-
-auto lwg::operator >> (std::istream& is, section_num& sn) -> std::istream & {
-   sn.prefix.clear();
-   sn.num.clear();
-   ws(is);
-   if (is.peek() == 'T') {
-      is.get();
-      if (is.peek() == 'R') {
-         std::string w;
-         is >> w;
-         if (w == "R1") {
-            sn.prefix = "TR1";
-         }
-         else if (w == "RDecimal") {
-            sn.prefix = "TRDecimal";
-         }
-         else {
-            throw std::runtime_error{"section_num format error"};
-         }
-         ws(is);
-      }
-      else {
-         sn.num.push_back(100 + 'T' - 'A');
-         if (is.peek() != '.') {
-            return is;
-         }
-         is.get();
-      }
-   }
-
-   while (true) {
-      if (std::isdigit(is.peek())) {
-         int n;
-         is >> n;
-         sn.num.push_back(n);
-      }
-      else {
-         char c;
-         is >> c;
-         sn.num.push_back(100 + c - 'A');
-      }
-      if (is.peek() != '.') {
-         break;
-      }
-      char dot;
-      is >> dot;
-   }
-   return is;
-}
-
-auto lwg::operator << (std::ostream& os, section_num const & sn) -> std::ostream & {
-   if (!sn.prefix.empty()) { os << sn.prefix << " "; }
-
-   bool use_period{false};
-   for (auto sub : sn.num ) {
-      if (exchange(use_period, true)) {
-         os << '.';
-      }
-
-      if (sub >= 100) {
-         os << char(sub - 100 + 'A');
-      }
-      else {
-         os << sub;
-      }
-   }
-   return os;
-}
 
 // functions to relate the status of an issue to its relevant published list document
 auto lwg::filename_for_status(std::string stat) -> std::string {
@@ -262,27 +162,6 @@ auto lwg::make_ref_string(lwg::issue const & iss) -> std::string {
    return result;
 }
 
-// Functions to "normalize" a status string
-auto lwg::remove_pending(std::string stat) -> std::string {
-   using size_type = std::string::size_type;
-   if(0 == stat.find("Pending")) {
-      stat.erase(size_type{0}, size_type{8});
-   }
-   return stat;
-}
-
-auto lwg::remove_tentatively(std::string stat) -> std::string {
-   using size_type = std::string::size_type;
-   if(0 == stat.find("Tentatively")) {
-      stat.erase(size_type{0}, size_type{12});
-   }
-   return stat;
-}
-
-auto lwg::remove_qualifier(std::string const & stat) -> std::string {
-   return remove_tentatively(remove_pending(stat));
-}
-
 auto lwg::parse_issue_from_file(std::string const & filename, lwg::section_map & section_db) -> issue {
    struct bad_issue_file : std::runtime_error {
       bad_issue_file(std::string const & filename, char const * error_message)
@@ -293,7 +172,7 @@ auto lwg::parse_issue_from_file(std::string const & filename, lwg::section_map &
 
    issue is;
    is.text = read_file_into_string(filename);
-   auto & tx = is.text; // saves a redundant copy at the end of the function, while preserving existing names and logic
+   auto & tx = is.text; // eliminates need for a redundant copy at the end of the function, while preserving existing names and logic
 
    // Get issue number
    auto k = tx.find("<issue num=\"");
@@ -407,6 +286,27 @@ auto lwg::parse_issue_from_file(std::string const & filename, lwg::section_map &
    }
 
    return is;
+}
+
+// Functions to "normalize" a status string
+auto lwg::remove_pending(std::string stat) -> std::string {
+   using size_type = std::string::size_type;
+   if(0 == stat.find("Pending")) {
+      stat.erase(size_type{0}, size_type{8});
+   }
+   return stat;
+}
+
+auto lwg::remove_tentatively(std::string stat) -> std::string {
+   using size_type = std::string::size_type;
+   if(0 == stat.find("Tentatively")) {
+      stat.erase(size_type{0}, size_type{12});
+   }
+   return stat;
+}
+
+auto lwg::remove_qualifier(std::string const & stat) -> std::string {
+   return remove_tentatively(remove_pending(stat));
 }
 
 auto lwg::read_file_into_string(std::string const & filename) -> std::string {
