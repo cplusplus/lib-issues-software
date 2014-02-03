@@ -15,8 +15,8 @@ struct mailing_info;
 struct report_generator {
 
    report_generator(mailing_info const & info, section_map & sections)
-      : lwg_issues_xml{info}
-      , section_db{sections}
+      : lwg_issues_xml(info)
+      , section_db(sections)
    {
    }
 
