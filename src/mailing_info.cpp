@@ -48,7 +48,7 @@ void replace_all_irefs(std::vector<lwg::issue> const & issues, std::string & s) 
       std::string r{make_html_anchor(*n)};
       j -= i - 1;
       s.replace(i, j, r);
-      i += r.size() - 1;
+      // i += r.size() - 1;  // unused, copy/paste from elsewhere?
    }
 }
 

@@ -6,7 +6,7 @@
 
 #include <sstream>
 
-#if 0
+#if !defined(CPP14_LIBRARY_IS_NEEDED_FOR_STD_EXCHANGE)
 // This should be part of <utility> in C++14 lib
 // Should also be more efficient than using ostringstream!
 // Will be available soon when assuming libc++ with Clang 3.4, or gcc 4.9 and later
