@@ -21,6 +21,7 @@ and the issues lists generated HTML files in a directory named &quot;issues-gh-p
 falls out from the GitHub automatic web page approach: files in a branch named &quot;gh-pages&quot; 
 are automatically published by GitHub as web pages.</p>
 </blockquote>
+
 <h2>Prerequisites</h2>
 <ul>
   <li>Git</li>
@@ -29,6 +30,7 @@ are automatically published by GitHub as web pages.</p>
   a POSIX environment is a prerequisite to use the equivalent <code>.sh</code>
   scripts.</li>
 </ul>
+
 <h2>Initial setup</h2>
 <p><b>Do this once only:</b></p>
 <blockquote>
@@ -38,6 +40,7 @@ git clone -b gh-pages git@github.com:cplusplus/LWG.git issues-gh-pages
 cd issues
 mkdir mailing</pre>
 </blockquote>
+
 <h2>Build issues software</h2>
 <p>Do this after the initial setup, and then again whenever the source 
 code (in <code>issues/src</code>) changes.</p>
@@ -45,6 +48,7 @@ code (in <code>issues/src</code>) changes.</p>
   <pre>cd issues
 bin\build_pgms</pre>
 </blockquote>
+
 <h2>Add or change issues</h2>
 <p>There is one source file per issue, in <code>issues/xml</code>. The file
 <code>issues/xml/lwg-template.xml</code> can be used as a template to start a 
@@ -73,41 +77,119 @@ push</pre>
 bin\update_lists</pre>
 </blockquote>
 
-  <h2>Update meta-data</h2>
-  <p>The files in <code>issues/meta-data</code> need to be updated whenever 
-  there is a new draft of the working paper.</p>
-  <p>The procedure begins when the project editor sends the LWG chair a new copy 
-  of Annex F.</p>
-  <p><span style="background-color: #FFFF00">TODO</span><span style="background-color: #FFFF00">:&nbsp; 
-  Now that the working paper is publicly available on </span>
-  <span style="background-color: #FFFF00">GitHub</span><span style="background-color: #FFFF00">, 
-  pulling an updated copy of Annex F can be automated.</span></p>
-  <p>If such a copy is absent, proceed as follows:</p>
-  <ol>
-  <li>
-  <p>Copy the section data from the pdf of the working drafts Annex F with section id [xref] into it 
-  an empty text file named <code>annex-f</code> as pairs of section-ids and section numbers (one per line, 
-  the result of Copy&amp;Paste usually works depending on your pdf reader).</p>
-  </li>
-  <li>
-  <p>Manually add the missing section numbers to all entries starting with <code>defns.</code> (which have no
-  corresponding section numbers)</p>
-  </li>
-  </ol>
-  <p>Once the <code>annex-f</code> file exists in the proper format, perform the following steps:</p>
-  <ol>
-  <li>
-  <p>Copy file <code>annex-f</code> into the <code>bin</code> directory.</p>
-  </li>
-  <li>
-  <p>Execute the file <code>bin/build_section_data.bat</code>. This will produce the files <code>bin/index</code> and
-  <code>bin/section.data</code></p>
-  </li>
-  <li>
-  <p>Double-check that both files look OK. Especially take care to compare <code>bin/section.data</code> with
-  <code>meta-data/section.data</code> for suspecious changes. If you are happy with the deltas, replace the
-  the current <code>meta-data/section.data</code> by the freshly generated <code>bin/section.data</code>.
-  </p>
-  </li>
-  </ol>
+<h2>Update meta-data</h2>
+<p>The files in <code>issues/meta-data</code> need to be updated whenever 
+there is a new draft of the working paper.</p>
+<p>The procedure begins when the project editor sends the LWG chair a new copy 
+of Annex F.</p>
+<p><span style="background-color: #FFFF00">TODO</span><span style="background-color: #FFFF00">:&nbsp; 
+Now that the working paper is publicly available on </span>
+<span style="background-color: #FFFF00">GitHub</span><span style="background-color: #FFFF00">, 
+pulling an updated copy of Annex F can be automated.</span></p>
+<p>If such a copy is absent, proceed as follows:</p>
+<ol>
+<li>
+<p>Copy the section data from the pdf of the working drafts Annex F with section id [xref] into it 
+an empty text file named <code>annex-f</code> as pairs of section-ids and section numbers (one per line, 
+the result of Copy&amp;Paste usually works depending on your pdf reader).</p>
+</li>
+<li>
+<p>Manually add the missing section numbers to all entries starting with <code>defns.</code> (which have no
+corresponding section numbers)</p>
+</li>
+</ol>
+<p>Once the <code>annex-f</code> file exists in the proper format, perform the following steps:</p>
+<ol>
+<li>
+<p>Copy file <code>annex-f</code> into the <code>bin</code> directory.</p>
+</li>
+<li>
+<p>Execute the file <code>bin/build_section_data.bat</code>. This will produce the files <code>bin/index</code> and
+<code>bin/section.data</code></p>
+</li>
+<li>
+<p>Double-check that both files look OK. Especially take care to compare <code>bin/section.data</code> with
+<code>meta-data/section.data</code> for suspecious changes. If you are happy with the deltas, replace the
+the current <code>meta-data/section.data</code> by the freshly generated <code>bin/section.data</code>.
+</p>
+</li>
+</ol>
+
+<h2>Publish Issues Lists for a Mailing</h2>
+<p>For each ISO mailing, three issues lists are published, containing the lists of active issues, accepted/resolved
+issues, and rejected/closed issues.  These documents are produced directly by the software above.</p>
+<p>The following steps should be purused by <i>only</i> the Library Working Group chair, or someone delegated the
+responsibility for publishing the issues lists by the Library Working Group chair.  They are recorded for future
+reference to ease the burden on incoming chairs.</p>
+<ol>
+<li>Obtain three document numbers for use in the mailing (this should happen early, between mailings)</li>
+<li>inspect <tt>git branch</tt> to confirm that you are on the <tt>master</tt> branch</li>
+<li><tt>git pull</tt> any last changes that may have been committed by others at github</li>
+<li>Confirm that the issues data is in its publishable state</li>
+<li>Push the current branch to github with a pre-mailing commit message</li>
+    <ol>
+    <li><code>git commit -a -m&quot;<i>commit message</i>&quot;</code></li>
+    <li><code>git push</code></li>
+    </ol>
+<li>Fork a new branch to hold the final mailing with <code>git checkout -b <i>branch-name</i></code></li>
+<li>Update <tt>xml/lwg-issues.xml</tt> with:</li>
+    <ol>
+    <li>The final 'R' revision of the list (provisional lists use a 'D')</li>
+    <li>The three new N-document numbers</li>
+    <li>The current date</li>
+    </ol>
+<li>Confirm that the following <code>xml/lwg-issues.xml</code> information is correct:</li>
+    <ol>
+    <li>The LWG chair contact address (unlikely to change)</li>
+    <li>The mailing title</li>
+    <li>No new edits are needed to the boiler-plate text (changes are rare)</li>
+    <li>The revision history is up to date for the <b><i>preceding</i></b> mailing</li>
+    <li>(this mailing's revision history will be generated by the software)</li>
+    </ol>
+<li>Generate the lists only - do <b>not</b> run the generate-<i>and-publish</i> script above</li>
+<li>Inspect the generated lists in the <tt>mailing</tt> directory</li>
+<li>Correct any problems, and repeat the process until satisfied</li>
+<li>Copy and rename the following three documents to match their official document numbers for the mailing:</li>
+    <ol>
+    <li><tt>mailing/lwg-active.html</tt></li>
+    <li><tt>mailing/lwg-closed.html</tt></li>
+    <li><tt>mailing/lwg-defects.html</tt></li>
+    </ol>
+<li>Confirm the renamed documents correspond to the correct numbers maintained on their internal links (easy to confuse closed and defects)</li>
+<li>Commit changes to git branch, with a suitable commit message</li>
+<li>Zip the three N-documents, and email them to Clark Nelson</li>
+<li>Zip the whole <tt>mailing</tt> directory, and email it to Keld Simmonsen</li>
+</ol>
+<p>Now it is time to prepare the branch for the next mailing.  This work should be completed <i>before</i> merging back to master.</p>
+<ol>
+<li>Obtain three document numbers for use in the mailing (this should happen early, between mailings)</li>
+<li>Replace <tt>metadata/lwg-toc.old.html</tt> with <tt>mailing/lwg-toc.html</tt> (note the name change, adding <tt>.old</tt></li>
+<li>Update <tt>xml/lwg-issues.xml</tt> with:</li>
+    <ol>
+    <li>The provisonal 'D' revision of the next list ('R' -&lt; 'D', and increment the number)</li>
+    <li>Change three N-document numbers to <i>D????</i></li>
+    <li>An estimated date close to the next mailing</li>
+    <li>The mailing title</li>
+    <li>Update the revision history</li>
+        <ol>
+        <li>Copy the revision history for <i>just</i> the current mailing from any of the new N-docs)</li>
+        <li>Paste the new revision under the <code>&gt;revision_history&lt;</code> tag</li>
+        <li>Massage the html to match the xml of the entry below, e.g., change the <tt>revision</tt> text into an attribute with tag</li>
+        </ol>
+    </ol>
+<li>Generate the lists only - do <b>not</b> run the generate-<i>and-publish</i> script above</li>
+<li>Confirm that the document numbers are provisional, and the revision history is correct for the next mailing preview</li>
+<li>Repeat the process until satisfied</li>
+<li>Commit the git branch with an appropriate commit comment - <i>do not merge yet</i></li>
+<li>Run <code>git checkout master</code> to switch back to the <tt>master</tt> branch
+<li>Run <code>git pull</code> to ensure the current branch is in synch with github
+<li>Run <code>git merge <i>branch-name</i></code> where <code><i>branch-name</i></code> matches the branch above</li>
+<li>Resolve any conflicts (typically there are none)</li>
+<li>Regenerate the issues lists again, to confirm that branch and tools are in a good state</li>
+<li>Run <code>git status</code> to confirm there are no unexpected last minute edits that are not committed</li>
+<li>Run <code>git push</code> to publish the updated <tt>master</tt> branch</li>
+<li>Regenerate <i>and publish</i> the interim issues lists as described in the Add-an-issue process</li>
+<li>Notify any collaborators to pull the updated <tt>master</tt> branch - the main list is open for business again</li>
+</ol>
+
 <hr>&nbsp;</body></html>

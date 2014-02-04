@@ -116,6 +116,46 @@ Stefanus: move to open and note the 2 issues are related and should be moved tog
 <p/>
 Stefanus: add and define unsigned versions of <tt>abs()</tt>
 </p>
+
+<note>2014-02-03 Howard comments</note>
+<p>
+Defining <tt>abs()</tt> for unsigned integers is a bad idea. Doing so would turn compile time errors into run time errors, 
+especially in C++ where we have templates, and the types involved are not always apparent to the programmer at design time.  
+For example, consider:
+</p>
+<blockquote><pre>
+template &lt;class Int&gt;
+Int
+analyze(Int x, Int y)
+{
+  // ...
+  if (std::abs(<span style="color:#C80000;font-weight:bolder">x - y</span>) &lt; threshold)
+  {
+    // ...
+  }
+  // ...
+}
+</pre></blockquote>
+<p>
+<tt>std::abs(<i>expr</i>)</tt> is often used to ask: Are these two numbers sufficiently close?  When the assumption is that 
+the two numbers are signed (either signed integral, or floating point), the logic is sound. But when the same logic is 
+accidentally used with an arithmetic type not capable of representing negative numbers, and especially if unsigned overflow 
+will silently happen, then the logic is no longer correct:
+</p>
+<blockquote><pre>
+auto i = analyze(20u, 21u);  // Today a compile time error
+    // But with <tt>abs(unsigned)</tt> becomes a run time error
+</pre></blockquote>
+<p>
+This is not idle speculation. Search the net for "<tt>abs unsigned</tt>" 
+<a href="http://www.avrfreaks.net/index.php?name=PNphpBB2&amp;file=printview&amp;t=35514&amp;start=0">here</a> or 
+<a href="http://fischerlaender.de/mysql/surprising-mysql-behaviour-using-unsigned-int">here</a>.
+<p/>
+In C++11, <tt>chrono</tt> <tt>duration</tt>s and <tt>time_point</tt>s are allowed to be based on unsigned integers. Taking the 
+absolute value of the difference of two such <tt>time_point</tt>s would be easy to accidentally do (say in code templated on 
+<tt>time_point</tt>s), and would certainly be a logic bug, caught at compile time unless we provide the error prone <tt>abs(unsigned)</tt>.
+</p>
+
 </discussion>
 
 <resolution>
