@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2360" status="New">
+<title><tt>reverse_iterator::operator*()</tt> is unimplementable</title>
+<section><sref ref="[reverse.iterator]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>7 Feb 2014</date>
+
+<discussion>
+<p>
+Previously, C++03 24.4.1.3.3 [lib.reverse.iter.op.star] required:
+</p>
+<blockquote>
+<pre>
+reference operator*() const;
+</pre>
+<blockquote>
+<p>
+<i>Effects</i>: 
+</p>
+<blockquote><pre>
+Iterator tmp = current;
+return *--tmp;
+</pre></blockquote>
+</blockquote></blockquote>
+<p>
+Now, N3797 24.5.1.1 [reverse.iterator] depicts:
+</p>
+<blockquote><pre>
+private:
+  Iterator deref_tmp; // exposition only
+};
+</pre></blockquote>
+<p>
+And 24.5.1.3.4 [reverse.iter.op.star] requires:
+</p>
+<blockquote>
+<pre>
+reference operator*() const;
+</pre>
+<blockquote>
+<p>
+<i>Effects</i>: 
+</p>
+<blockquote><pre>
+deref_tmp = current;
+--deref_tmp;
+return *deref_tmp;
+</pre></blockquote>
+<p>
+[<i>Note</i>: This operation must use an auxiliary member variable rather than a temporary variable to avoid 
+returning a reference that persists beyond the lifetime of its associated iterator. (See 24.2.) &mdash; <i>end note</i>]
+</p>
+</blockquote></blockquote>
+
+<p>
+As written, this won't compile, because <tt>operator*()</tt> is <tt>const</tt> yet it's modifying (via assignment and decrement) 
+the <tt>deref_tmp</tt> data member. So what happens if you say "<tt>mutable Iterator deref_tmp;</tt>"?
+<p/>
+DANGER: WARP CORE BREACH IMMINENT.
+<p/>
+The Standard requires <tt>const</tt> member functions to be callable from multiple threads simultaneously. This is 
+<sref ref="[res.on.data.races]"/>/3: "A C++ standard library function shall not directly or indirectly modify objects (1.10) 
+accessible by threads other than the current thread unless the objects are accessed directly or indirectly via the function's 
+non-const arguments, including <tt>this</tt>."
+<p/>
+Multiple threads simultaneously modifying <tt>deref_tmp</tt> will trigger data races, so both mutable and some form of 
+synchronization (e.g. <tt>mutex</tt> or <tt>atomic</tt>) are actually necessary!
+<p/>
+Here's what implementations currently do: Dinkumware/VC follows C++03 and doesn't use <tt>deref_tmp</tt> (attempting to 
+implement it is what led me to file this issue). According to Jonathan Wakely, libstdc++ also follows C++03 (see 
+<a href="http://gcc.gnu.org/PR51823">PR51823</a> which is suspended until LWG <iref ref="2204"/> is resolved). According to 
+Marshall Clow, libc++ uses <tt>deref_tmp</tt> with <tt>mutable</tt> but without synchronization, so it can trigger data races.
+<p/>
+This <tt>deref_tmp</tt> Standardese was added by LWG <iref ref="198"/> "Validity of pointers and references unspecified after 
+iterator destruction" and is present in Working Papers going back to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2004/n1638.pdf">N1638</a> 
+on April 11, 2004, long before C++ recognized the existence of multithreading and developed the "<tt>const</tt> means simultaneously 
+readable" convention.
+<p/>
+A related issue is LWG <iref ref="1052"/> "<tt>reverse_iterator::operator-&gt;</tt> should also support smart pointers" which 
+mentioned the need to depict <tt>mutable</tt> in the Standardese, but it was resolved NAD Future and no change was made.
+<p/>
+Finally, LWG <iref ref="2204"/> "<tt>reverse_iterator</tt> should not require a second copy of the base iterator" talked about 
+removing <tt>deref_tmp</tt>, but without considering multithreading.
+<p/>
+I argue that <tt>deref_tmp</tt> must be removed. Its existence has highly undesirable consequences: either no synchronization 
+is used, violating the Standard's usual multithreading guarantees, or synchronization is used, adding further costs for all 
+users that benefit almost no iterators.
+<p/>
+<tt>deref_tmp</tt> is attempting to handle iterators that return references to things "inside themselves", which I usually call 
+"stashing iterators" (as they have a secret stash). Note that these are very unusual, and are different from proxy iterators like 
+<tt>vector&lt;bool&gt;::iterator</tt>.  While <tt>vector&lt;bool&gt;::iterator</tt>'s <tt>operator*()</tt> does not return a true 
+reference, it refers to a bit that is unrelated to the iterator's lifetime.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>Change class template <tt>reverse_iterator</tt> synopsis, <sref ref="[reverse.iterator]"/>, as indicated:</p>
+
+<blockquote><pre>
+[&hellip;]
+protected:
+  Iterator current;
+<del>private:
+  Iterator deref_tmp; // exposition only</del>
+};
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[reverse.iter.op.star]"/> as indicated:</p>
+
+<blockquote><pre>
+reference operator*() const;
+</pre>
+<blockquote>
+<p>
+-1- <i>Effects</i>:
+</p>
+<blockquote><pre>
+<del>deref_tmp = current;
+--deref_tmp;
+return *deref_tmp;</del>
+<ins>Iterator tmp = current;
+return *--tmp;</ins>
+</pre></blockquote>
+<p>
+-2- [<i>Note</i>: <del>This operation must use an auxiliary member variable rather than a temporary variable to
+avoid returning a reference that persists beyond the lifetime of its associated iterator. (See 24.2.)</del><ins>This 
+returns a reference that persists beyond the lifetime of its associated iterator, and is incompatible 
+with iterators that return references to their own data members.</ins> &mdash; <i>end note</i>]
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
