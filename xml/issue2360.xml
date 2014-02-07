@@ -67,7 +67,7 @@ The Standard requires <tt>const</tt> member functions to be callable from multip
 accessible by threads other than the current thread unless the objects are accessed directly or indirectly via the function's 
 non-const arguments, including <tt>this</tt>."
 <p/>
-Multiple threads simultaneously modifying <tt>deref_tmp</tt> will trigger data races, so both mutable and some form of 
+Multiple threads simultaneously modifying <tt>deref_tmp</tt> will trigger data races, so both <tt>mutable</tt> and some form of 
 synchronization (e.g. <tt>mutex</tt> or <tt>atomic</tt>) are actually necessary!
 <p/>
 Here's what implementations currently do: Dinkumware/VC follows C++03 and doesn't use <tt>deref_tmp</tt> (attempting to 
