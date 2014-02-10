@@ -31,22 +31,11 @@ Daniel's wording is good, advance to Immediate to respond to NB comment.
 Moved back to Review as Daniel would like another look at the words, and to confirm implementability.
 </p>
 
-</discussion>
-
-<resolution>
-<p>This wording is relative to N3691.</p>
-
-<ol>
-<li><p>Add a new definition sub-clause to <sref ref="[associative.reqmts]"/>:</p>
-
 <p>
-<ins>??? [defns.attainable]</ins>
-<p/>
-<ins><b>attainable</b></ins>
-<p/>
-<ins>A</ins>
+<strong>Previous resolution from Daniel [SUPERSEDED]:</strong>
 </p>
-</li>
+<blockquote class="note">
+<ol>
 
 <li><p>Change <sref ref="[associative.reqmts]"/> p8 as indicated:</p>
 
@@ -66,6 +55,45 @@ supports multiple keys, <tt>a_tran</tt> denotes a value of <tt>X</tt> when <del>
 The member function templates <tt>find</tt>, <tt>count</tt>, <tt>lower_bound</tt>, <tt>upper_bound</tt>, and <tt>equal_range</tt> shall not
 participate in overload resolution unless <del>the</del><ins>a publicly accessible</ins> type 
 <tt>Compare::is_transparent</tt> exists <ins>whose name is unambiguous and not hidden</ins>.
+</p></blockquote>
+</li>
+</ol>
+
+</blockquote>
+
+<note>2014-02-10 Daniel comments provides alternative wording</note>
+
+<p>
+I could confirm that my previous concerns were unwarranted, because they turned out to be due to a compiler-bug.
+Nonetheless I would suggest to replace the previously suggested replication of core-wording situations (access, ambiguity, hidden) 
+by a single more robust phrase based on "valid type".
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+
+<li><p>Change <sref ref="[associative.reqmts]"/> p8 as indicated:</p>
+
+<blockquote><p>
+-8- In Table 102, <tt>X</tt> denotes an associative container class, <tt>a</tt> denotes a value of <tt>X</tt>, <tt>a_uniq</tt> 
+denotes a value of <tt>X</tt> when <tt>X</tt> supports unique keys, <tt>a_eq</tt> denotes a value of <tt>X</tt> when <tt>X</tt> 
+supports multiple keys, <tt>a_tran</tt> denotes a value of <tt>X</tt> when the <del>type</del><ins>qualified-id</ins> 
+<tt>X::key_compare::is_transparent</tt> <del>exists</del><ins>is valid and denotes a type</ins>, 
+[&hellip;]
+</p>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[associative.reqmts]"/> p13 as indicated:</p>
+
+<blockquote><p>
+The member function templates <tt>find</tt>, <tt>count</tt>, <tt>lower_bound</tt>, <tt>upper_bound</tt>, and <tt>equal_range</tt> shall not
+participate in overload resolution unless the <del>type</del><ins>qualified-id</ins> 
+<tt>Compare::is_transparent</tt> <del>exists</del><ins>is valid and denotes a type</ins>.
 </p></blockquote>
 </li>
 </ol>
