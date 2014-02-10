@@ -792,6 +792,7 @@ int main(int argc, char* argv[]) {
       generator.make_sort_by_status         (unresolved_issues, {target_path + "unresolved-status.html"});
       generator.make_sort_by_status_mod_date(unresolved_issues, {target_path + "unresolved-status-date.html"});
       generator.make_sort_by_section        (unresolved_issues, {target_path + "unresolved-index.html"});
+      generator.make_sort_by_priority       (unresolved_issues, {target_path + "unresolved-prioritized.html"});
 
       // Make another set of index documents for the issues that are up for a vote during a meeting
       // Note that these documents want to reference each other, rather than lwg- equivalents,

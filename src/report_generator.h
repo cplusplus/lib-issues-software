@@ -44,6 +44,8 @@ struct report_generator {
 
    void make_sort_by_num(std::vector<issue>& issues, std::string const & filename);
 
+   void make_sort_by_priority(std::vector<issue>& issues, std::string const & filename);
+
    void make_sort_by_status(std::vector<issue>& issues, std::string const & filename);
 
    void make_sort_by_status_mod_date(std::vector<issue> & issues, std::string const & filename);

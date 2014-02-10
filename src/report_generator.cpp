@@ -94,6 +94,24 @@ struct order_by_status {
 };
 
 
+struct order_by_priority {
+   explicit order_by_priority(lwg::section_map &sections) 
+      : section_db(sections)
+      {
+      }
+
+   auto operator()(lwg::issue const & x, lwg::issue const & y) const -> bool {
+      assert(!x.tags.empty());
+      assert(!y.tags.empty());
+      return x.priority == y.priority
+           ? section_db.get()[x.tags.front()] < section_db.get()[y.tags.front()]
+           : x.priority < y.priority;
+   }
+
+private:
+   std::reference_wrapper<lwg::section_map> section_db;
+};
+
 
 auto major_section(lwg::section_num const & sn) -> std::string {
    std::string const prefix{sn.prefix};
@@ -184,8 +202,8 @@ R"(<table border="1" cellpadding="4">
   <td align="center"><a href="lwg-index.html"><b>Section</b></a></td>
   <td align="center"><b>Title</b></td>
   <td align="center"><b>Proposed Resolution</b></td>
+  <td align="center"><a href="unresolved-prioritized.html"><b>Priority</b></a></td>
   <td align="center"><b>Duplicates</b></td>
-  <td align="center"><a href="lwg-status-date.html"><b>Last modified</b></a></td>
 </tr>
 )";
 
@@ -222,14 +240,16 @@ assert(!i->tags.empty());
       }
       out << "</td>\n";
 
+      // Priority
+      out << "<td align=\"center\">";
+      if (i->priority != 99) {
+         out << i->priority;
+      }
+      out << "</td>\n";
+
       // Duplicates
       out << "<td align=\"left\">";
       print_list(out, i->duplicates, ", ");
-      out << "</td>\n";
-
-      // Modification date
-      out << "<td align=\"center\">";
-      print_date(out, i->mod_date);
       out << "</td>\n"
           << "</tr>\n";
    }
@@ -472,6 +492,44 @@ R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revis
    out << build_timestamp;
 
    print_table(out, issues.begin(), issues.end(), section_db);
+   print_file_trailer(out);
+}
+
+
+void report_generator::make_sort_by_priority(std::vector<issue>& issues, std::string const & filename) {
+   sort(issues.begin(), issues.end(), order_by_priority{section_db});
+
+   std::ofstream out{filename.c_str()};
+   if (!out)
+     throw std::runtime_error{"Failed to open " + filename};
+   print_file_header(out, "LWG Table of Contents");
+
+   out <<
+R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
+<h1>Table of Contents</h1>
+<p>Reference ISO/IEC IS 14882:2011(E)</p>
+<p>This document is the Table of Contents for the <a href="lwg-active.html">Library Active Issues List</a>,
+<a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
+)";
+   out << build_timestamp;
+
+//   print_table(out, issues.begin(), issues.end(), section_db);
+
+   for (auto i = issues.cbegin(), e = issues.cend(); i != e;) {
+      int px = i->priority;
+      auto j = std::find_if(i, e, [&](issue const & iss){ return iss.priority != px; } );
+      out << "<h2><a name=\"Priority " << px << "\"</a>";
+      if (px == 99) {
+         out << "Not Prioritized";
+      }
+      else {
+         out << "Priority " << px;
+      }
+      out << " (" << (j-i) << " issues)</h2>\n";
+      print_table(out, i, j, section_db);
+      i = j;
+   }
+
    print_file_trailer(out);
 }
 

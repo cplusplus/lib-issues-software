@@ -16,15 +16,17 @@ namespace lwg
 using section_tag = std::string;
 
 struct issue {
-   int                        num;         // ID - issue number
-   std::string                stat;        // current status of the issue
-   std::string                title;       // descriptive title for the issue
-   std::vector<section_tag>   tags;        // section(s) of the standard affected by the issue
-   std::string                submitter;   // original submitter of the issue
-   gregorian::date            date;        // date the issue was filed
-   gregorian::date            mod_date;    // this no longer appears useful
-   std::set<std::string>      duplicates;  // sorted list of duplicate issues, stored as html anchor references.
-   std::string                text;        // text representing the issue
+   int                        num;            // ID - issue number
+   std::string                stat;           // current status of the issue
+   std::string                title;          // descriptive title for the issue
+   std::vector<section_tag>   tags;           // section(s) of the standard affected by the issue
+   std::string                submitter;      // original submitter of the issue
+   gregorian::date            date;           // date the issue was filed
+   gregorian::date            mod_date;       // this no longer appears useful
+   std::set<std::string>      duplicates;     // sorted list of duplicate issues, stored as html anchor references.
+   std::string                text;           // text representing the issue
+   int                        priority = 99;  // severity, 1 = critical, 4 = minor concern, 0 = trivial to resolve, 99 = not yet prioritised
+   std::string                owner;          // person identified as taking ownership of drafting/progressing the issue
    bool                       has_resolution; // 'true' if 'text' contains a proposed resolution
 };
 

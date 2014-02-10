@@ -8,6 +8,7 @@
 <section><sref ref="[futures.promise]"/>,<sref ref="[futures.task]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>1 Nov 2011</date>
+<priority>5</priority>
 
 <discussion>
 

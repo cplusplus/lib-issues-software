@@ -6,6 +6,7 @@
 #include <cassert>
 #include <istream>
 #include <ostream>
+#include <string>
 #include <stdexcept>
 
 #include <sstream>
@@ -231,6 +232,17 @@ auto lwg::parse_issue_from_file(std::string tx, std::string const & filename, lw
    }
    catch(std::exception const & ex) {
       throw bad_issue_file{filename, ex.what()};
+   }
+
+   // Get priority - this element is optional
+   k = tx.find("<priority>", l);
+   if (k != std::string::npos) {
+      k += sizeof("<priority>") - 1;
+      l = tx.find("</priority>", k);
+      if (l == std::string::npos) {
+         throw bad_issue_file{filename, "Corrupt 'priority' element: no closing tag"};
+      }
+      is.priority = std::stoi(tx.substr(k, l-k));
    }
 
    // Trim text to <discussion>
