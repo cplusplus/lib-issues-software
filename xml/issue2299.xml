@@ -82,7 +82,7 @@ by a single more robust phrase based on "valid type".
 -8- In Table 102, <tt>X</tt> denotes an associative container class, <tt>a</tt> denotes a value of <tt>X</tt>, <tt>a_uniq</tt> 
 denotes a value of <tt>X</tt> when <tt>X</tt> supports unique keys, <tt>a_eq</tt> denotes a value of <tt>X</tt> when <tt>X</tt> 
 supports multiple keys, <tt>a_tran</tt> denotes a value of <tt>X</tt> when the <del>type</del><ins>qualified-id</ins> 
-<tt>X::key_compare::is_transparent</tt> <del>exists</del><ins>is valid and denotes a type</ins>, 
+<tt>X::key_compare::is_transparent</tt> <del>exists</del><ins>is valid and denotes a type (<sref ref="[temp.deduct]"/>)</ins>, 
 [&hellip;]
 </p>
 </blockquote>
@@ -93,7 +93,7 @@ supports multiple keys, <tt>a_tran</tt> denotes a value of <tt>X</tt> when the <
 <blockquote><p>
 The member function templates <tt>find</tt>, <tt>count</tt>, <tt>lower_bound</tt>, <tt>upper_bound</tt>, and <tt>equal_range</tt> shall not
 participate in overload resolution unless the <del>type</del><ins>qualified-id</ins> 
-<tt>Compare::is_transparent</tt> <del>exists</del><ins>is valid and denotes a type</ins>.
+<tt>Compare::is_transparent</tt> <del>exists</del><ins>is valid and denotes a type (<sref ref="[temp.deduct]"/>)</ins>.
 </p></blockquote>
 </li>
 </ol>
