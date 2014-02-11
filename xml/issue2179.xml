@@ -8,6 +8,7 @@
 <section><sref ref="[util.smartptr.enab]"/>, <sref ref="[util.smartptr.shared.const]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>16 Aug 2012</date>
+<priority>3</priority>
 
 <discussion>
 

@@ -8,6 +8,7 @@
 <section><sref ref="[allocator.requirements]"/>, <sref ref="[container.requirements]"/></section>
 <submitter>Howard Hinnant</submitter>
 <date>25 Jun 2013</date>
+<priority>1</priority>
 
 <discussion>
 <p>

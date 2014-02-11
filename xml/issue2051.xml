@@ -8,6 +8,7 @@
 <section><sref ref="[tuple.tuple]"/>, <sref ref="[tuple.cnstr]"/></section>
 <submitter>Ville Voutilainen</submitter>
 <date>1 May 2011</date>
+<priority>2</priority>
 
 <discussion>
 <p>

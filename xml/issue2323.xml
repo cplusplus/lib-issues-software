@@ -8,6 +8,7 @@
 <section><sref ref="[vector.capacity]"/>, <sref ref="[deque.capacity]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
 <date>21 Sep 2013</date>
+<priority>0</priority>
 
 <discussion>
 <p>

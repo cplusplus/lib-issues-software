@@ -8,6 +8,7 @@
 <section><sref ref="[support.runtime]"/></section>
 <submitter>Richard Smith</submitter>
 <date>14 Feb 2013</date>
+<priority>1</priority>
 
 <discussion>
 <p>

@@ -8,6 +8,7 @@
 <section><sref ref="[conforming]"/>,<sref ref="[allocator.traits]"/>,<sref ref="[allocator.adaptor.syn]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>30 Nov 2011</date>
+<priority>1</priority>
 
 <discussion>
 

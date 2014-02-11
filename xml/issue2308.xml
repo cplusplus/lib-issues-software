@@ -8,6 +8,7 @@
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>26 Sep 2013</date>
+<priority>0</priority>
 
 <discussion>
 <p>

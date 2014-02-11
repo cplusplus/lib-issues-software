@@ -8,6 +8,7 @@
 <section><sref ref="[unique.ptr.runtime]"/></section>
 <submitter>Alf P. Steinbach</submitter>
 <date>16 Dec 2011</date>
+<priority>1</priority>
 
 <discussion>
 

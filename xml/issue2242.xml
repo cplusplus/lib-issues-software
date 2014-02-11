@@ -8,6 +8,7 @@
 <section><sref ref="[alg.copy]"/>, <sref ref="[uninitialized.copy]"/></section>
 <submitter>Sean Parent</submitter>
 <date>14 Feb 2013</date>
+<priority>2</priority>
 
 <discussion>
 <p>

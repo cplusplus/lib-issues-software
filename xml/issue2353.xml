@@ -8,6 +8,7 @@
 <section><sref ref="[iterator.operations]"/></section>
 <submitter>Eric Niebler</submitter>
 <date>24 Dec 2013</date>
+<priority>4</priority>
 
 <discussion>
 <p>

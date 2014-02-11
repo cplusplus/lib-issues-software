@@ -8,6 +8,7 @@
 <section><sref ref="[basic.string]"/></section>
 <submitter>Howard Hinnant</submitter>
 <date>29 May 2011</date>
+<priority>3</priority>
 
 <discussion>
 <p>

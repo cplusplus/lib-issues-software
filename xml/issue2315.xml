@@ -8,6 +8,7 @@
 <section><sref ref="[util.smartptr.weak]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
 <date>21 Sep 2013</date>
+<priority>2</priority>
 
 <discussion>
 <p>

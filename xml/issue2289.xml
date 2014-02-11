@@ -8,6 +8,7 @@
 <section><sref ref="[pairs.pair]"/>, <sref ref="[tuple.cnstr]"/>, <sref ref="[time.duration]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>9 Sep 2013</date>
+<priority>3</priority>
 
 <discussion>
 <p>

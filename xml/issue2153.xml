@@ -8,6 +8,7 @@
 <section><sref ref="[utility.swap]"/>, <sref ref="[swappable.requirements]"/>, <sref ref="[container.requirements.general]"/></section>
 <submitter>Robert Shearer</submitter>
 <date>13 Apr 2012</date>
+<priority>2</priority>
 
 <discussion>
 
