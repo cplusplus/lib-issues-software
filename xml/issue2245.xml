@@ -5,7 +5,7 @@
 
 <issue num="2245" status="New">
 <title><tt>packaged_task::reset()</tt> memory allocation</title>
-<section><sref ref="[istream.unformatted]"/></section>
+<section><sref ref="[futures.task.members]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>5 Mar 2013</date>
 
