@@ -70,6 +70,12 @@ required to support at least ForwardIterators, which have the same restriction o
 Matt will file a new issue for some additional concerns with regex <tt>match_results</tt>.
 </p>
 
+<note>2014-02-10, Daniel comments</note>
+
+<p>
+The new issue opened by Matt is LWG <iref ref="2306"/>.
+</p>
+
 </discussion>
 
 <resolution>
