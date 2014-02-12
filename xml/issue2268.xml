@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2268" status="Ready">
+<issue num="2268" status="Voting">
 <title>Setting a default argument in the declaration of a member function <tt>assign</tt> of <tt>std::basic_string</tt></title>
 <section><sref ref="[basic.string]"/></section>
 <submitter>Vladimir Grigoriev</submitter>

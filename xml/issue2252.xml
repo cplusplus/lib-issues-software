@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2252" status="Ready">
+<issue num="2252" status="Voting">
 <title>Strong guarantee on <tt>vector::push_back()</tt> still broken with C++11?</title>
 <section><sref ref="[vector.modifiers]"/></section>
 <submitter>Nicolai Josuttis</submitter>
