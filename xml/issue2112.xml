@@ -95,9 +95,167 @@ Howard to provide wording, and AJM to alert Core that we may be wanting to add a
 that requires compiler support.
 </p>
 
+<note>2014-02, Issaquah: Howard and Daniel comment provide wording</note>
+
+<p>
+Several existing C++11 compilers do already provide an internal <tt>__is_final</tt> intrinsic (e.g. clang and gcc) and therefore 
+we believe that this is evidence enough that this feature is implementable today.
+<p/>
+We believe that both a simple and clear definition of the <tt>is_final</tt> query should result in a true outcome 
+if and only if the current existing language definition holds that a complete class type (either union or non-union) 
+has been marked with the <i>class-virt-specifier</i> <code>final</code> &mdash; nothing more.
+<p/>
+The following guidelines lead to the design decision and the wording choice given below:
+<p/>
+It has been expressed several times that a high-level trait such is "<tt>is_derivable</tt>" would be preferred and
+would be more useful for non-experts. One problem with that request is that it is astonishingly hard to find a common denominator 
+for what the <em>precise</em> definition of this trait should be, especially regarding corner-cases. Another example of getting very 
+differing points of view can obtained by asking a bunch of C++ experts what the best definition of the <tt>is_empty</tt> trait
+should be (which can be considered as a kind of higher-level trait).
+<p/>
+Once we have a fundamental trait like <tt>is_final</tt> available, we can easily define higher-level traits in the future
+on top of this by a proper logical combination of the low-level traits.
+<p/>
+A critical question is whether providing such a low-level compile-time introspection might be considered as a disadvantageous,
+because it could constrain the freedom of existing implementations even further and whether a high-level trait would solve
+this dilemma. We assert that since C++11 the static introspection capabilities are already very large and we believe that
+making the presence or absence of the <tt>final</tt> keyword testable does not make the current situation worse.
+<p/>
+Below code example demonstrate the intention and the implementability of this feature:
+</p>
+<blockquote><pre>
+#include &lt;type_traits>
+
+namespace std
+{
+
+template &lt;class T&gt;
+struct is_final
+  : public integral_constant&lt;bool, __is_final(T)&gt;
+{};
+
+}  // std
+
+// test it
+
+union FinalUnion <span style="color:#009900;font-weight:bolder">final</span> { };
+
+union NonFinalUnion { };
+
+class FinalClass <span style="color:#009900;font-weight:bolder">final</span> { };
+
+union NonFinalClass { };
+
+class Incomplete;
+
+int main()
+{
+  using std::is_final;
+  static_assert( is_final&lt;const volatile FinalUnion&gt;{}, "");
+  static_assert(!is_final&lt;FinalUnion[]&gt;{}, "");
+  static_assert(!is_final&lt;FinalUnion[1]&gt;{}, "");
+  static_assert(!is_final&lt;NonFinalUnion>{}, "");
+  static_assert( is_final&lt;FinalClass&gt;{}, "");
+  static_assert(!is_final&lt;FinalClass&amp;&gt;{}, "");
+  static_assert(!is_final&lt;FinalClass*&gt;{}, "");
+  static_assert(!is_final&lt;NonFinalClass&gt;{}, "");
+  static_assert(!is_final&lt;void&gt;{}, "");
+  static_assert(!is_final&lt;int&gt;{}, "");
+  static_assert(!is_final&lt;Incomplete&gt;{}, ""); // <span style="color:#C80000;font-weight:bolder">error incomplete type 'Incomplete' used in type trait expression</span>
+}
+</pre></blockquote>
+
 </discussion>
 
 <resolution>
+
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>Change <sref ref="[meta.type.synop]"/>, header <tt>&lt;type_traits&gt;</tt> synopsis, as indicated</p>
+
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+  <i>// 20.10.4.3, type properties:</i>
+  [&hellip;]
+  template &lt;class T&gt; struct is_empty;
+  template &lt;class T&gt; struct is_polymorphic;
+  template &lt;class T&gt; struct is_abstract;
+  <ins>template &lt;class T&gt; struct is_final;</ins>
+
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[meta.unary.prop]"/>, Table 49 &mdash; Type property predicates, as indicated</p>
+
+<table border="1">
+<caption>Table 49 &mdash; Type property predicates</caption>
+<tr>
+<th>Template</th>
+<th>Condition</th>
+<th>Preconditions</th>
+</tr> 
+<tr>
+<td>
+<tt>template &lt;class T&gt;</tt><br/>
+<tt>struct is_abstract;</tt>
+</td>
+<td>
+[&hellip;]
+</td>
+<td>
+[&hellip;]
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>template &lt;class T&gt;</tt><br/>
+<tt>struct is_final;</tt></ins>
+</td>
+<td>
+<ins><code>T</code> is a class type marked with the <i>class-virt-specifier</i> <code>final</code> (<sref ref="[class]"/>).<br/> 
+[<i>Note:</i> A union is a class type that can be marked with <code>final</code>. &mdash; <i>end note</i>]</ins>
+</td>
+<td>
+<ins>If <tt>T</tt> is a class type, <tt>T</tt> shall be a complete type</ins>
+</td>
+</tr>
+
+</table>
+
+</li>
+
+<li><p>After <sref ref="[meta.unary.prop]"/> p5 add one further example as indicated:</p>
+
+<blockquote><p>
+<ins>[<i>Example</i>:</ins>
+</p>
+<blockquote><pre>
+<ins><i>// Given:</i>
+class S { };
+struct P final { };
+union U1 { };
+union U2 final { };
+
+<i>// the following assertions hold:</i>
+static_assert(!is_final&lt;int&gt;::value, "Error!");
+static_assert(!is_final&lt;void&gt;::value, "Error!");
+static_assert(!is_final&lt;S&gt;::value, "Error!");
+static_assert(is_final&lt;P&gt;::value, "Error!");
+static_assert(!is_final&lt;U1&gt;::value, "Error!");
+static_assert(is_final&lt;U2&gt;::value, "Error!");</ins>
+</pre></blockquote>
+<p>
+<ins>&mdash; <i>end example</i>]</ins>
+</p>
+</blockquote>
+</li>
+</ol>
+
 </resolution>
 
 </issue>
