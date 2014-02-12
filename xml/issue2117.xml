@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2117" status="Open">
+<issue num="2117" status="LEWG">
 <title><tt>ios_base</tt> manipulators should have <tt>showgrouping&#47;noshowgrouping</tt></title>
 <section><sref ref="[facet.num.put.virtuals]"/>,<sref ref="[ios::fmtflags]"/>,<sref ref="[fmtflags.manip]"/></section>
 <submitter>Benjamin Kosnik</submitter>
@@ -63,6 +63,15 @@ Alisdair sumarizes:
 <p>
 (3) how this fits into tables 87-90. (and 128)
 </p>
+
+<note>Issaquah 2014-02-10-12: Move to LEWG</note>
+<p>
+Since this issue was filed, we have grown a new working group that is better placed to handle feature requests.
+</p>
+<p>
+We will track such issues with an LEWG status until we get feedback from the Library Evolution Working Group.
+</p>
+
 
 </discussion>
 

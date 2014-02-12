@@ -79,6 +79,7 @@ auto lwg::filename_for_status(std::string stat) -> std::string {
    return (stat == "TC1")           ? LWG_DEFECTS
         : (stat == "CD1")           ? LWG_DEFECTS
         : (stat == "C++11")         ? LWG_DEFECTS
+        : (stat == "C++14")         ? LWG_DEFECTS
         : (stat == "WP")            ? LWG_DEFECTS
         : (stat == "Resolved")      ? LWG_DEFECTS
         : (stat == "DR")            ? LWG_DEFECTS
@@ -95,6 +96,7 @@ auto lwg::filename_for_status(std::string stat) -> std::string {
         : (stat == "New")           ? LWG_ACTIVE
         : (stat == "Open")          ? LWG_ACTIVE
         : (stat == "EWG")           ? LWG_ACTIVE
+        : (stat == "LEWG")          ? LWG_ACTIVE
         : (stat == "Core")          ? LWG_ACTIVE
         : (stat == "Deferred")      ? LWG_ACTIVE
         : throw std::runtime_error("unknown status " + stat);
@@ -306,6 +308,7 @@ auto lwg::get_status_priority(std::string const & stat) noexcept -> std::ptrdiff
       "Review",
       "New",
       "Open",
+      "LEWG",
       "EWG",
       "Core",
       "Deferred",
@@ -319,6 +322,7 @@ auto lwg::get_status_priority(std::string const & stat) noexcept -> std::ptrdiff
       "NAD Future",
       "DR",
       "WP",
+      "C++14",
       "C++11",
       "CD1",
       "TC1",
