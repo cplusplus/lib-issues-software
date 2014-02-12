@@ -95,7 +95,7 @@ Howard to provide wording, and AJM to alert Core that we may be wanting to add a
 that requires compiler support.
 </p>
 
-<note>2014-02, Issaquah: Howard and Daniel comment provide wording</note>
+<note>2014-02, Issaquah: Howard and Daniel comment and provide wording</note>
 
 <p>
 Several existing C++11 compilers do already provide an internal <tt>__is_final</tt> intrinsic (e.g. clang and gcc) and therefore 
