@@ -124,7 +124,7 @@ making the presence or absence of the <tt>final</tt> keyword testable does not m
 Below code example demonstrate the intention and the implementability of this feature:
 </p>
 <blockquote><pre>
-#include &lt;type_traits>
+#include &lt;type_traits&gt;
 
 namespace std
 {
@@ -245,9 +245,9 @@ union U2 final { };
 static_assert(!is_final&lt;int&gt;::value, "Error!");
 static_assert(!is_final&lt;void&gt;::value, "Error!");
 static_assert(!is_final&lt;S&gt;::value, "Error!");
-static_assert(is_final&lt;P&gt;::value, "Error!");
+static_assert( is_final&lt;P&gt;::value, "Error!");
 static_assert(!is_final&lt;U1&gt;::value, "Error!");
-static_assert(is_final&lt;U2&gt;::value, "Error!");</ins>
+static_assert( is_final&lt;U2&gt;::value, "Error!");</ins>
 </pre></blockquote>
 <p>
 <ins>&mdash; <i>end example</i>]</ins>
