@@ -144,7 +144,7 @@ union NonFinalUnion { };
 
 class FinalClass <span style="color:#009900;font-weight:bolder">final</span> { };
 
-union NonFinalClass { };
+struct NonFinalClass { };
 
 class Incomplete;
 
