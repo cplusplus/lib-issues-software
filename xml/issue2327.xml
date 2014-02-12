@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2327" status="New">
+<issue num="2327" status="NAD">
 <title>Non-power-of-two URNGs should be forbidden</title>
 <section><sref ref="[rand.req.urng]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -80,6 +80,11 @@ knuth_b : min = 1, max = 7ffffffe, max-min = 7ffffffd
 
 <p>
 We do not want to outlaw these three URNG's, and the proposed wording would do that.
+</p>
+
+<note>Issaquah 2014-02-10: Moved to NAD</note>
+<p>
+STL withdraws the issue, non-power-of-2 URNGs are used in the field, it is too late to consider removing them.
 </p>
 
 </discussion>
