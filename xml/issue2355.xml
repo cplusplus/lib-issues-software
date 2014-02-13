@@ -17,7 +17,7 @@ In light of EWG active issue <a href="http://www.open-std.org/jtc1/sc22/wg21/doc
 the <tt>"s"</tt> suffix (when applied to character string literals) should be reserved for a compile-time string library type.
 </p>
 
-<note>2014-02-12 Issaquah meeting</note>
+<note>Issaquah 2014-10-12: Move to NAD</note>
 
 <p>We discussed leaving the <tt>s</tt> UDL suffix for <tt>string_view</tt> in Portland, and voted strongly in favor of using it for <tt>std::string</tt>.
 <tt>string</tt> is also an extremely widely used type, and the difference is observable in type deduction cases.

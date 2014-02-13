@@ -61,9 +61,48 @@ This issue is related to LWG <iref ref="2192"/>
 Move to open
 </p>
 
+<note>2014-02-13 Issaquah &mdash; Nicolai Josuttis suggest wording</note>
+
 </discussion>
 
 <resolution>
+
+<ol>
+<li><p>Edit <sref ref="[c.math]"/> after p7 as indicated:</p>
+
+<blockquote><p>
+-6- In addition to the <tt>int</tt> versions of certain math functions in <tt>&lt;cstdlib&gt;</tt>, C++ adds <tt>long</tt> and <tt>long long</tt>
+overloaded versions of these functions, with the same semantics.
+<p/>
+-7- The added signatures are:
+</p>
+<blockquote><pre>
+long abs(long);                    <i>// labs()</i>
+long long abs(long long);          <i>// llabs()</i>
+ldiv_t div(long, long);            <i>// ldiv()</i>
+lldiv_t div(long long, long long); <i>// lldiv()</i>
+</pre></blockquote>
+<p>
+<ins>-?- To avoid ambiguities, C++ also adds the following overloads of <tt>abs()</tt> to <tt>&lt;cstdlib&gt;</tt>,
+with the semantics defined in <tt>&lt;cmath&gt;</tt>:</ins>
+</p>
+<blockquote><pre>
+<ins>float abs(float);
+double abs(double);
+long double abs(long double);</ins>
+</pre></blockquote>
+<p>
+<ins>-?- To avoid ambiguities, C++ also adds the following overloads of <tt>abs()</tt> to <tt>&lt;cmath&gt;</tt>,
+with the semantics defined in <tt>&lt;cstdlib&gt;</tt>:</ins>
+</p>
+<blockquote><pre>
+<ins>int abs(int);
+long abs(long);
+long long abs(long long);</ins>
+</pre></blockquote>
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
