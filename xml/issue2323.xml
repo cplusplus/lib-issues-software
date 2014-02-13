@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2323" status="New">
+<issue num="2323" status="Immediate">
 <title><tt>vector::resize(n, t)</tt>'s specification should be simplified</title>
 <section><sref ref="[vector.capacity]"/>, <sref ref="[deque.capacity]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -25,6 +25,9 @@ non-<tt>CopyInsertable</tt> <tt>T</tt> there are no effects." This is confusing 
 <tt>CopyInsertable</tt>. (/14 says the same thing for <tt>resize(size_type sz)</tt>, where it is correct because that overload 
 requires only <tt>MoveInsertable</tt> and <tt>DefaultInsertable</tt>.)
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2213" status="New">
+<issue num="2213" status="Immediate">
 <title>Return value of <tt>std::regex_replace</tt></title>
 <section><sref ref="[re.alg.replace]"/></section>
 <submitter>Pete Becker</submitter>
@@ -19,6 +19,9 @@ which seems like the most useful behavior. But looking at the requirement now, i
 original value of "out" (i.e. they have to keep a copy of the iterator for no reason except to return it). Is that 
 really what was intended?
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

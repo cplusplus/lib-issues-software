@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2357" status="New">
+<issue num="2357" status="Immediate">
 <title>Remaining "<tt>Assignable</tt>" requirement</title>
 <section><sref ref="[alg.partitions]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -36,6 +36,9 @@ Given the fact that <tt>partition_copy</tt> never touches any input value twice,
 <p/>
 The below suggested primary resolution does not respond to the second part of this question.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

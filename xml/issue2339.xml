@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2339" status="New">
+<issue num="2339" status="Immediate">
 <title>Wording issue in <tt>nth_element</tt></title>
 <section><sref ref="[alg.nth.element]"/></section>
 <submitter>Christopher Jefferson</submitter>
@@ -35,12 +35,14 @@ this to the wording explicitly, say:
 </p>
 <blockquote>
 <p>
-After <tt>nth_element</tt> the element in the position pointed to by <tt>nth</tt> is the element that would be in that
-position if the whole range were sorted<ins>, unless <tt>nth == last</tt></ins>. Also for every iterator <tt>i</tt> in the 
-range <tt>[first,nth)</tt> and every iterator <tt>j</tt> in the range <tt>[nth,last)</tt> it holds that: <tt>!(*j &lt; *i)</tt> 
-or <tt>comp(*j, *i) == false</tt>.
+After <tt>nth_element</tt> the element in the position pointed to by <tt>nth</tt><ins>, if any,</ins> is the element that
+would be in that position if the whole range were sorted. Also for every iterator <tt>i</tt> in the range <tt>[first,nth)</tt>
+and every iterator <tt>j</tt> in the range <tt>[nth,last)</tt> it holds that: <tt>!(*j &lt; *i)</tt> or <tt>comp(*j, *i) == false</tt>.
 </p>
 </blockquote>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

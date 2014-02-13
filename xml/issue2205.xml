@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2205" status="New">
+<issue num="2205" status="Immediate">
 <title>Problematic postconditions of <tt>regex_match</tt> and <tt>regex_search</tt></title>
 <section><sref ref="[re.alg.match]"/>, <sref ref="[re.alg.search]"/></section>
 <submitter>Pete Becker</submitter>
@@ -30,6 +30,8 @@ and <tt>m[n].matched</tt>, in each case qualifying the value of <tt>n</tt> as "f
 there is an explicit description for <tt>n == 0</tt>, this qualification should be "for <tt>0 &lt; n &lt; m.size()</tt>" 
 in all 6 places.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
 
 </discussion>
 

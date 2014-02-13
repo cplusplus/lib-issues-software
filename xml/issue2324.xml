@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2324" status="New">
+<issue num="2324" status="Immediate">
 <title>Insert iterator constructors should use <tt>addressof()</tt></title>
 <section><sref ref="[back.insert.iter.cons]"/>, <sref ref="[front.insert.iter.cons]"/>, <sref ref="[insert.iter.cons]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -16,6 +16,9 @@
 say "Initializes container with <tt>&amp;x</tt>", which doesn't defend against containers overloading <tt>operator&amp;()</tt>.  
 Containers are now required to have such defenses for their elements, so we may as well be consistent here.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>
