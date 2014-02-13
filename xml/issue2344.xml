@@ -79,9 +79,9 @@ Each character in <tt>s</tt>. If the character to be output is equal to escape o
 </p></li>
 </ul>
 <p>
-<ins>Let <tt>x</tt> be the number of elements initially in <tt>seq</tt>. Then it determines padding for <tt>seq</tt> as described 
-in <sref ref="[ostream.formatted.reqmts]"/>, inserts <tt>seq</tt> as if by calling <tt>out.rdbuf()-&gt;sputn(seq, n)</tt>, where 
-<tt>n</tt> is the larger of <tt>out.width()</tt> and <tt>x</tt>, and calls <tt>out.width(0)</tt>.</ins>
+<ins>Let <tt>x</tt> be the number of elements initially in <tt>seq</tt>. Then padding is determined for <tt>seq</tt> as described 
+in <sref ref="[ostream.formatted.reqmts]"/>, <tt>seq</tt> is inserted as if by calling <tt>out.rdbuf()-&gt;sputn(seq, n)</tt>, where 
+<tt>n</tt> is the larger of <tt>out.width()</tt> and <tt>x</tt>, and <tt>out.width(0)</tt> is called.</ins>
 The expression <tt>out &lt;&lt; quoted(s, delim, escape)</tt> shall have type <tt>basic_ostream&lt;charT, traits&gt;&amp;</tt>
 and value <tt>out</tt>.
 </p>
