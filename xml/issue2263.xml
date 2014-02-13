@@ -57,10 +57,101 @@ of the container's <tt>const_iterator</tt> type referring to the same element wi
 </p>
 </blockquote>
 
+<note>2014-02-13 Issaquah, Daniel comments and suggests wording</note>
+
+<p>
+First, I didn't originally move the seemingly lost wording to the resolution section because I wanted to ensure that the 
+committee double-checks the reason of this loss. 
+<p/>
+Second, albeit restoring this wording will restore the comparability of <tt>const_iterator</tt> and <tt>iterator</tt> of
+containers specified in Clause 23, but this alone would <em>not</em> imply that this guarantee automatically extends to
+<em>all other</em> iterators, simply because there is no fundamental relation between a mutable iterator and a constant
+iterator by itself. This relation only exists under specific conditions, for example for containers which provide two such
+<tt>typedefs</tt> of that kind. Thus the wording restoration would <em>not</em> ensure that allocator <tt>pointer</tt> and 
+<tt>const_pointer</tt> would be comparable with each other. To realize that, we would need additional guarantees added
+to the allocator requirements. In fact, it is crucial to separate these things, because allocators are <em>not</em> 
+restricted to be used within containers, they have their own legitimate use for other places as well (albeit containers
+presumably belong to the most important use-cases), and this is also stated in the introduction of <sref ref="[allocator.requirements]"/>,
+where it says:
+</p>
+<blockquote><p>
+All of the string types (Clause 21), containers (Clause 23) (except array), string buffers and string streams (Clause 27), 
+and <tt>match_results</tt> (Clause 28) are parameterized in terms of allocators.
+</p></blockquote>
 </discussion>
 
 <resolution>
+<ol>
+<li><p>Insert after <sref ref="[allocator.requirements]"/> p4 as indicated:</p>
 
+<blockquote><p>
+-4- An allocator type <tt>X</tt> shall satisfy the requirements of <tt>CopyConstructible</tt> (17.6.3.1). The <tt>X::pointer</tt>,
+<tt>X::const_pointer</tt>, <tt>X::void_pointer</tt>, and <tt>X::const_void_pointer</tt> types shall satisfy the requirements
+of <tt>NullablePointer</tt> (17.6.3.3). No constructor, comparison operator, copy operation, move operation, or
+swap operation on these types shall exit via an exception. <tt>X::pointer</tt> and <tt>X::const_pointer</tt> shall also
+satisfy the requirements for a random access iterator (24.2).
+<p/>
+<ins>-?- Let <tt>x1</tt> and <tt>x2</tt> denote objects of (possibly different) types <tt>X::void_pointer</tt>, 
+<tt>X::const_void_pointer</tt>, <tt>X::pointer</tt>, or <tt>X::const_pointer</tt>. Then, <tt>x1</tt> and <tt>x2</tt>
+are considered as <em>address-compatible</em> pointer values, if and only if:</ins>
+</p>
+<ul>
+<li><p><ins>Both <tt>x1</tt> and <tt>x2</tt> are null pointer values (<sref ref="[nullablepointer.requirements]"/>), or</ins></p></li>
+<li><p><ins>Both <tt>x1</tt> and <tt>x2</tt> are dereferenceable (<sref ref="[iterator.requirements.general]"/>) and refer to the 
+same object of type <tt>X::value_type</tt>.</ins></p></li>
+</ul>
+<p>
+<ins>-?- Let <tt>w1</tt> and <tt>w2</tt> denote objects of type <tt>X::void_pointer</tt>. Then for the expressions</ins>
+</p>
+<blockquote><pre>
+<ins>w1 == w2
+w1 != w2</ins>
+</pre></blockquote>
+<p>
+<ins>either or both objects may be replaced by an address-compatible object of type <tt>X::const_void_pointer</tt> with no 
+change in semantics.</ins>
+<p/>
+<ins>-?- Let <tt>p1</tt> and <tt>p2</tt> denote objects of type <tt>X::pointer</tt>. Then for the expressions</ins>
+</p>
+<blockquote><pre>
+<ins>p1 == p2
+p1 != p2
+p1 &lt; p2
+p1 &lt;= p2
+p1 &gt;= p2
+p1 &gt; p2
+p1 - p2</ins>
+</pre></blockquote>
+<p>
+<ins>either or both objects may be replaced by an address-compatible object of type <tt>X::const_pointer</tt> with no 
+change in semantics.</ins>
+</p>
+</blockquote>
+</li>
+<li><p>Reinsert after <sref ref="[container.requirements]"/> p6:</p>
+
+<blockquote><p>
+-6- <tt>begin()</tt> returns an iterator referring to the first element in the container. <tt>end()</tt> returns an iterator which
+is the past-the-end value for the container. If the container is empty, then <tt>begin() == end()</tt>;
+<p/>
+<ins>-?- In the expressions</ins>
+</p>
+<blockquote><pre>
+<ins>i == j
+i != j
+i &lt; j
+i &lt;= j
+i &gt;= j
+i &gt; j
+i - j</ins>
+</pre></blockquote>
+<p>
+<ins>where <tt>i</tt> and <tt>j</tt> denote objects of a container's <tt>iterator</tt> type, either or both may be replaced by an object 
+of the container's <tt>const_iterator</tt> type referring to the same element with no change in semantics.</ins>
+</p>
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
