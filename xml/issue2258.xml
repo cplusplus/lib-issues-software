@@ -56,8 +56,9 @@ Alisdair to provide the wording.
 <tt>iterator</tt>
 </td>
 <td>
-erases all the elements in the range <tt>[q1,q2)</tt>. Returns <del><tt>q2</tt></del><ins>an iterator pointing 
-to the same element as <tt>q2</tt> or <tt>end()</tt> if <tt>q2</tt> doesn't point to an element</ins>.
+erases all the elements in the range <tt>[q1,q2)</tt>. Returns <del><tt>q2</tt></del><ins>
+an iterator pointing to the element pointed to by <tt>q2</tt> prior to any elements
+being erased. If no such element exists, <tt>a.end()</tt> is returned.
 </td>
 <td>
 <tt>log(a.size()) + N</tt> where <tt>N</tt> has the value <tt>distance(q1, q2)</tt>.
