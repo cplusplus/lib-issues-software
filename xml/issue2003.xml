@@ -54,7 +54,7 @@ Remove [string.require]p/3:
 shall throw any exceptions.</del>
 </p></blockquote>
 <p>Add to the specifications of <tt>iterator erase(const_iterator p);</tt>, <tt>iterator erase(const_iterator first, const_iterator last);</tt>, and <tt>void pop_back();</tt> in 21.4.6.5 [string::erase]:</p>
-<blockquote><p><i>Throws:</i> Nothing</p></blockquote>
+<blockquote><p><ins><i>Throws:</i> Nothing</p></ins></blockquote>
 </resolution>
 
 </issue>
