@@ -97,8 +97,9 @@ are considered as <em>address-compatible</em> pointer values, if and only if:</i
 </p>
 <ul>
 <li><p><ins>Both <tt>x1</tt> and <tt>x2</tt> are null pointer values (<sref ref="[nullablepointer.requirements]"/>), or</ins></p></li>
-<li><p><ins>Both <tt>x1</tt> and <tt>x2</tt> are dereferenceable (<sref ref="[iterator.requirements.general]"/>) and refer to the 
-same object of type <tt>X::value_type</tt>.</ins></p></li>
+<li><p><ins>Both <tt>x1</tt> and <tt>x2</tt> are not null pointer values that can be explicitly converted (possibly using a sequence
+of <tt>static_cast</tt>s) to two dereferenceable (<sref ref="[iterator.requirements.general]"/>) objects <tt>px1</tt> and <tt>px2</tt> 
+of type <tt>X::const_pointer</tt>, and the two expressions <tt>*px1</tt> and <tt>*px2</tt> refer to the same object.</ins></p></li>
 </ul>
 <p>
 <ins>-?- Let <tt>w1</tt> and <tt>w2</tt> denote objects of type <tt>X::void_pointer</tt>. Then for the expressions</ins>
