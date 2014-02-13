@@ -3,12 +3,12 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2328" status="New">
+<issue num="2328" status="Open">
 <title>Rvalue stream extraction should use perfect forwarding</title>
 <section><sref ref="[istream.rvalue]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
 <date>21 Sep 2013</date>
-<priority>0</priority>
+<priority>3</priority>
 
 <discussion>
 <p>
@@ -17,6 +17,25 @@ However, <sref ref="[istream::extractors]"/>/7 declares <tt>operator&gt;&gt;(bas
 plus additional overloads for <tt>unsigned char*</tt> and <tt>signed char*</tt>. This means that 
 "<tt>return_rvalue_istream() &gt;&gt; &amp;arr[0]</tt>" won't compile, because <tt>T&amp;</tt> won't bind to the rvalue <tt>&amp;arr[0]</tt>.
 </p>
+
+<note>2012-02-12 Issaquah : recategorize as P3</note>
+
+<p>
+Jonathon Wakely: Bill was certain the change is right, I think so with less certainty
+</p>
+
+<p>
+Jeffrey Yaskin: I think he's right, hate that we need this
+</p>
+
+<p>
+Jonathon Wakely: is this the security issue Jeffrey raised on lib reflector?
+</p>
+
+<p>
+Move to P3
+</p>
+
 </discussion>
 
 <resolution>

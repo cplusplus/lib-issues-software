@@ -3,12 +3,12 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2331" status="New">
+<issue num="2331" status="Open">
 <title><tt>regex_constants::collate</tt>'s effects are inaccurately summarized</title>
 <section><sref ref="[re.synopt]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
 <date>21 Sep 2013</date>
-<priority>0</priority>
+<priority>3</priority>
 
 <discussion>
 <p>
@@ -16,6 +16,25 @@ The table in <sref ref="[re.synopt]"/>/1 says that <tt>regex_constants::collate<
 "<tt>[a-b]</tt>" shall be locale sensitive.", but <sref ref="[re.grammar]"/>/14 says that it affects individual character comparisons 
 too.
 </p>
+
+<note>2012-02-12 Issaquah : recategorize as P3</note>
+
+<p>
+Marshall Clow: 28.13/14 only applies to ECMAScript
+</p>
+
+<p>
+All: we're unsure
+</p>
+
+<p>
+Jonathon Wakely: we should ask John Maddock
+</p>
+
+<p>
+Move to P3
+</p>
+
 </discussion>
 
 <resolution>

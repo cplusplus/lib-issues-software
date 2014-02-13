@@ -8,7 +8,7 @@
 <section><sref ref="[unord.req]"/></section>
 <submitter>Daniel James</submitter>
 <date>7 May 2012</date>
-<priority>0</priority>
+<priority>3</priority>
 
 <discussion>
 
@@ -63,6 +63,32 @@ Moved to Open.
 </p>
 <p>
 Howard to provide rationale and potentally revised wording.
+</p>
+
+
+<note>2012-02-12 Issaquah : recategorize as P3</note>
+<p>
+Jonathon Wakely: submitter is Boost.Hash maintainer. Think it's right.
+</p>
+
+<p>
+Marshall Clow: even if wrong it's more right than what we have now
+</p>
+
+<p>
+Geoffrey Romer: issue is saying rehash should not leave container in such a state that anotional insertion of zero elements should not trigger a rehash
+</p>
+
+<p>
+AJM: e.g. if you do a range insert from an empty range
+</p>
+
+<p>
+AJM: we don't have enough brainpower to do this now, so not priority zero
+</p>
+
+<p>
+Recategorised as P3
 </p>
 
 </discussion>
