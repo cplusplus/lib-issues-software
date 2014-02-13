@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2330" status="New">
+<issue num="2330" status="Immediate">
 <title><tt>regex("meow", regex::icase)</tt> is technically forbidden but should be permitted</title>
 <section><sref ref="[re.synopt]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -19,6 +19,9 @@ This "exactly one" wording technically forbids passing <tt>icase</tt> by itself!
 <tt>regex::ECMAScript | regex::icase</tt>. (Note that the cost of an additional check for no grammar being explicitly requested 
 is completely irrelevant, as regex construction is so much more expensive.)
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

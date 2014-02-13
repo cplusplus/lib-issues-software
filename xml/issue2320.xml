@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2320" status="New">
+<issue num="2320" status="Immediate">
 <title><tt>select_on_container_copy_construction()</tt> takes allocators, not containers</title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -18,6 +18,9 @@
 <sref ref="[container.requirements.general]"/>/7 goes on to say "Move constructors obtain an allocator by move construction from 
 the allocator belonging to the container being moved." so we can follow that wording.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

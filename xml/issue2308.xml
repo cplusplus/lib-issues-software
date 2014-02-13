@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2308" status="New">
+<issue num="2308" status="Immediate">
 <title>Clarify container destructor requirements w.r.t. <tt>std::array</tt></title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Jonathan Wakely</submitter>
@@ -20,6 +20,9 @@ confusing requirements for the destructor of <tt>std::array</tt>:
 Since <tt>std::array</tt> obtains no memory, there is none to deallocate,
 arguably  making it unclear what the requirement means for <tt>std::array::~array()</tt>.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>
