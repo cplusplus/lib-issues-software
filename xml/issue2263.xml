@@ -93,14 +93,23 @@ satisfy the requirements for a random access iterator (24.2).
 <p/>
 <ins>-?- Let <tt>x1</tt> and <tt>x2</tt> denote objects of (possibly different) types <tt>X::void_pointer</tt>, 
 <tt>X::const_void_pointer</tt>, <tt>X::pointer</tt>, or <tt>X::const_pointer</tt>. Then, <tt>x1</tt> and <tt>x2</tt>
-are considered as <em>address-compatible</em> pointer values, if and only if:</ins>
+are considered as <em>equivalently-valued</em> pointer values, if and only if both <tt>x1</tt> and <tt>x2</tt> can be explicitly converted 
+(possibly using a sequence of <tt>static_cast</tt>s) to the two corresponding objects <tt>px1</tt> and <tt>px2</tt> 
+of type <tt>X::const_pointer</tt>, and the expression <tt>px1 == px2</tt> evaluates to <tt>true</tt>.</ins>
 </p>
-<ul>
-<li><p><ins>Both <tt>x1</tt> and <tt>x2</tt> are null pointer values (<sref ref="[nullablepointer.requirements]"/>), or</ins></p></li>
-<li><p><ins>Both <tt>x1</tt> and <tt>x2</tt> are not null pointer values that can be explicitly converted (possibly using a sequence
-of <tt>static_cast</tt>s) to two dereferenceable (<sref ref="[iterator.requirements.general]"/>) objects <tt>px1</tt> and <tt>px2</tt> 
-of type <tt>X::const_pointer</tt>, and the two expressions <tt>*px1</tt> and <tt>*px2</tt> refer to the same object.</ins></p></li>
-</ul>
+<blockquote class="note"><p>
+<em>Drafting note:</em> This wording uses the seemingly complicated route via <tt>X::const_pointer</tt>, because these are (contrary to
+<tt>X::const_void_pointer</tt>) random access iterators and we can rely here for dereferenceable values on the fundamental pointee
+equivalence of <sref ref="[forward.iterators]"/> p6:
+</p>
+<blockquote><p>
+If <tt>a</tt> and <tt>b</tt> are both dereferenceable, then <tt>a == b</tt> if and only if <tt>*a</tt> and <tt>*b</tt> are 
+bound to the same object.
+</p></blockquote>
+<p>
+while for null pointer values we can rely on the special equality relation induced by <sref ref="[nullablepointer.requirements]"/>.
+</p>
+</blockquote>
 <p>
 <ins>-?- Let <tt>w1</tt> and <tt>w2</tt> denote objects of type <tt>X::void_pointer</tt>. Then for the expressions</ins>
 </p>
@@ -109,7 +118,7 @@ of type <tt>X::const_pointer</tt>, and the two expressions <tt>*px1</tt> and <tt
 w1 != w2</ins>
 </pre></blockquote>
 <p>
-<ins>either or both objects may be replaced by an address-compatible object of type <tt>X::const_void_pointer</tt> with no 
+<ins>either or both objects may be replaced by an equivalently-valued object of type <tt>X::const_void_pointer</tt> with no 
 change in semantics.</ins>
 <p/>
 <ins>-?- Let <tt>p1</tt> and <tt>p2</tt> denote objects of type <tt>X::pointer</tt>. Then for the expressions</ins>
@@ -124,7 +133,7 @@ p1 &gt; p2
 p1 - p2</ins>
 </pre></blockquote>
 <p>
-<ins>either or both objects may be replaced by an address-compatible object of type <tt>X::const_pointer</tt> with no 
+<ins>either or both objects may be replaced by an equivalently-valued object of type <tt>X::const_pointer</tt> with no 
 change in semantics.</ins>
 </p>
 </blockquote>
