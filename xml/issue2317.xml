@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2317" status="New">
+<issue num="2317" status="Immediate">
 <title>The type property queries should be <tt>UnaryTypeTraits</tt> returning <tt>size_t</tt></title>
 <section><sref ref="[meta.unary.prop.query]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -23,6 +23,9 @@ an array bound, which is clearly <tt>size_t</tt>. <tt>rank</tt> returns "the num
 be chosen, with <tt>size_t</tt> being a reasonable choice. (Another choice would be <tt>unsigned int</tt>, to match <tt>extent</tt>'s 
 template parameter <tt>I</tt>.)
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2313" status="New">
+<issue num="2313" status="Immediate">
 <title><tt>tuple_size</tt> should always derive from <tt>integral_constant&lt;size_t, N&gt;</tt></title>
 <section><sref ref="[tuple.helper]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -53,6 +53,9 @@ works with <i>cv</i>-qualified tuples, pairs, arrays, and user-defined types tha
 system. It would be far simpler and perfectly reasonable to expect that user-defined types supporting the "tuple-like protocol" 
 should have <tt>tuple_sizes</tt> of <tt>size_t</tt>.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

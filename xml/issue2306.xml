@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2306" status="New">
+<issue num="2306" status="Immediate">
 <title><tt>match_results::reference</tt> should be <tt>value_type&amp;</tt>, not <tt>const value_type&amp;</tt></title>
 <section><sref ref="[re.results]"/></section>
 <submitter>Matt Austern</submitter>
@@ -53,6 +53,9 @@ public:
 Given the fact that <tt>std::initializer_list</tt> doesn't meet the container requirements anyway (and is such a core-language related
 type) I recommend to stick with the current state.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2293" status="New">
+<issue num="2293" status="Immediate">
 <title>Wrong facet used by <tt>num_put::do_put</tt></title>
 <section><sref ref="[facet.num.put.virtuals]"/></section>
 <submitter>Juan Soulie</submitter>
@@ -15,6 +15,8 @@
 At the end of <sref ref="[facet.num.put.virtuals]"/> (in p6), the return value is said to be obtained by calling 
 <tt>truename</tt> or <tt>falsename</tt> on the wrong facet: <tt>ctype</tt> should be replaced by <tt>numpunct</tt>.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
 
 </discussion>
 
