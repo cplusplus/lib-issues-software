@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2322" status="New">
+<issue num="2322" status="Immediate">
 <title>Associative(<tt>initializer_list</tt>, stuff) constructors are underspecified</title>
 <section><sref ref="[associative.reqmts]"/>, <sref ref="[unord.req]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -21,6 +21,9 @@ on the big table's requirements. As a result, <tt>map(il, c)</tt>'s behavior is 
 The unordered associative containers are similarly affected, although they have more arguments. (Again, the actual 
 containers are correctly depicted with the desired constructors, their behavior just isn't specified.)
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>
@@ -47,21 +50,6 @@ containers are correctly depicted with the desired constructors, their behavior 
 
 <tr>
 <td>
-<ins><tt>X(il, c);</tt></ins>
-</td>
-<td>
-<tt>&nbsp;</tt>
-</td>
-<td>
-<ins>Same as <tt>X(il.begin(), il.end(), c)</tt>.</ins>
-</td>
-<td>
-<ins>Same as <tt>X(il.begin(), il.end(), c)</tt>.</ins>
-</td>
-</tr>
-
-<tr>
-<td>
 <tt>X(il);</tt>
 </td>
 <td>
@@ -72,6 +60,21 @@ Same as <tt>X(il.begin(), il.end())</tt>.
 </td>
 <td>
 <del>s</del><ins>S</ins>ame as <tt>X(il.begin(), il.end())</tt>.
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>X(il, c);</tt></ins>
+</td>
+<td>
+<tt>&nbsp;</tt>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), c)</tt>.</ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), c)</tt>.</ins>
 </td>
 </tr>
 
