@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2117" status="LEWG">
+<issue num="2117" status="New">
 <title><tt>ios_base</tt> manipulators should have <tt>showgrouping&#47;noshowgrouping</tt></title>
 <section><sref ref="[facet.num.put.virtuals]"/>,<sref ref="[ios::fmtflags]"/>,<sref ref="[fmtflags.manip]"/></section>
 <submitter>Benjamin Kosnik</submitter>
@@ -72,10 +72,21 @@ Since this issue was filed, we have grown a new working group that is better pla
 We will track such issues with an LEWG status until we get feedback from the Library Evolution Working Group.
 </p>
 
+<note>Issaquah 2014-02-12: LEWG discussion</note>
 
-</discussion>
+<table>
+  <caption>Do we think this feature should exist?</caption>
+  <tr><td>SF</td><td>F</td><td>N</td><td>A</td><td>SA</td></tr>
+  <tr><td>2</td> <td>4</td><td>1</td><td>0</td><td>0</td></tr>
+</table>
 
-<resolution>
+<p>Think about the ABI break for adding a flag. But this could be
+mitigated by putting the data into an iword instead of a flag.</p>
+
+<p>This needs to change Stage 2 in [facet.num.put.virtuals].</p>
+
+<p>Previous resolution, which needs the above corrections:</p>
+<blockquote class="note">
 <p>This wording is relative to the FDIS.</p>
 
 <ol>
@@ -204,6 +215,10 @@ generates a decimal-point character unconditionally in generated floatingpoint o
 
 </ol>
 
+</blockquote>
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>
