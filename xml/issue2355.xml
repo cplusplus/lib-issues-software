@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2355" status="New">
+<issue num="2355" status="NAD">
 <title><tt>"s"</tt> UDL suffix should be reserved for a compile-time string library type</title>
 <section><sref ref="[basic.string.literals]"/></section>
 <submitter>Michael Price</submitter>
@@ -15,6 +15,11 @@
 The current draft uses the <tt>"s"</tt> UDL suffix as a UDL for <tt>basic_string&lt;charT&gt;</tt> (<sref ref="[basic.string.literals]"/>). 
 In light of EWG active issue <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3682.html#66">66</a> (concerning N3599), 
 the <tt>"s"</tt> suffix (when applied to character string literals) should be reserved for a compile-time string library type.
+</p>
+
+<note>Issaquah 20014-10-11: Move to NAD</note>
+<p>
+The LEWG took this issue, and reaffirmed the design choice made for C++14.
 </p>
 
 </discussion>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2316" status="New">
+<issue num="2316" status="Immediate">
 <title><tt>weak_ptr::lock()</tt> should be atomic</title>
 <section><sref ref="[util.smartptr.weak.obs]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -28,6 +28,9 @@ We all know what <tt>weak_ptr::lock()</tt> should do, the Standardese just doesn
 <tt>shared_ptr(const weak_ptr&lt;Y&gt;&amp;)</tt>'s specification is not really affected because 
 <sref ref="[util.smartptr.shared.const]"/>/23-27 describes the behavior with English instead of code.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

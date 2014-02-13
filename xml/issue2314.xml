@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2314" status="New">
+<issue num="2314" status="Immediate">
 <title><tt>apply()</tt> should return <tt>decltype(auto)</tt> and use <tt>decay_t</tt> before <tt>tuple_size</tt></title>
 <section><sref ref="[intseq.general]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -24,6 +24,9 @@ This is incorrect because when <tt>apply()</tt> is called with lvalue tuples, pe
 references to tuples.  Using <tt>remove_reference_t</tt> would avoid this problem, but so would <tt>decay_t</tt>, which has a 
 significantly shorter name. (The additional transformations that <tt>decay_t</tt> does are neither beneficial nor harmful here.)
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

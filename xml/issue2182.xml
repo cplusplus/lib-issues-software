@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2182" status="Review">
+<issue num="2182" status="Immediate">
 <title><tt>Container::[const_]reference</tt> types are misleadingly specified</title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -75,6 +75,11 @@ Matt will file a new issue for some additional concerns with regex <tt>match_res
 
 <p>
 The new issue opened by Matt is LWG <iref ref="2306"/>.
+</p>
+
+<note>Issaquah 20014-10-11: Move to Immediate</note>
+<p>
+Issue should have been Ready in pre-meeting mailing.
 </p>
 
 </discussion>
