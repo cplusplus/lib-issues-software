@@ -41,8 +41,9 @@ Action: Update proposed wording for issue 2003 as above, but leave Open.
 
 <p>
 Jeffrey: Madrid meeting's proposed wording wasn't applied, and it's better than the original proposed wording.
-However, this sentence is only doing 3 functions' worth of work, unlike the similar paragraphs in [container.requirements.general].
-Suggest just putting "<i>Throws:</i> Nothing" on the 3 functions.</p>
+However, this sentence is only doing 3 functions' worth of work, unlike the similar paragraphs in <sref ref="[container.requirements.general]"/>.
+Suggest just putting "<i>Throws:</i> Nothing" on the 3 functions.
+</p>
 </discussion>
 
 <resolution>
@@ -50,11 +51,14 @@ Suggest just putting "<i>Throws:</i> Nothing" on the 3 functions.</p>
 Remove [string.require]p/3:
 </p>
 <blockquote><p>
-<del>3 No <tt>erase()</tt> or <tt>pop_back()</tt> member function
-shall throw any exceptions.</del>
+<del>3 No <tt>erase()</tt> or <tt>pop_back()</tt> member function shall throw any exceptions.</del>
 </p></blockquote>
-<p>Add to the specifications of <tt>iterator erase(const_iterator p);</tt>, <tt>iterator erase(const_iterator first, const_iterator last);</tt>, and <tt>void pop_back();</tt> in 21.4.6.5 [string::erase]:</p>
-<blockquote><p><ins><i>Throws:</i> Nothing</p></ins></blockquote>
+
+<p>
+Add to the specifications of <tt>iterator erase(const_iterator p);</tt>, <tt>iterator erase(const_iterator first, const_iterator last);</tt>,
+ and <tt>void pop_back();</tt> in <sref ref="[string::erase]"/>:
+</p>
+<blockquote><p><ins><i>Throws:</i> Nothing</ins></p></blockquote>
 </resolution>
 
 </issue>
