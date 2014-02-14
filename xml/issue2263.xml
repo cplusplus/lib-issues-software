@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2263" status="New">
+<issue num="2263" status="Immediate">
 <title>Comparing iterators and allocator pointers with different const-character</title>
 <section><sref ref="[allocator.requirements]"/>, <sref ref="[container.requirements]"/></section>
 <submitter>Howard Hinnant</submitter>
@@ -78,6 +78,12 @@ where it says:
 All of the string types (Clause 21), containers (Clause 23) (except array), string buffers and string streams (Clause 27), 
 and <tt>match_results</tt> (Clause 28) are parameterized in terms of allocators.
 </p></blockquote>
+
+<note>2014-02-12 Issaquah meeting</note>
+<p>
+Move a Immediate.
+</p>
+
 </discussion>
 
 <resolution>

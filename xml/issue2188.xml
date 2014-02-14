@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2188" status="Open">
+<issue num="2188" status="Immediate">
 <title>Reverse iterator does not fully support targets that overload <tt>operator&amp;</tt></title>
 <section><sref ref="[reverse.iter.opref]"/></section>
 <submitter>Alisdair Meredith</submitter>
@@ -35,6 +35,11 @@ not with reverse iteration.
 Resolution: Goes to open now and move to review as soon as Daniel proposes a new wording.
 </p>
 
+<note>2014-02-12 Issaquah meeting</note>
+<p>
+Use <tt>std::addressof</tt> as the library uses elsewhere, then move as Immediate.
+</p>
+
 </discussion>
 
 <resolution>
@@ -42,8 +47,7 @@ Resolution: Goes to open now and move to review as soon as Daniel proposes a new
 Revise <sref ref="[reverse.iter.opref]"/> p1, as indicated:
 </p>
 <p>
-<i>Returns:</i> <ins>The true address of the object returned by </ins>
-<tt><del>&amp;(</del>operator*()<del>)</del></tt>.
+<i>Returns:</i> <tt><ins>addressof</ins><del>&amp;(</del>operator*()<del>)</del></tt>.
 </p>
 </resolution>
 

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2003" status="Open">
+<issue num="2003" status="Immediate">
 <title>String exception inconsistency in erase.</title>
 <section><sref ref="[string.require]"/></section>
 <submitter>Jos&eacute; Daniel Garc&iacute;a S&aacute;nchez</submitter>
@@ -44,6 +44,12 @@ Jeffrey: Madrid meeting's proposed wording wasn't applied, and it's better than 
 However, this sentence is only doing 3 functions' worth of work, unlike the similar paragraphs in <sref ref="[container.requirements.general]"/>.
 Suggest just putting "<i>Throws:</i> Nothing" on the 3 functions.
 </p>
+
+<note>2014-02-13 Issaquah meeting</note>
+<p>
+Move as Immmediate
+</p>
+
 </discussion>
 
 <resolution>

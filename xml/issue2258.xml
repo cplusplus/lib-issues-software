@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2258" status="New">
+<issue num="2258" status="Immediate">
 <title><tt>a.erase(q1, q2)</tt> unable to directly return <tt>q2</tt></title>
 <section><sref ref="[associative.reqmts]"/></section>
 <submitter>Geoff Alexander</submitter>
@@ -24,6 +24,11 @@ associative containers.  We should apply consistent wording in all three cases.
 </p>
 <p>
 Alisdair to provide the wording.
+</p>
+
+<note>2014-02-12 Issaquah meeting</note>
+<p>
+Move a Immediate.
 </p>
 
 </discussion>
