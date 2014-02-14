@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2332" status="New">
+<issue num="2332" status="Immediate">
 <title><tt>regex_iterator/regex_token_iterator</tt> should forbid temporary regexes</title>
 <section><sref ref="[re.iter]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -17,6 +17,9 @@ Users can write "<tt>for(sregex_iterator i(s.begin(), s.end(), regex("meow")), e
 at runtime. We now have the technology to prevent this from compiling, like how <tt>reference_wrapper</tt> refuses to bind to 
 temporaries.
 </p>
+
+<note>2014-02-14 Issaquah meeting: Move to Immediate</note>
+
 </discussion>
 
 <resolution>

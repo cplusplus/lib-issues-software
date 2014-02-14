@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2360" status="New">
+<issue num="2360" status="Immediate">
 <title><tt>reverse_iterator::operator*()</tt> is unimplementable</title>
 <section><sref ref="[reverse.iterator]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -97,6 +97,11 @@ users that benefit almost no iterators.
 reference, it refers to a bit that is unrelated to the iterator's lifetime.
 </p>
 
+<note>2014-02-14 Issaquah meeting: Move to Immediate</note>
+<p>
+Strike superfluous note to avoid potential confusion, and move to Immediate.
+</p>
+
 </discussion>
 
 <resolution>
@@ -132,10 +137,8 @@ return *deref_tmp;</del>
 return *--tmp;</ins>
 </pre></blockquote>
 <p>
--2- [<i>Note</i>: <del>This operation must use an auxiliary member variable rather than a temporary variable to
-avoid returning a reference that persists beyond the lifetime of its associated iterator. (See 24.2.)</del><ins>This 
-returns a reference that persists beyond the lifetime of its associated iterator, and is incompatible 
-with iterators that return references to their own data members.</ins> &mdash; <i>end note</i>]
+<del>-2- [<i>Note</i>: This operation must use an auxiliary member variable rather than a temporary variable to
+avoid returning a reference that persists beyond the lifetime of its associated iterator. (See 24.2.) &mdash; <i>end note</i>]</del>
 </p>
 </blockquote></blockquote>
 </li>
