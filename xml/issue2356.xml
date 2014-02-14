@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2356" status="New">
+<issue num="2356" status="Immediate">
 <title>Stability of erasure in unordered associative containers</title>
 <section><sref ref="[unord.req]"/></section>
 <submitter>Joaqu&iacute;n M L&oacute;pez Mu&ntilde;oz</submitter>
@@ -46,6 +46,8 @@ implementation does that, anyway). Such an underspecification does not happen fo
 relative ordering of non-equivalent elements is kept by design.
 </p>
 
+<note>2014-02-13 Issaquah: Move to Immediate</note>
+
 </discussion>
 
 <resolution>
@@ -57,7 +59,7 @@ relative ordering of non-equivalent elements is kept by design.
 <blockquote><p>
 -14- The <tt>insert</tt> and <tt>emplace</tt> members shall not affect the validity of references to container elements, but may
 invalidate all iterators to the container. The <tt>erase</tt> members shall invalidate only iterators and references
-to the erased elements<ins>, and preserve the relative ordering of the remaining elements</ins>.
+to the erased elements<ins>, and preserve the relative order of the elements that are not erased</ins>.
 </p></blockquote>
 </li>
 </ol>

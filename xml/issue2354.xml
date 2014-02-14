@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2354" status="New">
+<issue num="2354" status="Ready">
 <title>Unnecessary copying when inserting into maps with braced-init syntax</title>
 <section><sref ref="[map.overview]"/>, <sref ref="[multimap.overview]"/>, <sref ref="[unord.map.overview]"/>, 
 <sref ref="[unord.multimap.overview]"/></section>
@@ -29,6 +29,32 @@ I think this can be fixed by adding an equivalent non-template <tt>value_type&am
 member template. Simply declaring these members in the class synopses should be sufficient; their semantics are 
 already dictated by the container concepts (c.f. the corresponding lvalue-reference overloads, which have no 
 additional discussion beyond being listed in the synopsis).
+</p>
+
+<note>2012-02-13 Issaquah</note>
+<p>
+AJM: Is this not better solved by <tt>emplace</tt>?
+</p>
+
+<p>
+Nico: <tt>emplace</tt> was a mistake, it breaks a uniform pattern designed into the STL.
+Hence, this fix is important, it should be the preferred way to do this.
+</p>
+
+<p>
+JonW: <tt>emplace</tt> is still more efficient, as this form must make a non-elidable copy.
+</p>
+
+<p>
+GeoffR: Also, cannot move from a <tt>const</tt> key, must always make a copy.
+</p>
+
+<p>
+Poll:  (copy results from wiki)
+</p>
+
+<p>
+Move to Ready, pending implementation experience.
 </p>
 
 </discussion>

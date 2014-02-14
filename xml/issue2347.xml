@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2347" status="New">
+<issue num="2347" status="NAD">
 <title><tt>reverse_iterator::operator[]</tt> calls const version of <tt>current[]</tt></title>
 <section><sref ref="[reverse.iter.opindex]"/></section>
 <submitter>Timo Bingmann</submitter>
@@ -34,6 +34,7 @@ dereferences. It bypasses the issues due to <tt>reverse_iterator::operator[]</tt
 being const by copying the iterator.
 </p>
 
+<note>2014-02-13 Issaquah : close as NAD</note>
 </discussion>
 
 <resolution>

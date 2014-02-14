@@ -93,9 +93,9 @@ satisfy the requirements for a random access iterator (24.2).
 <p/>
 <ins>-?- Let <tt>x1</tt> and <tt>x2</tt> denote objects of (possibly different) types <tt>X::void_pointer</tt>, 
 <tt>X::const_void_pointer</tt>, <tt>X::pointer</tt>, or <tt>X::const_pointer</tt>. Then, <tt>x1</tt> and <tt>x2</tt>
-are considered as <em>equivalently-valued</em> pointer values, if and only if both <tt>x1</tt> and <tt>x2</tt> can be explicitly converted 
-(possibly using a sequence of <tt>static_cast</tt>s) to the two corresponding objects <tt>px1</tt> and <tt>px2</tt> 
-of type <tt>X::const_pointer</tt>, and the expression <tt>px1 == px2</tt> evaluates to <tt>true</tt>.</ins>
+are <em>equivalently-valued</em> pointer values, if and only if both <tt>x1</tt> and <tt>x2</tt> can be explicitly converted 
+to the two corresponding objects <tt>px1</tt> and <tt>px2</tt> of type <tt>X::const_pointer</tt>, using a sequence of
+<tt>static_cast</tt>s using only these four types, and the expression <tt>px1 == px2</tt> evaluates to <tt>true</tt>.</ins>
 </p>
 <blockquote class="note"><p>
 <em>Drafting note:</em> This wording uses the seemingly complicated route via <tt>X::const_pointer</tt>, because these are (contrary to

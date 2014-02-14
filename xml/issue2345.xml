@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2345" status="New">
+<issue num="2345" status="NAD">
 <title><tt>integer_sequence</tt> should have a self-typedef <tt>::type</tt></title>
 <section><sref ref="[intseq.intseq]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -20,6 +20,13 @@ but nothing for itself.
 <p/>
 Self-typedefs can be useful when users create chains of derived classes, then want to get the Standard base type.  
 This is especially relevant to <tt>integer_sequence</tt>, as variadic templates encourage recursive inheritance.
+</p>
+
+<note>2014-02-13 Issaquah: Close as NAD</note>
+<p>
+AJM: My own implementation used a different alias for types representing parameter packs, and specifically
+did *not* define <tt>type</tt>.  I tried it both ways, and found bugs more quickly when <tt>type</tt> was
+not defined.
 </p>
 
 </discussion>

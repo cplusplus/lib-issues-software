@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2321" status="New">
+<issue num="2321" status="Open">
 <title>Moving containers should (usually) be required to preserve iterators</title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -20,6 +20,16 @@ that blanket language like /11 "Unless otherwise specified (either explicitly or
 invoking a container member function or passing a container as an argument to a library function shall not invalidate iterators to, 
 or change the values of, objects within that container." is applicable.
 </p>
+
+<note>2014-02-13 Issaquah</note>
+<p>
+General agreeement on intent, several wording nits and additional paragraphs to hit.
+</p>
+
+<p>
+STL to provide updated wording.  Move to Open.
+</p>
+
 </discussion>
 
 <resolution>

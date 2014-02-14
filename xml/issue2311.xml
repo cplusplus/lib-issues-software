@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2311" status="New">
+<issue num="2311" status="NAD">
 <title>Allocator requirements should be further minimized</title>
 <section><sref ref="[allocator.requirements]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -34,6 +34,16 @@ They require <tt>a == b</tt> and <tt>a != b</tt>. This requirement was not prese
 to compare allocators of different types directly.
 </p></li>
 </ul>
+
+<note>2014-02-14 Issaquah: Close as NAD</note>
+<p>
+Different vendors rely on each of the different elements suggested to be removed.
+</p>
+<p>
+While <tt>value_type</tt> my be deduced as suggested, far too much wording relies on it being available,
+and the standard churn is likely to be much harder than presented here.
+</p>
+
 </discussion>
 
 <resolution>
