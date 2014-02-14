@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2132" status="Review">
+<issue num="2132" status="Immediate">
 <title><tt>std::function</tt> ambiguity</title>
 <section><sref ref="[func.wrap.func.con]"/></section>
 <submitter>Ville Voutilainen</submitter>
@@ -121,6 +121,8 @@ The call to the conversion operator is overloaded with the thread constructor. B
 makes it fail as <tt>AThreadWrapper</tt> is not a Callable and the compiler tries to instantiate the thread 
 constructor and fails.
 </p>
+
+<note>2014-02-14 Issaquah meeting: Move to Immediate</note>
 
 </discussion>
 

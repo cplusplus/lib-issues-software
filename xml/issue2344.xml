@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2344" status="New">
+<issue num="2344" status="Immediate">
 <title><tt>quoted()</tt>'s interaction with padding is unclear</title>
 <section><sref ref="[quoted.manip]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -43,6 +43,8 @@ and <tt>str.size();</tt> then calls <tt>os.width(0)</tt>."
 Additionally, saying that it's a "formatted output function" activates <sref ref="[ostream.formatted.reqmts]"/>/1's wording for 
 sentry objects.
 </p>
+
+<note>2014-02-14 Issaquah meeting: Move to Immediate</note>
 
 </discussion>
 
