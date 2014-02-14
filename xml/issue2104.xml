@@ -71,7 +71,7 @@ So we have in fact still a move-assignment operator that might throw an exceptio
 if the mutex was either constructed or used (call of lock) incorrectly.
 <p/>
 The correct fix seems to me to also add a "<i>Throws</i>: Nothing" element to
-the move-assignment operator, because using it correctly shall now throw an
+the move-assignment operator, because using it correctly shall not throw an
 exception.
 </p>
 
