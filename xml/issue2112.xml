@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2112" status="Open">
+<issue num="2112" status="Immediate">
 <title>User-defined classes that cannot be derived from</title>
 <section><sref ref="[conforming]"/>,<sref ref="[allocator.traits]"/>,<sref ref="[allocator.adaptor.syn]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -164,6 +164,15 @@ int main()
   static_assert(!is_final&lt;Incomplete&gt;{}, ""); // <span style="color:#C80000;font-weight:bolder">error incomplete type 'Incomplete' used in type trait expression</span>
 }
 </pre></blockquote>
+
+<note>2014-02-14, Issaquah: Move to Immediate</note>
+<p>
+This is an important issue, that we really want to solve for C++14.
+</p>
+
+<p>
+Move to Immediate after polling LEWG, and then the NB heads of delegation.
+</p>
 
 </discussion>
 

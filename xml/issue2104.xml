@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2104" status="New">
+<issue num="2104" status="Immediate">
 <title><tt>unique_lock</tt> move-assignment should not be <tt>noexcept</tt></title>
 <section><sref ref="[thread.lock.unique]"/></section>
 <submitter>Anthony Williams</submitter>
@@ -74,6 +74,8 @@ The correct fix seems to me to also add a "<i>Throws</i>: Nothing" element to
 the move-assignment operator, because using it correctly shall now throw an
 exception.
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate after SG1 review</note>
 
 </discussion>
 

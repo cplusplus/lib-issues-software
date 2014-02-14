@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2186" status="Open">
+<issue num="2186" status="Immediate">
 <title>Incomplete action on <tt>async/launch::deferred</tt></title>
 <section><sref ref="[futures.async]"/></section>
 <submitter>Vicente J. Botet Escriba</submitter>
@@ -29,6 +29,8 @@ Hans: we should redraft to factor out the proposed text outside the two bullets.
 <p>
 Moved to open
 </p>
+
+<note>Issaquah 20014-10-11: Move to Immediate after SG1 review</note>
 
 </discussion>
 
