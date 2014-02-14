@@ -31,11 +31,16 @@ or is the exact state unspecified?
 Implementations differ.
 </p>
 
+<note>2014-02-13, Issaquah</note>
+<p>
+Walter Brown says that Table 117 makes this very clear, and that the answer is "Yes"
+<p/>
+Suggested resolution: NAD
+</p>
+
 </discussion>
 
 <resolution>
-Walter Brown says that Table 117 makes this very clear, and that the answer is "Yes"
-Suggeted resolution: NAD
 </resolution>
 
 </issue>
