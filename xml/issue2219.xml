@@ -64,9 +64,12 @@ also possible that this clause <i>is</i> that single place.
 <tt>reference_wrapper</tt>, so we probably need a separate bullet to handle the
 <tt>reference_wrapper</tt> case.</p>
 
-</discussion>
+<note>2014-02-14, Issaquah, Mike Spertus supplies wording</note>
 
-<resolution>
+<p><strong>Previous resolution from Jonathan [SUPERSEDED]:</strong></p>
+
+<blockquote class="note">
+
 <p>This wording is relative to N3485.</p>
 
 <ol>
@@ -95,6 +98,72 @@ is an object of type <tt>T</tt> or a reference to an object of type <del><tt>T</
 type derived from <tt>T</tt></del> <ins><tt>U</tt> or an object of type <tt>reference_wrapper&lt;U&gt;</tt> 
 or a reference to an object of type <tt>reference_wrapper&lt;U&gt;</tt> where <tt>U</tt> is either the type 
 <tt>T</tt> or a type derived from <tt>T</tt></ins>;
+</p></li>
+
+<li><p>
+<tt>(*t1).*f</tt> when <tt>N == 1</tt> and <tt>f</tt> is a pointer to member data of a class <tt>T</tt> and <tt>t1</tt> 
+is not one of the types described in the previous item;
+</p></li>
+
+<li><p>
+<tt>f(t1, t2, ..., tN)</tt> in all other cases.
+</p></li>
+</ul>
+
+</blockquote>
+
+</li>
+</ol>
+
+</blockquote>
+ 
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Edit <sref ref="[func.require]"/>:</p>
+<blockquote><p>
+Define <tt><i>INVOKE</i>(f, t1, t2, ..., tN)</tt> as follows:
+</p>
+<ul>
+<li><p>
+<tt>(t1.*f)(t2, ..., tN)</tt> when <tt>f</tt> is a pointer to a member function of a class <tt>T</tt> and 
+<tt>t1</tt> is an object of type <tt>T</tt> or a reference to an object of type <tt>T</tt> or a reference 
+to an object of a type derived from <tt>T</tt>;
+</p>
+</li>
+
+<li><p>
+<ins>
+<tt>(t1.get().*f)(t2, ..., tN)</tt> when <tt>f</tt> is a pointer to a member function
+of class <tt>T</tt>
+and <tt>t1</tt> is an object of type <tt>reference_wrapper&lt;U&gt;</tt> where <tt>U</tt>
+is either the type <tt>T</tt> or a type derived from <tt>T</tt>.
+</ins>
+</p>
+</li>
+
+<li><p>
+<tt>((*t1).*f)(t2, ..., tN)</tt> when <tt>f</tt> is a pointer to a member function of a class <tt>T</tt> and 
+<tt>t1</tt> is not one of the types described in the previous item;
+</p></li>
+
+
+
+<li><p> 
+<tt>t1.*f</tt> when <tt>N == 1</tt> and <tt>f</tt> is a pointer to member data of a class <tt>T</tt> and <tt>t1</tt> 
+is an object of type <tt>T</tt> or a reference to an object of type <tt>T</tt> or a reference to an object of a 
+type derived from <tt>T</tt>;
+</p></li>
+
+<li><p>
+<ins>
+<tt>t1.get().*f</tt> when <tt>N == 1</tt> and <tt>f</tt> is a pointer to member data of a
+class <tt>T</tt> and <tt>t1</tt> is an object of type <tt>reference_wrapper&lt;U&gt;</tt>
+where <tt>U</tt> is either the type <tt>T</tt> or a type derived from <tt>T</tt>.
+</ins>
 </p></li>
 
 <li><p>
