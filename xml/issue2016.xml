@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2016" status="Open">
+<issue num="2016" status="Ready">
 <title><tt>Allocators</tt> must be no-throw <i>swappable</i></title>
 <section><sref ref="[allocator.requirements]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -52,6 +52,11 @@ and I need to allocate a new sentinel using the new allocator without destroying
 allocator and sentinel pointer in atomically, without risk of an exception leaving one inconsistent with the other.
 <p/>
 Please update the proposed resolution to add the nothrow requirement to copy-assignment.
+</p>
+
+<note>2014-02-14 Issaquah: Move to Ready</note>
+<p>
+Fix a couple of grammar issues related to calling <tt>swap</tt> and move to Ready.
 </p>
 
 </discussion>
@@ -159,12 +164,12 @@ used to construct the container or, if that allocator has been replaced, a copy 
 9 - The expression <tt>a.swap(b)</tt>, for containers <tt>a</tt> and <tt>b</tt> of a standard container type 
 other than <tt>array</tt>, shall exchange the values of <tt>a</tt> and <tt>b</tt> without invoking any move, 
 copy, or swap operations on the individual container elements. <ins>Lvalues of a</ins><del>A</del>ny <tt>Compare</tt>, 
-<tt>Pred</tt>, or <tt>Hash</tt> object<del>s</del> belonging to <tt>a</tt> and <tt>b</tt> shall be swappable 
+<tt>Pred</tt>, or <tt>Hash</tt> <del>objects</del><ins>types</ins> belonging to <tt>a</tt> and <tt>b</tt> shall be swappable 
 and shall be exchanged by <del>unqualified calls to non-member</del> <ins>calling</ins> <tt>swap</tt> 
 <ins>as described in <sref ref="[swappable.requirements]"/></ins>. If <tt>allocator_traits&lt;allocator_type&gt;::propagate_on_container_swap::value</tt> 
 is <tt>true</tt>, then <ins>lvalues of <tt>allocator_type</tt> shall be swappable and</ins> the allocators of <tt>a</tt> and 
-<tt>b</tt> shall also be exchanged using <ins>a</ins> <del>an unqualified call to non-member</del> 
-<tt>swap</tt> <ins>call</ins> <ins>as described in <sref ref="[swappable.requirements]"/></ins>. Otherwise, 
+<tt>b</tt> shall also be exchanged <del>using an unqualified call to non-member</del><ins>by calling</ins>
+<tt>swap</tt> <ins>as described in <sref ref="[swappable.requirements]"/></ins>. Otherwise, 
 <del>they</del><ins>the allocators</ins> shall not be swapped, and the behavior is undefined unless
 <tt>a.get_allocator() == b.get_allocator()</tt>. Every iterator referring to an element in one container before
 the swap shall refer to the same element in the other container after the swap. It is unspecified whether an
