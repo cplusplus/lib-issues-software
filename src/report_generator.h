@@ -52,6 +52,8 @@ struct report_generator {
 
    void make_sort_by_section(std::vector<issue>& issues, std::string const & filename, bool active_only = false);
 
+   void make_editors_issues(std::vector<issue> const & issues, std::string const & path);
+
 private:
    mailing_info const & lwg_issues_xml;
    section_map &        section_db;

@@ -27,6 +27,7 @@ struct issue {
    std::string                text;           // text representing the issue
    int                        priority = 99;  // severity, 1 = critical, 4 = minor concern, 0 = trivial to resolve, 99 = not yet prioritised
    std::string                owner;          // person identified as taking ownership of drafting/progressing the issue
+   std::string                resolution;     // extracted resolution text (if any), also present in 'text'
    bool                       has_resolution; // 'true' if 'text' contains a proposed resolution
 };
 

@@ -37,11 +37,8 @@ auto utc_timestamp() -> std::tm const & {
    return utc;
 }
 
-
 // global data - would like to do something about that.
-static std::string const build_timestamp(
-       format_time("<p>Revised %Y-%m-%d at %H:%m:%S UTC</p>\n", utc_timestamp()));
-
+static std::string const build_timestamp{format_time("<p>Revised %Y-%m-%d at %H:%m:%S UTC</p>\n", utc_timestamp())};
 
 
 struct order_by_first_tag {
@@ -317,6 +314,32 @@ void print_issues(std::ostream & out, std::vector<lwg::issue> const & issues, lw
    }
 }
 
+template <typename Pred>
+void print_resolutions(std::ostream & out, std::vector<lwg::issue> const & issues, lwg::section_map & section_db, Pred predicate) {
+   // This construction calls out for filter-iterators
+//   std::multiset<lwg::issue, order_by_first_tag> pending_issues;
+   std::vector<lwg::issue> pending_issues;
+   for (auto const & elem : issues ) {
+      if (predicate(elem)) {
+         pending_issues.emplace_back(elem);
+      }
+   }
+
+   sort(begin(pending_issues), end(pending_issues), order_by_section{section_db});
+
+   for (auto const & iss : pending_issues) {
+      if (predicate(iss)) {
+         out << "<hr>\n"
+
+             // Number and title
+             << "<h3><a name=\"" << iss.num << "\"></a>" << iss.num << ". " << iss.title << "</h3>\n"
+
+             // text
+             << iss.resolution << "\n\n";
+      }
+   }
+}
+
 void print_paper_heading(std::ostream& out, std::string const & paper, lwg::mailing_info const & lwg_issues_xml) {
    out <<
 R"(<table>
@@ -350,7 +373,7 @@ R"(<table>
       out << "C++ Standard Library Closed Issues List (Revision ";
    }
    out << lwg_issues_xml.get_revision() << ")</h1>\n";
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
 }
 
 } // close unnamed namespace
@@ -428,7 +451,7 @@ void report_generator::make_tentative(std::vector<issue> const & issues, std::st
 //   out << lwg_issues_xml.get_intro("active") << '\n';
 //   out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues) << '\n';
 //   out << "<h2><a name=\"Status\"></a>Issue Status</h2>\n" << lwg_issues_xml.get_statuses() << '\n';
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
    out << "<h2>Tentative Issues</h2>\n";
    print_issues(out, issues, section_db, [](issue const & i) {return is_tentative(i.stat);} );
    print_file_trailer(out);
@@ -448,7 +471,7 @@ void report_generator::make_unresolved(std::vector<issue> const & issues, std::s
 //   out << lwg_issues_xml.get_intro("active") << '\n';
 //   out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues) << '\n';
 //   out << "<h2><a name=\"Status\"></a>Issue Status</h2>\n" << lwg_issues_xml.get_statuses() << '\n';
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
    out << "<h2>Unresolved Issues</h2>\n";
    print_issues(out, issues, section_db, [](issue const & i) {return is_not_resolved(i.stat);} );
    print_file_trailer(out);
@@ -463,16 +486,46 @@ void report_generator::make_immediate(std::vector<issue> const & issues, std::st
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
    print_file_header(out, "C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
-//   print_paper_heading(out, "active", lwg_issues_xml);
-//   out << lwg_issues_xml.get_intro("active") << '\n';
-//   out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues) << '\n';
-//   out << "<h2><a name=\"Status\"></a>Issue Status</h2>\n" << lwg_issues_xml.get_statuses() << '\n';
-   out << build_timestamp;
+out << R"(<h1>C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]</h1>
+<table>
+<tr>
+<td align="left">Doc. no.</td>
+<td align="left">N4???</td>
+</tr>
+<tr>
+<td align="left">Date:</td>
+<td align="left">)" << build_timestamp << R"(</td>
+</tr>
+<tr>
+<td align="left">Project:</td>
+<td align="left">Programming Language C++</td>
+</tr>
+<tr>
+<td align="left">Reply to:</td>
+<td align="left">Alisdair Meredith &lt;<a href="mailto:lwgchair@gmail.com">lwgchair@gmail.com</a>&gt;</td>
+</tr>
+</table>
+)";
    out << "<h2>Immediate Issues</h2>\n";
    print_issues(out, issues, section_db, [](issue const & i) {return "Immediate" == i.stat;} );
    print_file_trailer(out);
 }
 
+void report_generator::make_editors_issues(std::vector<issue> const & issues, std::string const & path) {
+   // publish a single document listing all 'Voting' and 'Immediate' resolutions (only).
+   assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
+
+   std::string filename{path + "lwg-issues-for-editor.html"};
+   std::ofstream out{filename.c_str()};
+   if (!out) {
+     throw std::runtime_error{"Failed to open " + filename};
+   }
+   print_file_header(out, "C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
+   out << "<h1>C++ Standard Library Issues Resolved In [INSERT CURRENT MEETING HERE]</h1>\n";
+   print_resolutions(out, issues, section_db, [](issue const & i) {return "Immediate" == i.stat  or  "Voting" == i.stat;} );
+//   print_resolutions(out, issues, section_db, [](issue const & i) {return "Pending WP" == i.stat;} );
+   print_file_trailer(out);
+}
 
 void report_generator::make_sort_by_num(std::vector<issue>& issues, std::string const & filename) {
    sort(issues.begin(), issues.end(), order_by_issue_number{});
@@ -489,7 +542,7 @@ R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revis
 <p>This document is the Table of Contents for the <a href="lwg-active.html">Library Active Issues List</a>,
 <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
 )";
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
 
    print_table(out, issues.begin(), issues.end(), section_db);
    print_file_trailer(out);
@@ -511,7 +564,7 @@ R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revis
 <p>This document is the Table of Contents for the <a href="lwg-active.html">Library Active Issues List</a>,
 <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
 )";
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
 
 //   print_table(out, issues.begin(), issues.end(), section_db);
 
@@ -555,7 +608,7 @@ This document is the Index by Status and Section for the <a href="lwg-active.htm
 </p>
 
 )";
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
 
    for (auto i = issues.cbegin(), e = issues.cend(); i != e;) {
       auto const & current_status = i->stat;
@@ -589,7 +642,7 @@ This document is the Index by Status and Date for the <a href="lwg-active.html">
 <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.
 </p>
 )";
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
 
    for (auto i = issues.cbegin(), e = issues.cend(); i != e;) {
       std::string const & current_status = i->stat;
@@ -649,7 +702,7 @@ void report_generator::make_sort_by_section(std::vector<issue>& issues, std::str
    else {
       out << "<p><a href=\"lwg-index-open.html\">(view only non-Ready open issues)</a></p>\n";
    }
-   out << build_timestamp;
+   out << "<p>" << build_timestamp << "</p>";
 
    // Would prefer to use const_iterators from here, but oh well....
    for (auto i = b; i != e;) {

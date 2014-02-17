@@ -228,7 +228,7 @@ void format_issue_as_html(lwg::issue & is,
    // Essentially, this function is a tiny xml-parser driven by a stack of open tags, that pops as tags
    // are closed.
 
-   std::string & s = is.text;  // convenience alias for string to be reformatted
+   auto fix_tags = [&](std::string &s) {
    int issue_num = is.num;     // current issue number for the issue being formatted
    std::vector<std::string> tag_stack;   // stack of open XML tags as we parse
    std::ostringstream er;      // stream to format error messages
@@ -430,6 +430,11 @@ void format_issue_as_html(lwg::issue & is,
          }
       }
    }
+   };
+
+   fix_tags(is.text);
+   fix_tags(is.resolution);
+
 }
 
 
@@ -772,6 +777,8 @@ int main(int argc, char* argv[]) {
       generator.make_tentative (issues, target_path);
       generator.make_unresolved(issues, target_path);
       generator.make_immediate (issues, target_path);
+      generator.make_editors_issues(issues, target_path);
+
 
 
       // Now we have a parsed and formatted set of issues, we can write the standard set of HTML documents

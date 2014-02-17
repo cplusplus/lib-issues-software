@@ -263,7 +263,13 @@ auto lwg::parse_issue_from_file(std::string tx, std::string const & filename, lw
       else {
          k2 += sizeof("<resolution>") - 1;
          auto l2 = tx.find("</resolution>", k2);
-         is.has_resolution = l2 - k2 > 15;
+         is.resolution = tx.substr(k2, l2 - k2);
+         if (is.resolution.length() < 15) {
+            // Filter small ammounts of whitespace between tags, with no actual resolution
+            is.resolution.clear();
+         }
+//         is.has_resolution = l2 - k2 > 15;
+         is.has_resolution = !is.resolution.empty();
       }
    }
    else {
