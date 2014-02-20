@@ -255,7 +255,7 @@ auto lwg::parse_issue_from_file(std::string tx, std::string const & filename, lw
    tx.erase(0, k);
 
    // Find out if issue has a proposed resolution
-   if (is_active(is.stat)) {
+   if (is_active(is.stat)  or  "Pending WP" == is.stat) {
       auto k2 = tx.find("<resolution>", 0);
       if (k2 == std::string::npos) {
          is.has_resolution = false;
