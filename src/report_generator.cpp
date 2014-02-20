@@ -522,8 +522,7 @@ void report_generator::make_editors_issues(std::vector<issue> const & issues, st
    }
    print_file_header(out, "C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
    out << "<h1>C++ Standard Library Issues Resolved In [INSERT CURRENT MEETING HERE]</h1>\n";
-   print_resolutions(out, issues, section_db, [](issue const & i) {return "Immediate" == i.stat  or  "Voting" == i.stat;} );
-//   print_resolutions(out, issues, section_db, [](issue const & i) {return "Pending WP" == i.stat;} );
+   print_resolutions(out, issues, section_db, [](issue const & i) {return "Pending WP" == i.stat;} );
    print_file_trailer(out);
 }
 
