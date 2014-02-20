@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2142" status="Voting">
+<issue num="2142" status="Pending WP">
 <title><tt>packaged_task::operator()</tt> synchronization too broad?</title>
 <section><sref ref="[futures.task.members]"/></section>
 <submitter>Pete Becker</submitter>

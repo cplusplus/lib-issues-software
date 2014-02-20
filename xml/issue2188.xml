@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2188" status="Immediate">
+<issue num="2188" status="Pending WP">
 <title>Reverse iterator does not fully support targets that overload <tt>operator&amp;</tt></title>
 <section><sref ref="[reverse.iter.opref]"/></section>
 <submitter>Alisdair Meredith</submitter>

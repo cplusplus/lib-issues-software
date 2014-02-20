@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2341" status="Immediate">
+<issue num="2341" status="Pending WP">
 <title>Inconsistency between <tt>basic_ostream::seekp(pos)</tt> and <tt>basic_ostream::seekp(off, dir)</tt></title>
 <section><sref ref="[ostream.seeks]"/></section>
 <submitter>Marshall Clow </submitter>

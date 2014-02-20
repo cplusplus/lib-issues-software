@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2359" status="Immediate">
+<issue num="2359" status="Pending WP">
 <title>How does <tt>regex_constants::nosubs</tt> affect <tt>basic_regex::mark_count()</tt>?</title>
 <section><sref ref="[re.synopt]"/></section>
 <submitter>Jonathan Wakely</submitter>

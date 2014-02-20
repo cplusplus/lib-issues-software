@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2360" status="Immediate">
+<issue num="2360" status="Pending WP">
 <title><tt>reverse_iterator::operator*()</tt> is unimplementable</title>
 <section><sref ref="[reverse.iterator]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

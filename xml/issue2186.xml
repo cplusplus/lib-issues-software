@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2186" status="Immediate">
+<issue num="2186" status="Pending WP">
 <title>Incomplete action on <tt>async/launch::deferred</tt></title>
 <section><sref ref="[futures.async]"/></section>
 <submitter>Vicente J. Botet Escriba</submitter>

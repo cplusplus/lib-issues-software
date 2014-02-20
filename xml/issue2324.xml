@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2324" status="Immediate">
+<issue num="2324" status="Pending WP">
 <title>Insert iterator constructors should use <tt>addressof()</tt></title>
 <section><sref ref="[back.insert.iter.cons]"/>, <sref ref="[front.insert.iter.cons]"/>, <sref ref="[insert.iter.cons]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

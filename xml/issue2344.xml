@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2344" status="Immediate">
+<issue num="2344" status="Pending WP">
 <title><tt>quoted()</tt>'s interaction with padding is unclear</title>
 <section><sref ref="[quoted.manip]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

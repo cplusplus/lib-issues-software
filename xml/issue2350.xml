@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2350" status="Immediate">
+<issue num="2350" status="Pending WP">
 <title><tt>min</tt>, <tt>max</tt>, and <tt>minmax</tt> should be <tt>constexpr</tt></title>
 <section><sref ref="[alg.min.max]"/></section>
 <submitter>Ville Voutilainen</submitter>

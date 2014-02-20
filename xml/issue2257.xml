@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2257" status="Voting">
+<issue num="2257" status="Pending WP">
 <title>Simplify container requirements with the new algorithms</title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Marshall Clow</submitter>

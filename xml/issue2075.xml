@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2075" status="Open">
+<issue num="2075" status="Resolved">
 <title>Progress guarantees, lock-free property, and scheduling assumptions</title>
 <section><sref ref="[intro.multithread]"/>,<sref ref="[atomics.lockfree]"/>,<sref ref="[atomics.types.operations.req]"/></section>
 <submitter>Torvald Riegel</submitter>
@@ -210,6 +210,9 @@ instances of pointers of the same type the returned value could be different.
 </discussion>
 
 <resolution>
+
+<note>2014-02-16 Issaquah: Resolved by paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3927">n3927</a></note>
+
 </resolution>
 
 </issue>

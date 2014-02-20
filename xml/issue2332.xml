@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2332" status="Immediate">
+<issue num="2332" status="Pending WP">
 <title><tt>regex_iterator/regex_token_iterator</tt> should forbid temporary regexes</title>
 <section><sref ref="[re.iter]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

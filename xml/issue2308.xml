@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2308" status="Immediate">
+<issue num="2308" status="Pending WP">
 <title>Clarify container destructor requirements w.r.t. <tt>std::array</tt></title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Jonathan Wakely</submitter>

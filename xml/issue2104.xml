@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2104" status="Immediate">
+<issue num="2104" status="Pending WP">
 <title><tt>unique_lock</tt> move-assignment should not be <tt>noexcept</tt></title>
 <section><sref ref="[thread.lock.unique]"/></section>
 <submitter>Anthony Williams</submitter>

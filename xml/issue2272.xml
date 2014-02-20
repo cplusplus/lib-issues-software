@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2272" status="Voting">
+<issue num="2272" status="Pending WP">
 <title><tt>quoted</tt> should use <tt>char_traits::eq</tt> for character comparison</title>
 <section><sref ref="[quoted.manip]"/></section>
 <submitter>Marshall Clow</submitter>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2288" status="New">
+<issue num="2288" status="Pending WP">
 <title>Inconsistent requirements for shared mutexes</title>
 <section><sref ref="[thread.sharedmutex.requirements]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -72,6 +72,8 @@ are incomplete and should add the non-recursive <tt>std::shared_mutex</tt> as we
 </p>
 </li>
 </ol>
+
+<note>2014-02-16: Moved as Immediate</note>
 
 </discussion>
 

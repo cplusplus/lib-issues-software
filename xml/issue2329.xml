@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2329" status="Immediate">
+<issue num="2329" status="Pending WP">
 <title><tt>regex_match()/regex_search()</tt> with <tt>match_results</tt> should forbid temporary strings</title>
 <section><sref ref="[re.syn]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

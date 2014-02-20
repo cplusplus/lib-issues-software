@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1450" status="Immediate">
+<issue num="1450" status="Pending WP">
 <title>Contradiction in <tt>regex_constants</tt></title>
 <section><sref ref="[re.matchflag]"/></section>
 <submitter>BSI</submitter>

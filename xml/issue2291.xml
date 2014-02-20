@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2291" status="Voting">
+<issue num="2291" status="Pending WP">
 <title><tt>std::hash</tt> is vulnerable to collision DoS attack</title>
 <section><sref ref="[hash.requirements]"/></section>
 <submitter>Zhihao Yuan</submitter>
