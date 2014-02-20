@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2100" status="WP">
+<issue num="2100" status="C++14">
 <title>timed waiting functions cannot timeout if <tt>launch::async</tt> policy used</title>
 <section><sref ref="[futures.async]"/></section>
 <submitter>Jonathan Wakely</submitter>

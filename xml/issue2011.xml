@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2011" status="WP">
+<issue num="2011" status="C++14">
 <title>Unexpected output required of strings</title>
 <section><sref ref="[string.io]"/></section>
 <submitter>James Kanze</submitter>

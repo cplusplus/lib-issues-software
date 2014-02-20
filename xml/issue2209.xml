@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2209" status="WP">
+<issue num="2209" status="C++14">
 <title><tt>assign()</tt> overspecified for sequence containers</title>
 <section><sref ref="[sequences]"/></section>
 <submitter>Jonathan Wakely</submitter>

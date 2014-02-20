@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2140" status="WP">
+<issue num="2140" status="C++14">
 <title>Meaning of <tt>notify_all_at_thread_exit</tt> synchronization requirement?</title>
 <section><sref ref="[thread.condition]"/></section>
 <submitter>Pete Becker</submitter>

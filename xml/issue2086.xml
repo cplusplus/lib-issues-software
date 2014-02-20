@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2086" status="WP">
+<issue num="2086" status="C++14">
 <title>Overly generic type support for math functions</title>
 <section><sref ref="[c.math]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
