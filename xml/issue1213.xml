@@ -3,12 +3,12 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1213" status="Deferred">
+<issue num="1213" status="Open">
 <title>Meaning of valid and singular iterator underspecified</title>
 <section><sref ref="[iterator.requirements]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>19 Sep 2009</date>
-<priority>5</priority>
+<priority>4</priority>
 
 <discussion>
 <p>
@@ -140,6 +140,10 @@ A later paper is in preparation.
 <p>
 Doesn't need to be resolved for Ox
 </p>
+
+
+<note>2014-02-20 Re-open Deferred issues as Priority 4</note>
+
 </discussion>
 
 <resolution>

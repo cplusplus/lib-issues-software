@@ -3,12 +3,12 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2095" status="Deferred">
+<issue num="2095" status="Open">
 <title><tt>promise</tt> and <tt>packaged_task</tt> missing constructors needed for uses-allocator construction</title>
 <section><sref ref="[futures.promise]"/>,<sref ref="[futures.task]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>1 Nov 2011</date>
-<priority>5</priority>
+<priority>4</priority>
 
 <discussion>
 
@@ -52,6 +52,8 @@ This issue has much in common with similar problems with <tt>std::function</tt> 
 by the polymorphic allocators proposal currently under evaluation in LEWG.  Defer further discussion on
 this topic until the final outcome of that paper and its proposed resolution is known.
 </p>
+
+<note>2014-02-20 Re-open Deferred issues as Priority 4</note>
 
 </discussion>
 

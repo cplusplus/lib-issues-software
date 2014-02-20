@@ -3,12 +3,12 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2202" status="Deferred">
+<issue num="2202" status="Open">
 <title>Missing allocator support by <tt>async</tt></title>
 <section><sref ref="[futures.async]"/></section>
 <submitter>Detlef Vollmann</submitter>
 <date>19 Oct 2012</date>
-<priority>5</priority>
+<priority>4</priority>
 
 <discussion>
 
@@ -29,6 +29,8 @@ Alisdair: defer issues to wait for polymorphic allocators
 <p/>
 Alisdair: defer, active topic of research Deferred 
 </p>
+
+<note>2014-02-20 Re-open Deferred issues as Priority 4</note>
 
 </discussion>
 

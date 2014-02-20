@@ -3,12 +3,12 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2230" status="Deferred">
+<issue num="2230" status="Open">
 <title>&quot;<em>see below</em>&quot; for initializer-list constructors of unordered containers</title>
 <section><sref ref="[unord]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>6 Jan 2013</date>
-<priority>5</priority>
+<priority>4</priority>
 
 <discussion>
 <p>
@@ -54,6 +54,8 @@ Stefanus: how to proceed
 <p/>
 Walter: significant overlap with forthcoming issue, suggestion to defer
 </p>
+
+<note>2014-02-20 Re-open Deferred issues as Priority 4</note>
 
 </discussion>
 

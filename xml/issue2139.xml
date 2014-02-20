@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2139" status="Deferred">
+<issue num="2139" status="Open">
 <title>What is a <em>user-defined</em> type?</title>
 <section><sref ref="[namespace.std]"/>, <sref ref="[syserr]"/>, <sref ref="[allocator.uses.trait]"/>, 
 <sref ref="[func.bind.isbind]"/>, <sref ref="[func.bind.isplace]"/>, <sref ref="[unord.hash]"/>,
@@ -11,7 +11,7 @@
 <sref ref="[re.regiter.incr]"/></section>
 <submitter>Lo&iuml;c Joly</submitter>
 <date>8 Mar 2012</date>
-<priority>5</priority>
+<priority>4</priority>
 
 <discussion>
 
@@ -54,6 +54,8 @@ Move to Deferred as we are not opposed to some motivated individual coming back 
 wording to review, but do not want to go out of our way to encourage someone to work on this
 in preference to other issues.
 </p>
+
+<note>2014-02-20 Re-open Deferred issues as Priority 4</note>
 
 </discussion>
 

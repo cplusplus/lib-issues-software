@@ -8,6 +8,7 @@
 <section><sref ref="[facet.num.put.virtuals]"/>,<sref ref="[ios::fmtflags]"/>,<sref ref="[fmtflags.manip]"/></section>
 <submitter>Benjamin Kosnik</submitter>
 <date>15 Dec 2011</date>
+<priority>5</priority>
 
 <discussion>
 
