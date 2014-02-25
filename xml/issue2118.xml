@@ -183,6 +183,39 @@ create private templated overloads of these members. &mdash; <i>end note</i>]
 </p></blockquote></blockquote>
 </blockquote>
 
+<note>2014-02, Issaquah</note>
+<p>
+GR: want to prevent unsafe conversions. Standard is inconsistent how it does this. for <tt>reset()</tt> has deleted function 
+template capturing everything except the known-safe cases. Other functions use SFINAE. Main reason this is hard is that 
+<tt>unique_ptr</tt> supports fancy pointers. Have to figure out how to handle them and what requirements to put on them. 
+Requirements are minimal, not even required to work with <tt>pointer_traits</tt>.
+<p/>
+STL surprised <tt>pointer_traits</tt> doesn't work
+<p/>
+GR: ways to get fancy pointers to work is to delegate responsibility for preventing unsafe conversions to the fancy pointers themselves. 
+Howard doesn't like that, he wants even fancy pointers to be prevented from doing unsafe conversions in <tt>unique_ptr</tt> contexts.
+<p/>
+AM: Howard says <tt>unique_ptr</tt> was meant to be very very safe under all conditions, this open a hole in that. Howard wants to 
+eke forward and support more, but not if we open any holes in type safety. 
+<p/>
+GR: do we need to be typesafe even for fancy types with incorrect <tt>pointer_traits</tt>?
+<p/>
+AM: that would mean it's only unsafe for people who lie by providing a broken specialization of <tt>pointer_traits</tt>
+<p/>
+GR: probably can't continue with ambiguity between using SFINAE and ill-formedness. Would appreciate guidance on direction used for that.
+<p/>
+STL: difference is observable in convertibility using type traits. 
+<p/>
+STL: for <tt>reset()</tt> which doesn't affect convertibility ill-formed allows <tt>static_assert</tt>, better diagnostic. 
+For assignment it's detectable and has traits, constraining them is better.
+<p/>
+EN: I strongly prefer constraints than <tt>static_asserts</tt> 
+<p/>
+STL: if we could rely on <tt>pointer_traits</tt> that might be good. Alternatively could we add more machinery to deleter? 
+make deleter say conversions are allowed, otherwise we lock down all conversions. basically want to know if converting <tt>U</tt> to 
+<tt>T</tt> is safe.
+</p>
+
 </discussion>
 
 <resolution>
