@@ -25,8 +25,14 @@ memory even for the move operations (similar as for some other containers) and t
 and other container types. Counter arguments were that potentially throwing move operations reduce much of the advantages of move-support,
 e.g. in <tt>vector&lt;string&gt;</tt>.
 <p/>
-Straw polls did not gave conclusive results to accept the suggested wording. It was suggested to introduce a special library
-vocabulary that specifies a "normative encouragement to not throw exceptions" for functions like these. 
+straw poll: accept wording in the issue<br/>
+SF 4 WF 4 N 0 WA 1 SA 1 
+<p/>
+straw poll: 14 or 17?<br/>
+C++14: 4 C++17: 4 
+<p/>
+It was suggested to introduce a special library vocabulary that specifies a "normative encouragement to not throw exceptions" for 
+functions like these. 
 <p/>
 NJ: I offer to write a proposal to add encouragement for not throwing ... "<tt>noexcept</tt> in italics means should not throw" 
 </p>
