@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2346" status="Pending WP">
+<issue num="2346" status="C++14">
 <title><tt>integral_constant</tt>'s member functions should be marked <tt>noexcept</tt></title>
 <section><sref ref="[meta.help]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

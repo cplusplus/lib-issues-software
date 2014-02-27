@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2330" status="Pending WP">
+<issue num="2330" status="C++14">
 <title><tt>regex("meow", regex::icase)</tt> is technically forbidden but should be permitted</title>
 <section><sref ref="[re.synopt]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

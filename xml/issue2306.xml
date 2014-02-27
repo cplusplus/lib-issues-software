@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2306" status="Pending WP">
+<issue num="2306" status="C++14">
 <title><tt>match_results::reference</tt> should be <tt>value_type&amp;</tt>, not <tt>const value_type&amp;</tt></title>
 <section><sref ref="[re.results]"/></section>
 <submitter>Matt Austern</submitter>

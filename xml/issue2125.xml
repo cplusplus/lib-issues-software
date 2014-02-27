@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2125" status="Tentatively NAD Editorial">
+<issue num="2125" status="Pending NAD Editorial">
 <title><tt>TimedMutex</tt> specification problem</title>
 <section><sref ref="[thread.timedmutex.requirements]"/>,<sref ref="[thread.timedmutex.class]"/></section>
 <submitter>Vicente J. Botet Escriba</submitter>

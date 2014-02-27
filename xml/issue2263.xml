@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2263" status="Pending WP">
+<issue num="2263" status="C++14">
 <title>Comparing iterators and allocator pointers with different const-character</title>
 <section><sref ref="[allocator.requirements]"/>, <sref ref="[container.requirements]"/></section>
 <submitter>Howard Hinnant</submitter>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2003" status="Pending WP">
+<issue num="2003" status="C++14">
 <title>String exception inconsistency in erase.</title>
 <section><sref ref="[string.require]"/></section>
 <submitter>Jos&eacute; Daniel Garc&iacute;a S&aacute;nchez</submitter>

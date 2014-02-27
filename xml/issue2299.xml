@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2299" status="Pending WP">
+<issue num="2299" status="C++14">
 <title>[CD] Effects of inaccessible <tt>key_compare::is_transparent</tt> type are not clear</title>
 <section><sref ref="[associative.reqmts]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>

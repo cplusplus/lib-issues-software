@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2320" status="Pending WP">
+<issue num="2320" status="C++14">
 <title><tt>select_on_container_copy_construction()</tt> takes allocators, not containers</title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

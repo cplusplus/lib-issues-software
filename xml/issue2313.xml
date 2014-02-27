@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2313" status="Pending WP">
+<issue num="2313" status="C++14">
 <title><tt>tuple_size</tt> should always derive from <tt>integral_constant&lt;size_t, N&gt;</tt></title>
 <section><sref ref="[tuple.helper]"/></section>
 <submitter>Stephan T. Lavavej</submitter>

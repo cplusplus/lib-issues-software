@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2278" status="Pending WP">
+<issue num="2278" status="C++14">
 <title>User-defined literals for Standard Library types</title>
 <section><sref ref="[time.syn]"/>, <sref ref="[string.classes]"/></section>
 <submitter>Howard Hinnant</submitter>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2301" status="Pending WP">
+<issue num="2301" status="C++14">
 <title>Why is <tt>std::tie</tt> not <tt>constexpr</tt>?</title>
 <section><sref ref="[tuple.creation]"/></section>
 <submitter>Rein Halbersma</submitter>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2134" status="Tentatively NAD Editorial">
+<issue num="2134" status="Pending NAD Editorial">
 <title>Redundant Mutex requirement?</title>
 <section><sref ref="[thread.mutex.requirements.mutex]"/></section>
 <submitter>Pete Becker</submitter>
