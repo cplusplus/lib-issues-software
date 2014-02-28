@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2258" status="Pending WP">
+<issue num="2258" status="C++14">
 <title><tt>a.erase(q1, q2)</tt> unable to directly return <tt>q2</tt></title>
 <section><sref ref="[associative.reqmts]"/></section>
 <submitter>Geoff Alexander</submitter>

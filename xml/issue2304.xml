@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2304" status="Pending WP">
+<issue num="2304" status="C++14">
 <title>Complexity of <tt>count</tt> in unordered associative containers</title>
 <section><sref ref="[unord.req]"/></section>
 <submitter>Joaqu&iacute;n M L&oacute;pez Mu&ntilde;oz</submitter>
