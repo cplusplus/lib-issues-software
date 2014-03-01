@@ -252,10 +252,10 @@ Amend <sref ref="[terminate]"/> as indicated:
 </p></blockquote>
 
 <blockquote><p>
-<i>Effects:</i> <ins>Calls a <tt>terminate_handler</tt> function.  It is unpecified which <tt>terminate_handler</tt> function will
-be called if an exception is active during a call to <tt>set_terminate</tt>.  Otherwise c</ins><del>C</del>alls the current
+<i>Effects:</i> <ins>Calls a <tt>terminate_handler</tt> function. It is unspecified which <tt>terminate_handler</tt> function will
+be called if an exception is active during a call to <tt>set_terminate</tt>. Otherwise c</ins><del>C</del>alls the current
 <tt>terminate_handler</tt> function. [<i>Note:</i> A default <tt>terminate_handler</tt> is always considered a callable handler in
-this context. <i>- end note</i> ]
+this context. &mdash; <i>end note</i>]
 </p></blockquote>
 
 <p>
@@ -269,10 +269,10 @@ Remarks: Called by the implementation when a function exits via an exception not
 </p></blockquote>
 
 <blockquote><p>
-<i>Effects:</i> <ins>Calls an <tt>unexpected_handler</tt> function.  It is unspecified which <tt>unexpected_handler</tt>
-function will be called if an exception is active during a call to <tt>set_unexpected</tt>.  Otherwise
-c</ins><del>C</del>alls the current <tt>unexpected_handler</tt> function. [ <i>Note:</i> A default <tt>unexpected_handler</tt>
-is always considered a callable handler in this context. <i>- end note</i> ] 
+<i>Effects:</i> <ins>Calls an <tt>unexpected_handler</tt> function. It is unspecified which <tt>unexpected_handler</tt>
+function will be called if an exception is active during a call to <tt>set_unexpected</tt>. Otherwise c</ins><del>C</del>alls the current 
+<tt>unexpected_handler</tt> function. [<i>Note:</i> A default <tt>unexpected_handler</tt> is always considered a callable handler in 
+this context. &mdash; <i>end note</i>] 
 </p></blockquote>
 
 </resolution>

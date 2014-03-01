@@ -34,6 +34,14 @@ Furtheron it seems that in <sref ref="[diff.library]"/>, Table 149/150 further m
 <tt>HUGE_VALF</tt>, <tt>INFINITY</tt>, etc.
 </p>
 
+<note>2014-02 Issaquah:</note>
+<p>
+This is an issue, all of C has not been updated for C99, C99 functions are missing, whole section needs to be overhauled.
+<p/>
+The issue needs to be updated for functions and other missing items and when that happens the issue title is wrong and
+needs to be adapted.
+</p>
+
 </discussion>
 
 <resolution>

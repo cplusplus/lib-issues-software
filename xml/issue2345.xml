@@ -25,7 +25,7 @@ This is especially relevant to <tt>integer_sequence</tt>, as variadic templates 
 <note>2014-02-13 Issaquah: Close as NAD</note>
 <p>
 AJM: My own implementation used a different alias for types representing parameter packs, and specifically
-did *not* define <tt>type</tt>.  I tried it both ways, and found bugs more quickly when <tt>type</tt> was
+did <em>not</em> define <tt>type</tt>.  I tried it both ways, and found bugs more quickly when <tt>type</tt> was
 not defined.
 </p>
 
