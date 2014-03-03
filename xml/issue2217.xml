@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2217" status="New">
+<issue num="2217" status="Tentatively Ready">
 <title><tt>operator==(sub_match, string)</tt> slices on embedded <tt>'\0'</tt>s</title>
 <section><sref ref="[re.submatch.op]"/></section>
 <submitter>Jeffrey Yasskin</submitter>
@@ -69,6 +69,9 @@ I decided to use the second replacement form
 <p>
 because it already reflects the existing style used in <sref ref="[re.submatch.op]"/> p31.
 </p>
+
+
+<note>2014-02-15 post-Issuaquah session : move to Tentatively Ready</note>
 
 </discussion>
 

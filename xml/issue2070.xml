@@ -180,6 +180,94 @@ bookkeeping structures such as the reference counts. &mdash; <i>end note</i>]
 This issue is related to <iref ref="2089"/>.
 </p>
 
+
+<note>2014-02-15 post-Issuaquah session : move to Tentatively NAD</note>
+<p>
+STL: This takes an allocator, but then ignores its construct. That's squirrely.
+</p>
+<p>
+Alisdair: The convention is when you take an allocator, you use its construct.
+</p>
+<p>
+STL: <sref ref="[container.requirements.general]"/>/3, argh! This fills me with despair, but I understand it now.
+</p>
+<p>
+STL: Ok, this is some cleanup.
+</p>
+<p>
+STL: You're requiring <tt>b</tt> to be of type <tt>A</tt> and not being rebound, is that an overspecification?
+</p>
+<p>
+Pablo: Good point. Hmm, that's only a requirement on what must be well-formed.
+</p>
+<p>
+STL: If it's just a well-formed requirement, then why not just use a directly?
+</p>
+<p>
+Pablo: Yeah, the well-formed requirement is overly complex. It's not a real call, we could just use a directly. It makes it harder to read.
+</p>
+<p>
+Alisdair: <tt>b</tt> should be an allocator in the same family as <tt>a</tt>.
+</p>
+<p>
+Pablo: This is a well-formed requirement, I wonder if it's the capital A that's the problem here. It doesn't matter here, this is way too much wording.
+</p>
+<p>
+Alisdair: It's trying to tie the constructor arguments into the allocator requirements.
+</p>
+<p>
+Pablo: <tt>b</tt> could be struck, that's a runtime quality. The construct will work with anything that's in the family of <tt>A</tt>.
+</p>
+<p>
+Alisdair: The important part is the <tt>forward</tt> of <tt>Args</tt>.
+</p>
+<p>
+Pablo: <tt>A</tt> must be an allocator, and <tt>forward</tt> <tt>Args</tt> must work with that.
+</p>
+<p>
+Alisdair: First let's nail down <tt>A</tt>.
+</p>
+<p>
+Pablo: Then replace <tt>b</tt> with <tt>a</tt>, and strike the rest.
+</p>
+<p>
+STL: You need <tt>pt</tt>'s type, at least.
+</p>
+<p>
+Pablo: There's nothing to be said about runtime constraints here, this function doesn't even take a <tt>pt</tt>.
+</p>
+<p>
+STL: Looking at the Effects, I believe <tt>b</tt> is similarly messed up, we can use <tt>a2</tt> to construct an object.
+</p>
+<p>
+Alisdair: Or any allocator in the family of <tt>a</tt>.
+</p>
+<p>
+STL: We say this stuff for the deallocate too, it should be lifted up.
+</p>
+<p>
+STL: "owns the address" is weird.
+</p>
+<p>
+Alisdair: shared_ptr owns pointers, although it does sound funky.
+</p>
+<p>
+Walter: "to destruct" is ungrammatical.
+</p>
+<p>
+STL: "When ownership is given up" is not what we usually say.
+</p>
+<p>
+Alisdair: I think the Returns clause is the right place to say this.
+</p>
+<p>
+STL: The right place to say this is <tt>shared_ptr</tt>'s dtor, we don't want to use Core's "come from" convention.
+</p>
+<p>
+Alisdair: I'm on the hook to draft cleaner wording.
+</p>
+
+
 </discussion>
 
 <resolution>

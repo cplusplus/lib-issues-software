@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2266" status="New">
+<issue num="2266" status="Tentatively Ready">
 <title><tt>vector</tt> and <tt>deque</tt> have incorrect <tt>insert</tt> requirements</title>
 <section><sref ref="[sequence.reqmts]"/></section>
 <submitter>Ahmed Charles</submitter>
@@ -101,6 +101,18 @@ Inserts copies of elements in <tt>[i, j)</tt> before <tt>p</tt>
 </li>
 </ol>
 </blockquote>
+
+<note>2014-02-15 post-Issuaquah session : move to Tentatively Ready</note>
+<p>
+Pablo: We might have gone too far with the fine-grained requirements. Typically these things come in groups.
+</p>
+<p>
+Alisdair: I think the concepts folks assumed we would take their guidance.
+</p>
+<p>
+Move to Tenetatively Ready.
+</p>
+
 </discussion>
 
 <resolution>

@@ -61,6 +61,41 @@ Moved to Review.
 seems to say the necessary things. We cannot impose all requirements as we do for <tt>vector</tt>, because
 we want to allow the short-string-optimization.</p>
 
+
+<note>2014-02-15 post-Issuaquah session</note>
+<p>
+STL: I think that <tt>shrink_to_fit</tt> should be a no-op when called twice.
+</p>
+<p>
+STL: Do we ever define reallocation for <tt>deque</tt>? Nope, all mentions of "reallocation" are in <tt>vector</tt>.
+     We define what it means in <tt>vector::reserve()</tt>, but not for <tt>deque</tt>.
+</p>
+<p>
+STL: Oh duh, they define reallocate in the PR. But I think we can do better here.
+</p>
+<p>
+STL: Optimally, deque shrinking just allocates a new map of pointers, and drops empty blocks, but preserves pointers/references to elements.
+</p>
+<p>
+Alisdair: That's like unordered containers, invalidating only iterators.
+</p>
+<p>
+Pablo: It doesn't make sense to reduce <tt>capacity()</tt> to <tt>size()</tt>, because <tt>deque</tt> doesn't have capacity!
+</p>
+<p>
+STL: For <tt>vector</tt>, "effectively reduces the capacity" is unnecessary, the capacity there is observable.
+</p>
+<p>
+STL: There is a strong reason to provide an optimal shrink to fit for <tt>deque</tt>, since only the library implementer can do this.
+</p>
+<p>
+STL: The other thing I don't like the repeated definition of reallocation for <tt>vector</tt>, we define it once and use it in a bunch of places.
+     At most we can lift it up to the <tt>vector</tt> synopsis.
+</p>
+<p>
+STL: I'll write new wording.
+</p>
+
 </discussion>
 
 <resolution>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2340" status="New">
+<issue num="2340" status="Ready">
 <title>Replacement allocation functions declared as inline</title>
 <section><sref ref="[replacement.functions]"/></section>
 <submitter>David Majnemer</submitter>
@@ -24,6 +24,8 @@ as they aren't used. This behavior seems more like a bug than a feature, I propo
 <blockquote><p>
 The program's <del>definitions</del><ins>declarations</ins> shall not be specified as <tt>inline</tt>.
 </p></blockquote>
+
+<note>2014-02-15 Issaquah : Move to Ready</note>
 
 </discussion>
 

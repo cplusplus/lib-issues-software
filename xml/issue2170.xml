@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2170" status="Review">
+<issue num="2170" status="Ready">
 <title>Aggregates cannot be <tt>DefaultConstructible</tt></title>
 <section><sref ref="[utility.arg.requirements]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -56,6 +56,51 @@ The Core Working group opened, discussed, and resolved <a href="http://www.open-
 as NAD for this library-related problem: Empty aggregate initialization and value-initialization are different core language concepts,
 and this difference can be observed (e.g. for a type with a deleted default-constructor).
 </p>
+
+<note>2014-02-15 Issaquah: Move to Ready</note>
+<p>
+AM: core says still LWG issue, wording has been non-controversial, move to ready?
+</p>
+<p>
+NJ: what about durations? think they are ok
+</p>
+<p>
+Ville: <tt>pair</tt> and a few other have value initialize
+</p>
+<p>
+AM: look at core 1578
+</p>
+<p>
+AM: value initialize would require <tt>()</tt>, remove braces from third row?
+</p>
+<p>
+STL: no
+</p>
+<p>
+PH: core has new issue on aggregates and non-aggregates.
+</p>
+<p>
+AM: right, they said does not affect this issue
+</p>
+<p>
+NJ: why ok with <tt>pair</tt> and <tt>tuple</tt>?
+</p>
+<p>
+STL: will use <tt>()</tt>, <tt>tuple</tt> of aggregates with deleted constructor is ill-formed
+</p>
+<p>
+Ville: aggregate with reference can't have <tt>()</tt>
+</p>
+<p>
+STL: <tt>{}</tt> would be an issue too
+</p>
+<p>
+Ville: aggregate with reference will have <tt>()</tt> deleted implicitly
+</p>
+<p>
+Move to Ready.
+</p>
+
 
 </discussion>
 

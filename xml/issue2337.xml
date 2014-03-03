@@ -8,7 +8,7 @@
 <section><sref ref="[util.smartptr.shared.obs]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
 <date>5 Oct 2013</date>
-<priority>3</priority>
+<priority>2</priority>
 
 <discussion>
 <p>
@@ -20,6 +20,12 @@
 <p/>
 Narrow-contract functions should not be <tt>noexcept</tt>.
 </p>
+
+<note>2015-02-15 Issuquah</note>
+<p>
+Issue is contentious, raise to P2.
+</p>
+
 </discussion>
 
 <resolution>

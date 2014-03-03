@@ -3,12 +3,12 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2241" status="New">
+<issue num="2241" status="Open">
 <title><tt>&lt;cstdalign&gt;</tt> and <tt>#define</tt> of <tt>alignof</tt></title>
 <section><sref ref="[support.runtime]"/></section>
 <submitter>Richard Smith</submitter>
 <date>14 Feb 2013</date>
-<priority>1</priority>
+<priority>2</priority>
 
 <discussion>
 <p>
@@ -38,6 +38,26 @@ The header <tt>&lt;cstdalign&gt;</tt> and the header <tt>&lt;stdalign.h&gt;</tt>
 <p>
 It is unclear what the better strategy is: Striking the reference to <tt>&lt;stdalign.h&gt;</tt> in
 <sref ref="[support.runtime]"/> p2 or upgrading to C11 as new base C standard.
+</p>
+
+<note>2014-02-15 Issaquah</note>
+<p>
+STL: related to earlier issue on C4, <iref ref="2201"/>, and now we get a C11 header
+</p>
+<p>
+JY: find _Alignof as keyword C11 FDIS has four defines in stdalign.h
+</p>
+<p>
+AM: need paper for C11 as base library we should really do that
+</p>
+<p>
+STL: really need vendor input
+</p>
+<p>
+STL: don't think we need to do anything right now not P1
+</p>
+<p>
+AM: any objections to downscale to P2  (no objections)
 </p>
 
 </discussion>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2302" status="New">
+<issue num="2302" status="Tentatively NAD">
 <title>Passing null pointer to placement new</title>
 <section><sref ref="[new.delete.placement]"/></section>
 <submitter>Marc Glisse</submitter>
@@ -23,6 +23,11 @@ Proposed resolution: for <tt>operator new</tt> and <tt>operator new[]</tt>, add:
 <blockquote><p>
 <i>Requires:</i> <tt>ptr</tt> shall not be a null pointer.
 </p></blockquote>
+
+<note>2014-02-15 post-Issuaquah session : move to Tentatively NAD</note>
+<p>
+AJM to supply the rationale...
+</p>
 
 </discussion>
 

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2281" status="Pending NAD Editorial">
+<issue num="2281" status="NAD Editorial">
 <title>C99 cross-reference typo in [using.linkage]</title>
 <section><sref ref="[using.linkage]"/></section>
 <submitter>Chris Sharpe</submitter>

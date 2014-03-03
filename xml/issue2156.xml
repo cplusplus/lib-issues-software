@@ -76,7 +76,7 @@ Marshall Clow: even if wrong it's more right than what we have now
 </p>
 
 <p>
-Geoffrey Romer: issue is saying rehash should not leave container in such a state that anotional insertion of zero elements should not trigger a rehash
+Geoffrey Romer: issue is saying rehash should not leave container in such a state that a notional insertion of zero elements should not trigger a rehash
 </p>
 
 <p>

@@ -43,6 +43,11 @@ Alisdair to provide wording proposing that all string literals held by standard 
 either unspecified, or implmentation defined.
 </p>
 
+<note>2014-02-15 Issauqah</note>
+<p>
+STL: I think it should be an implementation-defined NTBS, same on <tt>bad_weak_ptr</tt>. I will write a PR.
+</p>
+
 </discussion>
 
 <resolution>
