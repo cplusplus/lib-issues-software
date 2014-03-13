@@ -82,6 +82,7 @@
 #include "mailing_info.h"
 #include "report_generator.h"
 #include "sections.h"
+#include "file_names.h"
 
 
 #if 0
@@ -724,7 +725,7 @@ int main(int argc, char* argv[]) {
       auto const issues_path = path + "xml/";
 
       lwg::mailing_info lwg_issues_xml = [&issues_path](){
-         std::string filename{issues_path + "lwg-issues.xml"};
+         std::string filename{issues_path + "config.xml"};
          std::ifstream infile{filename};
          if (!infile.is_open()) {
             throw std::runtime_error{"Unable to open " + filename};
@@ -792,7 +793,7 @@ int main(int argc, char* argv[]) {
       generator.make_sort_by_section        (issues, {target_path + "lwg-index-open.html"}, true);
 
       // Make a similar set of index documents for the issues that are 'live' during a meeting
-      // Note that these documents want to reference each other, rather than lwg- equivalents,
+      // Note that these documents want to reference each other, rather than unfiltered equivalents,
       // although it may not be worth attempting fix-ups as the per-issue level
       // During meetings, it would be good to list newly-Ready issues here
       generator.make_sort_by_num            (unresolved_issues, {target_path + "unresolved-toc.html"});
@@ -802,7 +803,7 @@ int main(int argc, char* argv[]) {
       generator.make_sort_by_priority       (unresolved_issues, {target_path + "unresolved-prioritized.html"});
 
       // Make another set of index documents for the issues that are up for a vote during a meeting
-      // Note that these documents want to reference each other, rather than lwg- equivalents,
+      // Note that these documents want to reference each other, rather than unfiltered equivalents,
       // although it may not be worth attempting fix-ups as the per-issue level
       // Between meetings, it would be good to list Ready issues here
       generator.make_sort_by_num            (votable_issues, {target_path + "votable-toc.html"});
