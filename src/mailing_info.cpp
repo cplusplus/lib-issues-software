@@ -12,7 +12,7 @@ void replace_all_irefs(std::vector<lwg::issue> const & issues, std::string & s) 
    // Replace all tagged "issues references" in string 's' with an HTML anchor-link to the live issue
    // in its appropriate issue list, as determined by the issue's status.
    // Format of an issue reference: <iref ref="ISS"/>
-   // Format of anchor: <a href="lwg-INDEX.html#ISS">ISS</a>
+   // Format of anchor: <a href="INDEX.html#ISS">ISS</a>
 
    for (auto i = s.find("<iref ref=\""); i != std::string::npos; i = s.find("<iref ref=\"") ) {
       auto j = s.find('>', i);
@@ -93,6 +93,16 @@ auto mailing_info::get_doc_number(std::string doc) const -> std::string {
     return get_attribute(doc);
 }
 
+auto mailing_info::get_doc_name() const -> std::string
+{
+  return get_attribute("doc_name");
+}
+
+auto mailing_info::get_doc_reference() const -> std::string
+{
+  return get_attribute("doc_reference");
+}
+
 auto mailing_info::get_intro(std::string doc) const -> std::string {
     if (doc == "active") {
         doc = "<intro list=\"Active\">";
@@ -109,12 +119,12 @@ auto mailing_info::get_intro(std::string doc) const -> std::string {
 
     auto i = m_data.find(doc);
     if (i == std::string::npos) {
-        throw std::runtime_error{"Unable to find intro in lwg-issues.xml"};
+        throw std::runtime_error{"Unable to find intro in config.xml"};
     }
     i += doc.size();
     auto j = m_data.find("</intro>", i);
     if (j == std::string::npos) {
-        throw std::runtime_error{"Unable to parse intro in lwg-issues.xml"};
+        throw std::runtime_error{"Unable to parse intro in config.xml"};
     }
     return m_data.substr(i, j-i);
 }
@@ -124,12 +134,12 @@ auto mailing_info::get_maintainer() const -> std::string {
    std::string r = get_attribute("maintainer");
    auto m = r.find("&lt;");
    if (m == std::string::npos) {
-      throw std::runtime_error{"Unable to parse maintainer email address in lwg-issues.xml"};
+      throw std::runtime_error{"Unable to parse maintainer email address in config.xml"};
    }
    m += sizeof("&lt;") - 1;
    auto me = r.find("&gt;", m);
    if (me == std::string::npos) {
-      throw std::runtime_error{"Unable to parse maintainer email address in lwg-issues.xml"};
+      throw std::runtime_error{"Unable to parse maintainer email address in config.xml"};
    }
    std::string email = r.substr(m, me-m);
    // &lt;                                    lwgchair@gmail.com    &gt;
@@ -146,13 +156,13 @@ auto mailing_info::get_revision() const -> std::string {
 auto mailing_info::get_revisions(std::vector<issue> const & issues, std::string const & diff_report) const -> std::string {
    auto i = m_data.find("<revision_history>");
    if (i == std::string::npos) {
-      throw std::runtime_error{"Unable to find <revision_history> in lwg-issues.xml"};
+      throw std::runtime_error{"Unable to find <revision_history> in config.xml"};
    }
    i += sizeof("<revision_history>") - 1;
 
    auto j = m_data.find("</revision_history>", i);
    if (j == std::string::npos) {
-      throw std::runtime_error{"Unable to find </revision_history> in lwg-issues.xml"};
+      throw std::runtime_error{"Unable to find </revision_history> in config.xml"};
    }
    auto s = m_data.substr(i, j-i);
    j = 0;
@@ -193,13 +203,13 @@ auto mailing_info::get_revisions(std::vector<issue> const & issues, std::string 
 auto mailing_info::get_statuses() const -> std::string {
    auto i = m_data.find("<statuses>");
    if (i == std::string::npos) {
-      throw std::runtime_error{"Unable to find statuses in lwg-issues.xml"};
+      throw std::runtime_error{"Unable to find statuses in config.xml"};
    }
    i += sizeof("<statuses>") - 1;
 
    auto j = m_data.find("</statuses>", i);
    if (j == std::string::npos) {
-      throw std::runtime_error{"Unable to parse statuses in lwg-issues.xml"};
+      throw std::runtime_error{"Unable to parse statuses in config.xml"};
    }
    return m_data.substr(i, j-i);
 }
@@ -209,12 +219,12 @@ auto mailing_info::get_attribute(std::string const & attribute_name) const -> st
     std::string search_string{attribute_name + "=\""};
     auto i = m_data.find(search_string);
     if (i == std::string::npos) {
-        throw std::runtime_error{"Unable to find " + attribute_name + " in lwg-issues.xml"};
+        throw std::runtime_error{"Unable to find " + attribute_name + " in config.xml"};
     }
     i += search_string.size();
     auto j = m_data.find('\"', i);
     if (j == std::string::npos) {
-        throw std::runtime_error{"Unable to parse " + attribute_name + " in lwg-issues.xml"};
+        throw std::runtime_error{"Unable to parse " + attribute_name + " in config.xml"};
     }
     return m_data.substr(i, j-i);
 }

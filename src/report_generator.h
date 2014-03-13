@@ -30,7 +30,7 @@ struct report_generator {
 
    void make_closed(std::vector<issue> const & issues, std::string const & path, std::string const & diff_report);
 
-   // Additional non-standard documents, useful for running LWG meetings
+   // Additional non-standard documents, useful for running meetings
    void make_tentative(std::vector<issue> const & issues, std::string const & path);
       // publish a document listing all tentative issues that may be acted on during a meeting.
 

@@ -19,6 +19,8 @@ struct mailing_info {
    auto get_revision() const -> std::string;
    auto get_revisions(std::vector<issue> const & issues, std::string const & diff_report) const -> std::string;
    auto get_statuses() const -> std::string;
+   auto get_doc_name() const -> std::string;  // Examples: "C++ Standard Library" or "File System Technical Specification"
+   auto get_doc_reference() const -> std::string;  // Examples: "ISO/IEC IS 14882:2011(E)" or "ISO/IEC TS 18822"
 
 private:
    auto get_attribute(std::string const & attribute_name) const -> std::string;

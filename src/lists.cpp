@@ -1,5 +1,5 @@
 // This program reads all the issues in the issues directory passed as the first command line argument.
-// If all documents are successfully parsed, it will generate the standard LWG Issues List documents
+// If all documents are successfully parsed, it will generate the standard Issues List documents
 // for an ISO SC22 WG21 mailing.
 
 // Based on code originally donated by Howard Hinnant
@@ -33,7 +33,7 @@
 //    string_view
 
 // Its coding style assumes a standard library optimized with move-semantics
-// The only known compiler to support all of this today is the experimental gcc trunk (4.6)
+// The only known compiler to support all of this today is the experimental gcc trunk (4.9)
 
 // TODO
 // .  Better handling of TR "sections", and grouping of issues in "Clause X"
@@ -121,7 +121,7 @@ auto read_file_into_string(std::string const & filename) -> std::string {
 
 auto read_issues(std::string const & issues_path, lwg::section_map & section_db) -> std::vector<lwg::issue> {
    // Open the specified directory, 'issues_path', and iterate all the '.xml' files
-   // it contains, parsing each such file as an LWG issue document.  Return the set
+   // it contains, parsing each such file as an issue document.  Return the set
    // of issues as a vector.
    //
    // The current implementation relies directly on POSIX headers, but the preferred
@@ -680,7 +680,7 @@ void check_is_directory(std::string const & directory) {
 int main(int argc, char* argv[]) {
    try {
       std::string path;
-      std::cout << "Preparing new LWG issues lists..." << std::endl;
+      std::cout << "Preparing new issues lists..." << std::endl;
       if (argc == 2) {
          path = argv[1];
       }

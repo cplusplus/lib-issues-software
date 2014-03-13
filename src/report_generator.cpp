@@ -126,9 +126,9 @@ auto major_section(lwg::section_num const & sn) -> std::string {
 }
 
 auto remove_square_brackets(lwg::section_tag const & tag) -> lwg::section_tag {
-   assert(tag.size() > 2);
-   assert(tag.front() == '[');
-   assert(tag.back() == ']');
+   //assert(tag.size() > 2);
+   //assert(tag.front() == '[');
+   //assert(tag.back() == ']');
    return tag.substr(1, tag.size()-2);
 }
 
@@ -364,13 +364,13 @@ R"(<table>
 
    out << "<h1>";
    if (paper == "active") {
-      out << "C++ Standard Library Active Issues List (Revision ";
+      out << lwg_issues_xml.get_doc_name() + " Active Issues List (Revision ";
    }
    else if (paper == "defect") {
-      out << "C++ Standard Library Defect Report List (Revision ";
+      out << lwg_issues_xml.get_doc_name() + " Defect Report List (Revision ";
    }
    else if (paper == "closed") {
-      out << "C++ Standard Library Closed Issues List (Revision ";
+      out << lwg_issues_xml.get_doc_name() + " Closed Issues List (Revision ";
    }
    out << lwg_issues_xml.get_revision() << ")</h1>\n";
    out << "<p>" << build_timestamp << "</p>";
@@ -392,7 +392,7 @@ void report_generator::make_active(std::vector<issue> const & issues, std::strin
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "C++ Standard Library Active Issues List");
+   print_file_header(out, lwg_issues_xml.get_doc_name() + " Active Issues List");
    print_paper_heading(out, "active", lwg_issues_xml);
    out << lwg_issues_xml.get_intro("active") << '\n';
    out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues, diff_report) << '\n';
@@ -410,7 +410,7 @@ void report_generator::make_defect(std::vector<issue> const & issues, std::strin
    std::ofstream out(filename.c_str());
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "C++ Standard Library Defect Report List");
+   print_file_header(out, lwg_issues_xml.get_doc_name() + " Defect Report List");
    print_paper_heading(out, "defect", lwg_issues_xml);
    out << lwg_issues_xml.get_intro("defect") << '\n';
    out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues, diff_report) << '\n';
@@ -427,7 +427,7 @@ void report_generator::make_closed(std::vector<issue> const & issues, std::strin
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "C++ Standard Library Closed Issues List");
+   print_file_header(out, lwg_issues_xml.get_doc_name() + " Closed Issues List");
    print_paper_heading(out, "closed", lwg_issues_xml);
    out << lwg_issues_xml.get_intro("closed") << '\n';
    out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues, diff_report) << '\n';
@@ -437,7 +437,7 @@ void report_generator::make_closed(std::vector<issue> const & issues, std::strin
 }
 
 
-// Additional non-standard documents, useful for running LWG meetings
+// Additional non-standard documents, useful for running meetings
 void report_generator::make_tentative(std::vector<issue> const & issues, std::string const & path) {
    // publish a document listing all tentative issues that may be acted on during a meeting.
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
@@ -446,7 +446,7 @@ void report_generator::make_tentative(std::vector<issue> const & issues, std::st
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "C++ Standard Library Tentative Issues");
+   print_file_header(out, lwg_issues_xml.get_doc_name() + " Tentative Issues");
 //   print_paper_heading(out, "active", lwg_issues_xml);
 //   out << lwg_issues_xml.get_intro("active") << '\n';
 //   out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues) << '\n';
@@ -466,7 +466,7 @@ void report_generator::make_unresolved(std::vector<issue> const & issues, std::s
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "C++ Standard Library Unresolved Issues");
+   print_file_header(out, lwg_issues_xml.get_doc_name() + " Unresolved Issues");
 //   print_paper_heading(out, "active", lwg_issues_xml);
 //   out << lwg_issues_xml.get_intro("active") << '\n';
 //   out << "<h2>Revision History</h2>\n" << lwg_issues_xml.get_revisions(issues) << '\n';
@@ -485,8 +485,8 @@ void report_generator::make_immediate(std::vector<issue> const & issues, std::st
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
-out << R"(<h1>C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]</h1>
+   print_file_header(out, lwg_issues_xml.get_doc_name() + " Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
+   out << R"(<h1>)" << lwg_issues_xml.get_doc_name() << R"( Issues Resolved Directly In [INSERT CURRENT MEETING HERE]</h1>
 <table>
 <tr>
 <td align="left">Doc. no.</td>
@@ -520,8 +520,8 @@ void report_generator::make_editors_issues(std::vector<issue> const & issues, st
    if (!out) {
      throw std::runtime_error{"Failed to open " + filename};
    }
-   print_file_header(out, "C++ Standard Library Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
-   out << "<h1>C++ Standard Library Issues Resolved In [INSERT CURRENT MEETING HERE]</h1>\n";
+   print_file_header(out, lwg_issues_xml.get_doc_name() + " Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
+   out << "<h1>" << lwg_issues_xml.get_doc_name() << " Resolved In [INSERT CURRENT MEETING HERE]</h1>\n";
    print_resolutions(out, issues, section_db, [](issue const & i) {return "Pending WP" == i.stat;} );
    print_file_trailer(out);
 }
@@ -532,14 +532,14 @@ void report_generator::make_sort_by_num(std::vector<issue>& issues, std::string 
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "LWG Table of Contents");
+   print_file_header(out, "Table of Contents");
 
-   out <<
-R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
+   out << "<h1>" << lwg_issues_xml.get_doc_name() <<
+R"( Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
 <h1>Table of Contents</h1>
-<p>Reference ISO/IEC IS 14882:2011(E)</p>
-<p>This document is the Table of Contents for the <a href="lwg-active.html">Library Active Issues List</a>,
-<a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
+<p>Reference )" << lwg_issues_xml.get_doc_reference() << R"(</p>
+<p>This document is the Table of Contents for the <a href="active.html">Active Issues List</a>,
+<a href="defects.html">Defect Reports List</a>, and <a href="closed.html">Closed Issues List</a>.</p>
 )";
    out << "<p>" << build_timestamp << "</p>";
 
@@ -556,12 +556,12 @@ void report_generator::make_sort_by_priority(std::vector<issue>& issues, std::st
      throw std::runtime_error{"Failed to open " + filename};
    print_file_header(out, "LWG Table of Contents");
 
-   out <<
-R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
-<h1>Table of Contents</h1>
-<p>Reference ISO/IEC IS 14882:2011(E)</p>
-<p>This document is the Table of Contents for the <a href="lwg-active.html">Library Active Issues List</a>,
-<a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
+   out << "<h1>" << lwg_issues_xml.get_doc_name() <<
+R"( Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
+<h1>Index by Issue Number</h1>
+<p>Reference )" << lwg_issues_xml.get_doc_reference() << R"(</p>
+<p>This document is the Table of Contents for the <a href="active.html">Active Issues List</a>,
+<a href="defects.html">Defect Reports List</a>, and <a href="closed.html">Closed Issues List</a>.</p>
 )";
    out << "<p>" << build_timestamp << "</p>";
 
@@ -595,15 +595,15 @@ void report_generator::make_sort_by_status(std::vector<issue>& issues, std::stri
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "LWG Index by Status and Section");
+   print_file_header(out, "Index by Status and Section");
 
-   out <<
-R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
+   out << "<h1>" << lwg_issues_xml.get_doc_name() <<
+R"( Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
 <h1>Index by Status and Section</h1>
-<p>Reference ISO/IEC IS 14882:2011(E)</p>
+<p>Reference )" << lwg_issues_xml.get_doc_reference() << R"(</p>
 <p>
-This document is the Index by Status and Section for the <a href="lwg-active.html">Library Active Issues List</a>,
-<a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.
+This document is the Index by Status and Section for the <a href="lwg-active.html">Active Issues List</a>,
+<a href="lwg-defects.html">Defect Reports List</a>, and <a href="lwg-closed.html">Closed Issues List</a>.
 </p>
 
 )";
@@ -630,15 +630,15 @@ void report_generator::make_sort_by_status_mod_date(std::vector<issue> & issues,
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "LWG Index by Status and Date");
+   print_file_header(out, "Index by Status and Date");
 
-   out <<
-R"(<h1>C++ Standard Library Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
+   out << "<h1>" << lwg_issues_xml.get_doc_name() <<
+R"( Issues List (Revision )" << lwg_issues_xml.get_revision() << R"()</h1>
 <h1>Index by Status and Date</h1>
-<p>Reference ISO/IEC IS 14882:2011(E)</p>
+<p>Reference )" << lwg_issues_xml.get_doc_reference() << R"(</p>
 <p>
-This document is the Index by Status and Date for the <a href="lwg-active.html">Library Active Issues List</a>,
-<a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.
+This document is the Index by Status and Date for the <a href="active.html">Library Active Issues List</a>,
+<a href="defects.html">Library Defect Reports List</a>, and <a href="closed.html">Library Closed Issues List</a>.
 </p>
 )";
    out << "<p>" << build_timestamp << "</p>";
