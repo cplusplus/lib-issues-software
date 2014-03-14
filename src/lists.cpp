@@ -111,7 +111,7 @@ auto read_file_into_string(std::string const & filename) -> std::string {
    if (!infile.is_open()) {
       throw std::runtime_error{"Unable to open file " + filename};
    }
-
+   else std::cout << "Reading file " + filename << std::endl;
    std::istreambuf_iterator<char> first{infile}, last{};
    return std::string {first, last};
 }
@@ -719,12 +719,10 @@ int main(int argc, char* argv[]) {
          std::cout << temp << ' ' << elem.second << '\n';
       }
 #endif
- 
-      auto const old_issues = read_issues_from_toc(read_file_into_string(path + "meta-data/lwg-toc.old.html"));
 
       auto const issues_path = path + "xml/";
 
-      lwg::mailing_info lwg_issues_xml = [&issues_path](){
+      lwg::mailing_info config = [&issues_path](){
          std::string filename{issues_path + "config.xml"};
          std::ifstream infile{filename};
          if (!infile.is_open()) {
@@ -734,15 +732,21 @@ int main(int argc, char* argv[]) {
          return lwg::mailing_info{infile};
       }();
 
-      //lwg::mailing_info lwg_issues_xml{issues_path};
+      //lwg::mailing_info config{issues_path};
 
+      lwg::file_names names(config.get_file_name_prefix());
+      std::cout << "Will prefix output file names with \"" << names.prefix() << "\"\n";
+      lwg::initialize_issues(names);
+  
+      auto const old_issues = read_issues_from_toc(read_file_into_string(
+        path + "meta-data/" + names.old_toc_name()));
 
       std::cout << "Reading issues from: " << issues_path << std::endl;
       auto issues = read_issues(issues_path, section_db);
       prepare_issues(issues, section_db);
 
 
-      lwg::report_generator generator{lwg_issues_xml, section_db};
+      lwg::report_generator generator{config, section_db, names};
 
 
       // issues must be sorted by number before making the mailing list documents
@@ -784,32 +788,32 @@ int main(int argc, char* argv[]) {
 
       // Now we have a parsed and formatted set of issues, we can write the standard set of HTML documents
       // Note that each of these functions is going to re-sort the 'issues' vector for its own purposes
-      generator.make_sort_by_num            (issues, {target_path + "lwg-toc.html"});
-      generator.make_sort_by_status         (issues, {target_path + "lwg-status.html"});
-      generator.make_sort_by_status_mod_date(issues, {target_path + "lwg-status-date.html"});  // this report is useless, as git checkouts touch filestamps
-      generator.make_sort_by_section        (issues, {target_path + "lwg-index.html"});
+      generator.make_sort_by_num            (issues, {target_path + names.toc_name()});
+      generator.make_sort_by_status         (issues, {target_path + names.status_index_name()});
+      generator.make_sort_by_status_mod_date(issues, {target_path + names.status_date_index_name()});  // this report is useless, as git checkouts touch filestamps
+      generator.make_sort_by_section        (issues, {target_path + names.status_index_name()});
 
       // Note that this additional document is very similar to unresolved-index.html below
-      generator.make_sort_by_section        (issues, {target_path + "lwg-index-open.html"}, true);
+      generator.make_sort_by_section        (issues, {target_path + names.open_index_name()}, true);
 
       // Make a similar set of index documents for the issues that are 'live' during a meeting
       // Note that these documents want to reference each other, rather than unfiltered equivalents,
       // although it may not be worth attempting fix-ups as the per-issue level
       // During meetings, it would be good to list newly-Ready issues here
-      generator.make_sort_by_num            (unresolved_issues, {target_path + "unresolved-toc.html"});
-      generator.make_sort_by_status         (unresolved_issues, {target_path + "unresolved-status.html"});
-      generator.make_sort_by_status_mod_date(unresolved_issues, {target_path + "unresolved-status-date.html"});
-      generator.make_sort_by_section        (unresolved_issues, {target_path + "unresolved-index.html"});
-      generator.make_sort_by_priority       (unresolved_issues, {target_path + "unresolved-prioritized.html"});
+      generator.make_sort_by_num            (unresolved_issues, {target_path + names.unresolved_toc_name()});
+      generator.make_sort_by_status         (unresolved_issues, {target_path + names.unresolved_status_index_name()});
+      generator.make_sort_by_status_mod_date(unresolved_issues, {target_path + names.unresolved_status_date_index_name()});
+      generator.make_sort_by_section        (unresolved_issues, {target_path + names.unresolved_section_index_name()});
+      generator.make_sort_by_priority       (unresolved_issues, {target_path + names.unresolved_prioritized_index_name()});
 
       // Make another set of index documents for the issues that are up for a vote during a meeting
       // Note that these documents want to reference each other, rather than unfiltered equivalents,
       // although it may not be worth attempting fix-ups as the per-issue level
       // Between meetings, it would be good to list Ready issues here
-      generator.make_sort_by_num            (votable_issues, {target_path + "votable-toc.html"});
-      generator.make_sort_by_status         (votable_issues, {target_path + "votable-status.html"});
-      generator.make_sort_by_status_mod_date(votable_issues, {target_path + "votable-status-date.html"});
-      generator.make_sort_by_section        (votable_issues, {target_path + "votable-index.html"});
+      generator.make_sort_by_num            (votable_issues, {target_path + names.votable_toc_name()});
+      generator.make_sort_by_status         (votable_issues, {target_path + names.votable_status_index_name()});
+      generator.make_sort_by_status_mod_date(votable_issues, {target_path + names.votable_status_date_index_name()});
+      generator.make_sort_by_section        (votable_issues, {target_path + names.votable_section_index_name()});
 
       std::cout << "Made all documents\n";
    }

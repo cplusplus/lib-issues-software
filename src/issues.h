@@ -9,9 +9,12 @@
 
 // solution specific headers
 #include "date.h"
+#include "file_names.h"
 
 namespace lwg
 {
+
+void initialize_issues(file_names const & names);
 
 using section_tag = std::string;
 

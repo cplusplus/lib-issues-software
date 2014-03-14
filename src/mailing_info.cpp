@@ -103,6 +103,11 @@ auto mailing_info::get_doc_reference() const -> std::string
   return get_attribute("doc_reference");
 }
 
+auto mailing_info::get_file_name_prefix() const -> std::string
+{
+  return get_attribute("file_name_prefix");
+}
+
 auto mailing_info::get_intro(std::string doc) const -> std::string {
     if (doc == "active") {
         doc = "<intro list=\"Active\">";

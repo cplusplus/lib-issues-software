@@ -1,5 +1,5 @@
 // This program reads all the issues in the issues directory passed as the first command line argument.
-// If all documents are successfully parsed, it will generate the standard LWG Issues List documents
+// If all documents are successfully parsed, it will generate the standard Issues List documents
 // for an ISO SC22 WG21 mailing.
 
 // Based on code originally donated by Howard Hinnant
@@ -110,7 +110,7 @@ auto read_file_into_string(std::string const & filename) -> std::string {
 
 void filter_issues(std::string const & issues_path, lwg::section_map & section_db, std::function<bool(lwg::issue const &)> predicate) {
    // Open the specified directory, 'issues_path', and iterate all the '.xml' files
-   // it contains, parsing each such file as an LWG issue document.  Write to 'out'
+   // it contains, parsing each such file as an issue document.  Write to 'out'
    // the number of every issue that satisfies the 'predicate'.
    //
    // The current implementation relies directly on POSIX headers, but the preferred

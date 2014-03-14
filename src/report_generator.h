@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "issues.h"  // cannot forward declare the 'section_map' alias, nor the 'LwgIssuesXml' alias
+#include "file_names.h"
 
 namespace lwg
 {
@@ -14,9 +15,10 @@ struct mailing_info;
 
 struct report_generator {
 
-   report_generator(mailing_info const & info, section_map & sections)
-      : lwg_issues_xml(info)
+   report_generator(mailing_info const & info, section_map & sections, file_names const & names_)
+      : config(info)
       , section_db(sections)
+      , names(names_)
    {
    }
 
@@ -55,8 +57,9 @@ struct report_generator {
    void make_editors_issues(std::vector<issue> const & issues, std::string const & path);
 
 private:
-   mailing_info const & lwg_issues_xml;
+   mailing_info const & config;
    section_map &        section_db;
+   file_names const &   names;
 };
 
 } // close namespace lwg

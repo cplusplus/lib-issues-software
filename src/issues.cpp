@@ -15,9 +15,9 @@
 #include <sys/stat.h>  // plan to factor this dependency out
 
 namespace {
-static constexpr char const * LWG_ACTIVE {"lwg-active.html" };
-static constexpr char const * LWG_CLOSED {"lwg-closed.html" };
-static constexpr char const * LWG_DEFECTS{"lwg-defects.html"};
+  char const * LWG_ACTIVE;
+  char const * LWG_CLOSED;
+  char const * LWG_DEFECTS;
 
 // date utilites may factor out again
 auto parse_month(std::string const & m) -> gregorian::month {
@@ -67,6 +67,12 @@ auto report_date_file_last_modified(std::string const & filename) -> gregorian::
 }
 
 } // close unnamed namespace
+
+void lwg::initialize_issues(file_names const & names) {
+  LWG_ACTIVE = names.active_name().c_str();
+  LWG_CLOSED = names.closed_name().c_str();
+  LWG_DEFECTS = names.defects_name().c_str();
+}
 
 // functions to relate the status of an issue to its relevant published list document
 auto lwg::filename_for_status(std::string stat) -> std::string {

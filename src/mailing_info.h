@@ -21,6 +21,7 @@ struct mailing_info {
    auto get_statuses() const -> std::string;
    auto get_doc_name() const -> std::string;  // Examples: "C++ Standard Library" or "File System Technical Specification"
    auto get_doc_reference() const -> std::string;  // Examples: "ISO/IEC IS 14882:2011(E)" or "ISO/IEC TS 18822"
+   auto get_file_name_prefix() const->std::string; // Examples: "lwg-", "sg3-", ""
 
 private:
    auto get_attribute(std::string const & attribute_name) const -> std::string;
