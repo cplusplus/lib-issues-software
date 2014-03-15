@@ -399,7 +399,7 @@ void report_generator::make_active(std::vector<issue> const & issues, std::strin
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, config.get_doc_name() + " Active Issues List");
+   print_file_header(out, "Active Issues List");
    print_paper_heading(out, "active", config);
    out << config.get_intro("active") << '\n';
    out << "<h2>Revision History</h2>\n" << config.get_revisions(issues, diff_report) << '\n';
@@ -417,7 +417,7 @@ void report_generator::make_defect(std::vector<issue> const & issues, std::strin
    std::ofstream out(filename.c_str());
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, config.get_doc_name() + " Defect Report List");
+   print_file_header(out, "Defect Report List");
    print_paper_heading(out, "defect", config);
    out << config.get_intro("defect") << '\n';
    out << "<h2>Revision History</h2>\n" << config.get_revisions(issues, diff_report) << '\n';
@@ -434,7 +434,7 @@ void report_generator::make_closed(std::vector<issue> const & issues, std::strin
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, config.get_doc_name() + " Closed Issues List");
+   print_file_header(out, "Closed Issues List");
    print_paper_heading(out, "closed", config);
    out << config.get_intro("closed") << '\n';
    out << "<h2>Revision History</h2>\n" << config.get_revisions(issues, diff_report) << '\n';
@@ -453,7 +453,7 @@ void report_generator::make_tentative(std::vector<issue> const & issues, std::st
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, config.get_doc_name() + " Tentative Issues");
+   print_file_header(out, "Tentative Issues");
 //   print_paper_heading(out, "active", config);
 //   out << config.get_intro("active") << '\n';
 //   out << "<h2>Revision History</h2>\n" << config.get_revisions(issues) << '\n';
@@ -473,7 +473,7 @@ void report_generator::make_unresolved(std::vector<issue> const & issues, std::s
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, config.get_doc_name() + " Unresolved Issues");
+   print_file_header(out, "Unresolved Issues");
 //   print_paper_heading(out, "active", config);
 //   out << config.get_intro("active") << '\n';
 //   out << "<h2>Revision History</h2>\n" << config.get_revisions(issues) << '\n';
@@ -492,7 +492,7 @@ void report_generator::make_immediate(std::vector<issue> const & issues, std::st
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, config.get_doc_name() + " Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
+   print_file_header(out, "Issues Resolved Directly");
    out << R"(<h1>)" << config.get_doc_name() << R"( Issues Resolved Directly In [INSERT CURRENT MEETING HERE]</h1>
 <table>
 <tr>
@@ -527,7 +527,7 @@ void report_generator::make_editors_issues(std::vector<issue> const & issues, st
    if (!out) {
      throw std::runtime_error{"Failed to open " + filename};
    }
-   print_file_header(out, config.get_doc_name() + " Issues Resolved Directly In [INSERT CURRENT MEETING HERE]");
+   print_file_header(out, "Issues Resolved Directly");
    out << "<h1>" << config.get_doc_name() << " Resolved In [INSERT CURRENT MEETING HERE]</h1>\n";
    print_resolutions(out, issues, section_db, [](issue const & i) {return "Pending WP" == i.stat;} );
    print_file_trailer(out);
@@ -604,7 +604,7 @@ void report_generator::make_sort_by_status(std::vector<issue>& issues, std::stri
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "Index by Status and Section");
+   print_file_header(out, "Status and Section Index");
 
    out << "<h1>" << config.get_doc_name() <<
 R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
@@ -640,7 +640,7 @@ void report_generator::make_sort_by_status_mod_date(std::vector<issue> & issues,
    std::ofstream out{filename.c_str()};
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "Index by Status and Date");
+   print_file_header(out, "Status and Date Index");
 
    out << "<h1>" << config.get_doc_name() <<
 R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
@@ -691,7 +691,7 @@ void report_generator::make_sort_by_section(std::vector<issue>& issues, std::str
    std::ofstream out(filename.c_str());
    if (!out)
      throw std::runtime_error{"Failed to open " + filename};
-   print_file_header(out, "Index by Section");
+   print_file_header(out, "Section Index" );
 
    out << "<h1>" << config.get_doc_name() << " Issues List (Revision " << config.get_revision() << ")</h1>\n";
    out << "<h1>Index by Section</h1>\n";
