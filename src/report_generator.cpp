@@ -693,7 +693,7 @@ void report_generator::make_sort_by_section(std::vector<issue>& issues, std::str
      throw std::runtime_error{"Failed to open " + filename};
    print_file_header(out, "Index by Section");
 
-   out << "<h1>C++ Standard Library Issues List (Revision " << config.get_revision() << ")</h1>\n";
+   out << "<h1>" << config.get_doc_name() << " Issues List (Revision " << config.get_revision() << ")</h1>\n";
    out << "<h1>Index by Section</h1>\n";
    out << "<p>Reference " << config.get_doc_reference() << "</p>\n";
    out << "<p>This document is the Index by Section for the <a href=\"" << names.active_name() << "\">Library Active Issues List</a>";
