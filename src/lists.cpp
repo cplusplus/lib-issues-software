@@ -793,7 +793,7 @@ int main(int argc, char* argv[]) {
       generator.make_sort_by_status_mod_date(issues, {target_path + names.status_date_index_name()});  // this report is useless, as git checkouts touch filestamps
       generator.make_sort_by_section        (issues, {target_path + names.status_index_name()});
 
-      // Note that this additional document is very similar to unresolved-index.html below
+      // Note that this additional document is very similar to unresolved-section-index below
       generator.make_sort_by_section        (issues, {target_path + names.open_index_name()}, true);
 
       // Make a similar set of index documents for the issues that are 'live' during a meeting

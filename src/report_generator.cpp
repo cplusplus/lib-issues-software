@@ -186,7 +186,8 @@ void print_file_trailer(std::ostream& out) {
 }
 
 
-void print_table(std::ostream& out, std::vector<lwg::issue>::const_iterator i, std::vector<lwg::issue>::const_iterator e, lwg::section_map & section_db) {
+void print_table(std::ostream& out, std::vector<lwg::issue>::const_iterator i, std::vector<lwg::issue>::const_iterator e,
+  lwg::section_map & section_db, lwg::file_names const & names) {
 #if defined (DEBUG_LOGGING)
    std::cout << "\t" << std::distance(i,e) << " items to add to table" << std::endl;
 #endif
@@ -194,12 +195,12 @@ void print_table(std::ostream& out, std::vector<lwg::issue>::const_iterator i, s
    out <<
 R"(<table border="1" cellpadding="4">
 <tr>
-  <td align="center"><a href="lwg-toc.html"><b>Issue</b></a></td>
-  <td align="center"><a href="lwg-status.html"><b>Status</b></a></td>
-  <td align="center"><a href="lwg-index.html"><b>Section</b></a></td>
+  <td align="center"><a href=")" << names.active_name() << R"("><b>Issue</b></a></td>
+  <td align="center"><a href=")" << names.status_index_name() << R"("><b>Status</b></a></td>
+  <td align="center"><a href=")" << names.section_index_name() << R"("><b>Section</b></a></td>
   <td align="center"><b>Title</b></td>
   <td align="center"><b>Proposed Resolution</b></td>
-  <td align="center"><a href="unresolved-prioritized.html"><b>Priority</b></a></td>
+  <td align="center"><a href=")" << names.unresolved_prioritized_index_name() << R"("><b>Priority</b></a></td>
   <td align="center"><b>Duplicates</b></td>
 </tr>
 )";
@@ -212,7 +213,8 @@ R"(<table border="1" cellpadding="4">
       out << "<td align=\"right\">" << make_html_anchor(*i) << "</td>\n";
 
       // Status
-      out << "<td align=\"left\"><a href=\"lwg-active.html#" << lwg::remove_qualifier(i->stat) << "\">" << i->stat << "</a><a name=\"" << i->num << "\"></a></td>\n";
+      out << "<td align=\"left\"><a href=\"" << names.active_name() << "#" << lwg::remove_qualifier(i->stat) << "\">"
+          << i->stat << "</a><a name=\"" << i->num << "\"></a></td>\n";
 
       // Section
       out << "<td align=\"left\">";
@@ -254,7 +256,8 @@ assert(!i->tags.empty());
 }
 
 template <typename Pred>
-void print_issues(std::ostream & out, std::vector<lwg::issue> const & issues, lwg::section_map & section_db, Pred pred) {
+void print_issues(std::ostream & out, std::vector<lwg::issue> const & issues, lwg::section_map & section_db,
+  lwg::file_names const & names, Pred pred) {
    std::multiset<lwg::issue, order_by_first_tag> const  all_issues{ issues.begin(), issues.end()} ;
    std::multiset<lwg::issue, order_by_status>    const  issues_by_status{ issues.begin(), issues.end() };
 
@@ -279,7 +282,8 @@ void print_issues(std::ostream & out, std::vector<lwg::issue> const & issues, lw
             out << ", " << section_db[iss.tags[k]] << " " << iss.tags[k];
          }
 
-         out << " <b>Status:</b> <a href=\"lwg-active.html#" << lwg::remove_qualifier(iss.stat) << "\">" << iss.stat << "</a>\n";
+         out << " <b>Status:</b> <a href=\"" << names.active_name() << "#" << lwg::remove_qualifier(iss.stat) << "\">"
+             << iss.stat << "</a>\n";
          out << " <b>Submitter:</b> " << iss.submitter
              << " <b>Opened:</b> ";
          print_date(out, iss.date);
@@ -289,16 +293,19 @@ void print_issues(std::ostream & out, std::vector<lwg::issue> const & issues, lw
 
          // view active issues in []
          if (active_issues.count(iss) > 1) {
-            out << "<p><b>View other</b> <a href=\"lwg-index-open.html#" << remove_square_brackets(iss.tags[0]) << "\">active issues</a> in " << iss.tags[0] << ".</p>\n";
+           out << "<p><b>View other</b> <a href=\"" << names.open_index_name() << "#" << remove_square_brackets(iss.tags[0])
+               << "\">active issues</a> in " << iss.tags[0] << ".</p>\n";
          }
 
          // view all issues in []
          if (all_issues.count(iss) > 1) {
-            out << "<p><b>View all other</b> <a href=\"lwg-index.html#" << remove_square_brackets(iss.tags[0]) << "\">issues</a> in " << iss.tags[0] << ".</p>\n";
+           out << "<p><b>View all other</b> <a href=\"" << names.section_index_name() << "#" << remove_square_brackets(iss.tags[0])
+               << "\">issues</a> in " << iss.tags[0] << ".</p>\n";
          }
          // view all issues with same status
          if (issues_by_status.count(iss) > 1) {
-            out << "<p><b>View all issues with</b> <a href=\"lwg-status.html#" << iss.stat << "\">" << iss.stat << "</a> status.</p>\n";
+           out << "<p><b>View all issues with</b> <a href=\"" << names.status_index_name() << "#" << iss.stat << "\">"
+               << iss.stat << "</a> status.</p>\n";
          }
 
          // duplicates
@@ -398,7 +405,7 @@ void report_generator::make_active(std::vector<issue> const & issues, std::strin
    out << "<h2>Revision History</h2>\n" << config.get_revisions(issues, diff_report) << '\n';
    out << "<h2><a name=\"Status\"></a>Issue Status</h2>\n" << config.get_statuses() << '\n';
    out << "<h2>Active Issues</h2>\n";
-   print_issues(out, issues, section_db, [](issue const & i) {return is_active(i.stat);} );
+   print_issues(out, issues, section_db, names, [](issue const & i) {return is_active(i.stat);} );
    print_file_trailer(out);
 }
 
@@ -415,7 +422,7 @@ void report_generator::make_defect(std::vector<issue> const & issues, std::strin
    out << config.get_intro("defect") << '\n';
    out << "<h2>Revision History</h2>\n" << config.get_revisions(issues, diff_report) << '\n';
    out << "<h2>Defect Reports</h2>\n";
-   print_issues(out, issues, section_db, [](issue const & i) {return is_defect(i.stat);} );
+   print_issues(out, issues, section_db, names, [](issue const & i) {return is_defect(i.stat);} );
    print_file_trailer(out);
 }
 
@@ -432,7 +439,7 @@ void report_generator::make_closed(std::vector<issue> const & issues, std::strin
    out << config.get_intro("closed") << '\n';
    out << "<h2>Revision History</h2>\n" << config.get_revisions(issues, diff_report) << '\n';
    out << "<h2>Closed Issues</h2>\n";
-   print_issues(out, issues, section_db, [](issue const & i) {return is_closed(i.stat);} );
+   print_issues(out, issues, section_db, names, [](issue const & i) {return is_closed(i.stat);} );
    print_file_trailer(out);
 }
 
@@ -453,7 +460,7 @@ void report_generator::make_tentative(std::vector<issue> const & issues, std::st
 //   out << "<h2><a name=\"Status\"></a>Issue Status</h2>\n" << config.get_statuses() << '\n';
    out << "<p>" << build_timestamp << "</p>";
    out << "<h2>Tentative Issues</h2>\n";
-   print_issues(out, issues, section_db, [](issue const & i) {return is_tentative(i.stat);} );
+   print_issues(out, issues, section_db, names, [](issue const & i) {return is_tentative(i.stat);} );
    print_file_trailer(out);
 }
 
@@ -473,7 +480,7 @@ void report_generator::make_unresolved(std::vector<issue> const & issues, std::s
 //   out << "<h2><a name=\"Status\"></a>Issue Status</h2>\n" << config.get_statuses() << '\n';
    out << "<p>" << build_timestamp << "</p>";
    out << "<h2>Unresolved Issues</h2>\n";
-   print_issues(out, issues, section_db, [](issue const & i) {return is_not_resolved(i.stat);} );
+   print_issues(out, issues, section_db, names, [](issue const & i) {return is_not_resolved(i.stat);} );
    print_file_trailer(out);
 }
 
@@ -507,7 +514,7 @@ void report_generator::make_immediate(std::vector<issue> const & issues, std::st
 </table>
 )";
    out << "<h2>Immediate Issues</h2>\n";
-   print_issues(out, issues, section_db, [](issue const & i) {return "Immediate" == i.stat;} );
+   print_issues(out, issues, section_db, names, [](issue const & i) {return "Immediate" == i.stat;} );
    print_file_trailer(out);
 }
 
@@ -515,7 +522,7 @@ void report_generator::make_editors_issues(std::vector<issue> const & issues, st
    // publish a single document listing all 'Voting' and 'Immediate' resolutions (only).
    assert(std::is_sorted(issues.begin(), issues.end(), order_by_issue_number{}));
 
-   std::string filename{path + "lwg-issues-for-editor.html"};
+   std::string filename{path + names.issues_for_editor_name()};
    std::ofstream out{filename.c_str()};
    if (!out) {
      throw std::runtime_error{"Failed to open " + filename};
@@ -543,7 +550,7 @@ R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
 )";
    out << "<p>" << build_timestamp << "</p>";
 
-   print_table(out, issues.begin(), issues.end(), section_db);
+   print_table(out, issues.begin(), issues.end(), section_db, names);
    print_file_trailer(out);
 }
 
@@ -565,7 +572,7 @@ R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
 )";
    out << "<p>" << build_timestamp << "</p>";
 
-//   print_table(out, issues.begin(), issues.end(), section_db);
+//   print_table(out, issues.begin(), issues.end(), section_db, names);
 
    for (auto i = issues.cbegin(), e = issues.cend(); i != e;) {
       int px = i->priority;
@@ -578,7 +585,7 @@ R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
          out << "Priority " << px;
       }
       out << " (" << (j-i) << " issues)</h2>\n";
-      print_table(out, i, j, section_db);
+      print_table(out, i, j, section_db, names);
       i = j;
    }
 
@@ -613,7 +620,7 @@ This document is the Index by Status and Section for the <a href=)" << names.act
       auto const & current_status = i->stat;
       auto j = std::find_if(i, e, [&](issue const & iss){ return iss.stat != current_status; } );
       out << "<h2><a name=\"" << current_status << "\"</a>" << current_status << " (" << (j-i) << " issues)</h2>\n";
-      print_table(out, i, j, section_db);
+      print_table(out, i, j, section_db, names);
       i = j;
    }
 
@@ -647,7 +654,7 @@ This document is the Index by Status and Date for the <a href="active.html">Libr
       std::string const & current_status = i->stat;
       auto j = find_if(i, e, [&](issue const & iss){ return iss.stat != current_status; } );
       out << "<h2><a name=\"" << current_status << "\"</a>" << current_status << " (" << (j-i) << " issues)</h2>\n";
-      print_table(out, i, j, section_db);
+      print_table(out, i, j, section_db, names);
       i = j;
    }
 
@@ -722,7 +729,7 @@ assert(!i->tags.empty());
          out << "<p><a href=\"lwg-index-open.html#Section " << msn << "\">(view only non-Ready open issues)</a></p>\n";
       }
 
-      print_table(out, i, j, section_db);
+      print_table(out, i, j, section_db, names);
       i = j;
    }
 
