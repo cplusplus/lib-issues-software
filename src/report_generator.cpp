@@ -545,8 +545,9 @@ void report_generator::make_sort_by_num(std::vector<issue>& issues, std::string 
 R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
 <h1>Table of Contents</h1>
 <p>Reference )" << config.get_doc_reference() << R"(</p>
-<p>This document is the Table of Contents for the <a href="active.html">Active Issues List</a>,
-<a href="defects.html">Defect Reports List</a>, and <a href="closed.html">Closed Issues List</a>.</p>
+<p>This document is the Table of Contents for the <a href=")" << names.active_name() << R"(">Active Issues List</a>,
+<a href=")" << names.defects_name() << R"(">Defect Reports List</a>,
+and <a href=")" << names.closed_name() << R"(">Closed Issues List</a>.</p>
 )";
    out << "<p>" << build_timestamp << "</p>";
 
@@ -567,8 +568,9 @@ void report_generator::make_sort_by_priority(std::vector<issue>& issues, std::st
 R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
 <h1>Index by Issue Number</h1>
 <p>Reference )" << config.get_doc_reference() << R"(</p>
-<p>This document is the Table of Contents for the <a href="active.html">Active Issues List</a>,
-<a href="defects.html">Defect Reports List</a>, and <a href="closed.html">Closed Issues List</a>.</p>
+<p>This document is the Table of Contents for the <a href=")" << names.active_name() << R"(">Active Issues List</a>,
+<a href=")" << names.defects_name() << R"(">Defect Reports List</a>,
+and <a href=")" << names.closed_name() << R"(">Closed Issues List</a>.</p>
 )";
    out << "<p>" << build_timestamp << "</p>";
 
@@ -609,8 +611,9 @@ R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
 <h1>Index by Status and Section</h1>
 <p>Reference )" << config.get_doc_reference() << R"(</p>
 <p>
-This document is the Index by Status and Section for the <a href=)" << names.active_name() << R"(>Active Issues List</a>,
-<a href="lwg-defects.html">Defect Reports List</a>, and <a href="lwg-closed.html">Closed Issues List</a>.
+This document is the Index by Status and Section for the <a href=")" << names.active_name() << R"(">Active Issues List</a>,
+<a href=")" << names.defects_name() << R"(">Defect Reports List</a>,
+and <a href=")" << names.closed_name() << R"(">Closed Issues List</a>.
 </p>
 
 )";
@@ -644,8 +647,9 @@ R"( Issues List (Revision )" << config.get_revision() << R"()</h1>
 <h1>Index by Status and Date</h1>
 <p>Reference )" << config.get_doc_reference() << R"(</p>
 <p>
-This document is the Index by Status and Date for the <a href="active.html">Library Active Issues List</a>,
-<a href="defects.html">Library Defect Reports List</a>, and <a href="closed.html">Library Closed Issues List</a>.
+This document is the Index by Status and Date for the <a href=")" << names.active_name() << R"(">Active Issues List</a>,
+<a href=")" << names.defects_name() << R"(">Defect Reports List</a>,
+and <a href=")" << names.closed_name() << R"(">Closed Issues List</a>.
 </p>
 )";
    out << "<p>" << build_timestamp << "</p>";
@@ -691,10 +695,11 @@ void report_generator::make_sort_by_section(std::vector<issue>& issues, std::str
 
    out << "<h1>C++ Standard Library Issues List (Revision " << config.get_revision() << ")</h1>\n";
    out << "<h1>Index by Section</h1>\n";
-   out << "<p>Reference ISO/IEC IS 14882:2011(E)</p>\n";
-   out << "<p>This document is the Index by Section for the <a href=\"lwg-active.html\">Library Active Issues List</a>";
+   out << "<p>Reference " << config.get_doc_reference() << "</p>\n";
+   out << "<p>This document is the Index by Section for the <a href=\"" << names.active_name() << "\">Library Active Issues List</a>";
    if(!active_only) {
-      out << ", <a href=\"lwg-defects.html\">Library Defect Reports List</a>, and <a href=\"lwg-closed.html\">Library Closed Issues List</a>";
+     out << ", <a href=\"" << names.defects_name() << "\">Library Defect Reports List</a>,"
+       " and <a href=\"" << names.closed_name() << "\">Library Closed Issues List</a>";
    }
    out << ".</p>\n";
    out << "<h2>Index by Section";
@@ -703,10 +708,10 @@ void report_generator::make_sort_by_section(std::vector<issue>& issues, std::str
    }
    out << "</h2>\n";
    if (active_only) {
-      out << "<p><a href=\"lwg-index.html\">(view all issues)</a></p>\n";
+     out << "<p><a href=\"" << names.section_index_name() << "\">(view all issues)</a></p>\n";
    }
    else {
-      out << "<p><a href=\"lwg-index-open.html\">(view only non-Ready open issues)</a></p>\n";
+     out << "<p><a href=\"" << names.open_index_name() << "\">(view only non-Ready open issues)</a></p>\n";
    }
    out << "<p>" << build_timestamp << "</p>";
 
@@ -723,10 +728,10 @@ assert(!i->tags.empty());
       std::string const msn{major_section(section_db[i->tags[0]])};
       out << "<h2><a name=\"Section " << msn << "\"></a>" << "Section " << msn << " (" << (j-i) << " issues)</h2>\n";
       if (active_only) {
-         out << "<p><a href=\"lwg-index.html#Section " << msn << "\">(view all issues)</a></p>\n";
+        out << "<p><a href=\"" << names.section_index_name() << "#Section " << msn << "\">(view all issues)</a></p>\n";
       }
       else if (mjr_section_open.count(*i) > 0) {
-         out << "<p><a href=\"lwg-index-open.html#Section " << msn << "\">(view only non-Ready open issues)</a></p>\n";
+        out << "<p><a href=\"" << names.open_index_name() << "#Section " << msn << "\">(view only non-Ready open issues)</a></p>\n";
       }
 
       print_table(out, i, j, section_db, names);
