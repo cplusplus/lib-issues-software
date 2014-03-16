@@ -23,12 +23,12 @@ struct mailing_info {
    auto get_doc_reference() const -> std::string;  // Examples: "ISO/IEC IS 14882:2011(E)" or "ISO/IEC TS 18822"
    auto get_file_name_prefix() const->std::string; // Examples: "lwg-", "sg3-", ""
 
-private:
    auto get_attribute(std::string const & attribute_name) const -> std::string;
       // Return the value of the first xml attibute having the specified 'attribute_name'
       // in the stored XML string, 'm_data', without regard to which element holds that
       // attribute.
 
+private:
    std::string m_data;
       // 'm_data' is reparsed too many times in practice, and memory use is not a major concern.
       // Should cache each of the reproducible calls in additional member strings, either at
