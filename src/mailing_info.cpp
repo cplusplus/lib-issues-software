@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <istream>
 #include <sstream>
+#include <iostream>
 
 namespace {
 
@@ -73,7 +74,27 @@ namespace lwg
 mailing_info::mailing_info(std::istream & stream)
    : m_data{std::istreambuf_iterator<char>{stream},
             std::istreambuf_iterator<char>{}}
-   {
+{
+  //  replace all text in the form:
+  //      <replace "attribute-name"/>
+  //  with the attribute-value for that attribute-name
+
+  std::string::size_type first, last, pos = 0;
+  while ((first = m_data.find("<replace \"", pos)) != std::string::npos)
+  {
+    last = m_data.find("\"/>", first + 10);
+    if (last == std::string::npos)
+    {
+      std::string msg{std::string{"error in config.xml: failed to find close for: "}  +
+        m_data.substr(first, first + 32).c_str() + "... "};
+      throw std::runtime_error{msg.c_str()};
+      return;
+    }
+    std::cout << "***attribute-name is " << m_data.substr(first+10, last-(first+10)) << std::endl;
+    std::cout << "   attribute-value is " << get_attribute(m_data.substr(first+10, last-(first+10))) << std::endl;
+    m_data.replace(first, last+3-first, get_attribute(m_data.substr(first+10, last-(first+10))));
+    pos = last;
+  }
 }
 
 auto mailing_info::get_doc_number(std::string doc) const -> std::string {
