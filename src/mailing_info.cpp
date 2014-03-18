@@ -90,8 +90,8 @@ mailing_info::mailing_info(std::istream & stream)
       throw std::runtime_error{msg.c_str()};
       return;
     }
-    std::cout << "***attribute-name is " << m_data.substr(first+10, last-(first+10)) << std::endl;
-    std::cout << "   attribute-value is " << get_attribute(m_data.substr(first+10, last-(first+10))) << std::endl;
+    //std::cout << "***attribute-name is " << m_data.substr(first+10, last-(first+10)) << std::endl;
+    //std::cout << "   attribute-value is " << get_attribute(m_data.substr(first+10, last-(first+10))) << std::endl;
     m_data.replace(first, last+3-first, get_attribute(m_data.substr(first+10, last-(first+10))));
     pos = last;
   }
@@ -122,11 +122,6 @@ auto mailing_info::get_doc_name() const -> std::string
 auto mailing_info::get_doc_reference() const -> std::string
 {
   return get_attribute("doc_reference");
-}
-
-auto mailing_info::get_file_name_prefix() const -> std::string
-{
-  return get_attribute("file_name_prefix");
 }
 
 auto mailing_info::get_intro(std::string doc) const -> std::string {

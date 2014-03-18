@@ -2,13 +2,13 @@
 #define INCLUDE_FILE_NAMES_H
 
 #include <string>
+#include "mailing_info.h"
 
 namespace lwg {
 
   class file_names {
   public:
-    file_names(const std::string& prefix);
-    auto prefix() const -> const std::string& {return _prefix;}
+    file_names(lwg::mailing_info const& config);
     auto active_name() const -> const std::string& {return _active;}
     auto closed_name() const -> const std::string& {return _closed;}
     auto defects_name() const -> const std::string& {return _defects;}
@@ -32,7 +32,6 @@ namespace lwg {
     auto immediate_name() const -> const std::string& {return _immediate;}
     auto issues_for_editor_name() const -> const std::string& {return _issues_for_editor;}
   private:
-    std::string _prefix;
     std::string _active;
     std::string _closed;
     std::string _defects;

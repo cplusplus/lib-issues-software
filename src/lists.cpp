@@ -734,8 +734,7 @@ int main(int argc, char* argv[]) {
 
       //lwg::mailing_info config{issues_path};
 
-      lwg::file_names names(config.get_file_name_prefix());
-      std::cout << "Will prefix output file names with \"" << names.prefix() << "\"\n";
+      lwg::file_names names(config);
       lwg::initialize_issues(names);
   
       auto const old_issues = read_issues_from_toc(read_file_into_string(
