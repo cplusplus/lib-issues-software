@@ -111,7 +111,8 @@ auto read_file_into_string(std::string const & filename) -> std::string {
    if (!infile.is_open()) {
       throw std::runtime_error{"Unable to open file " + filename};
    }
-   else std::cout << "Reading file " + filename << std::endl;
+   // TODO: turn the next line on via command line option:
+   //else std::cout << "Reading file " + filename << std::endl;
    std::istreambuf_iterator<char> first{infile}, last{};
    return std::string {first, last};
 }
