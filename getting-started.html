@@ -10,10 +10,41 @@
 
 <body>
 
-<h1>Getting Started with Issues List Software</h1>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
+<h1>Getting Started with Library Issues List Software</h1>
+<p dir="ltr">This software builds HTML issues lists from XML files. Tables of 
+contents and index files are also created, also formatted in HTML. There is one input 
+XML 
+file for each issue. The file <code>config.xml</code> provides configuration 
+attributes and text that tailors the output so that the same software works for 
+the C++ Standard Library itself and also the various library Technical Specifications. It 
+may also be useful for tracking issues for non-library documents, but most 
+current use is with library related issues.</p>
+<p>The code is written in C++ and requires a C++ 14 compiler and library. It is 
+works on Linux, OS X, and Windows.</p>
+<p>The source code should not require changes to be set up for a new IS or TS 
+document. Please contact the maintainers if you need help.</p>
+<h2>Prerequisites</h2>
+<p>Prerequisites for either setting up a new list or maintaining an existing 
+list:</p>
+<ul>
+  <li>A <a href="https://git-scm.com">Git</a> command line client. You can also 
+  use a Git GUI client if you prefer. The <code>git</code> operations you will 
+  need to maintain an issues list are baked into POSIX <code>.sh</code> and Windows 
+  <code>.bat</code> scripts provided, so you do not need to be an experienced Git user.</li>
+  <li>A <a href="https://github.com">GitHub</a> account.</li>
+  <li>A C++ 14 compiler and library. No other libraries are required.</li>
+</ul>
+<h2>Setup for a new issues list</h2>
+<ul>
+  <li>Set up a new repository containing only a README.md file on the ISO C++ 
+  Standards Committee <a href="https://github.com/cplusplus">GitHub site</a>.</li>
+  <li>Clone a working copy of the IS or TS repository on your local machine: 
+  </li>
+</ul>
+<h2>Setup to maintain an existing list</h2>
+<p dir="rtl">&nbsp;</p>
+<h2 dir="ltr">Tailoring <code>config.xml</code></h2>
+<p dir="ltr">&nbsp;</p>
 <h2>Repository organization and workflow</h2>
 <p>A <a href="https://github.com/cplusplus/lib-issues-software">public Git 
 repository</a> is maintained on the C++ committee's
@@ -24,6 +55,16 @@ model for repository workflow is at least roughly followed because it works well
 and is familiar to many developers. Because this is a simple project, only the
 <i><b>master</b></i> and <b><i>develop</i></b> branches are always active. 
 Feature branches are used when new features are under development.</p>
+
+<h2 dir="ltr">History</h2>
+
+<p dir="ltr">Howard Hinnant was the original author. The current maintainer is 
+Alisdair Meredith, backed up by Beman Dawes and Daniel Krügler.</p>
+
+<hr>
+<p dir="ltr"><font size="2">Revised:
+<!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%d %B %Y" startspan -->19 March 2014<!--webbot bot="Timestamp" endspan i-checksum="27303" --></font></p>
+<p dir="ltr">&nbsp;</p>
 
 </body>
 
