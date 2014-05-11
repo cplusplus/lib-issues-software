@@ -23,7 +23,7 @@ current use is with library related issues.</p>
 works on Linux, OS X, and Windows.</p>
 <p>The source code should not require changes to be set up for a new IS or TS 
 document. Please contact the maintainers if you need help.</p>
-<h2>Prerequisites</h2>
+<h2><a name="Prerequisites">Prerequisites</a></h2>
 <p>Prerequisites for either setting up a new list or maintaining an existing 
 list:</p>
 <ul>
@@ -32,8 +32,42 @@ list:</p>
   need to maintain an issues list are baked into POSIX <code>.sh</code> and Windows 
   <code>.bat</code> scripts provided, so you do not need to be an experienced Git user.</li>
   <li>A <a href="https://github.com">GitHub</a> account.</li>
-  <li>A C++ 14 compiler and library. No other libraries are required.</li>
+  <li>A C++ 14 compiler and library. At the moment, that means GCC 4.9 or later. No other libraries are required.</li>
 </ul>
+<h2>Repository organization and workflow</h2>
+<p>A <a href="https://github.com/cplusplus/lib-issues-software">public Git 
+repository</a> for the software is maintained on the C++ committee's
+<a href="https://github.com/cplusplus">GitHub account</a>. </p>
+<p dir="ltr">The
+<a href="http://nvie.com/posts/a-successful-git-branching-model/">Git Flow</a> 
+model for repository workflow is at least roughly followed because it works well 
+and is familiar to many developers. Because this is a simple project, only the
+<i><b>master</b></i> and <b><i>develop</i></b> branches are always active. 
+Feature branches are used when new features are under development.</p>
+
+<h2 dir="ltr">Installation</h2>
+
+<h3>POSIX</h3>
+<blockquote>
+  <pre>cd <b><i>some-directory</i></b>
+git clone git@github.com:cplusplus/lib-issues-software.git
+cd lib-issues-software
+bin/build_pgms.sh</pre>
+</blockquote>
+<h3>Windows</h3>
+<blockquote>
+  <pre>cd <b><i>some-directory</i></b>
+git clone git@github.com:cplusplus/lib-issues-software.git
+cd lib-issues-software
+bin\build_pgms</pre>
+</blockquote>
+<p dir="ltr">These instructions assume you prefer to interact with GitHub via 
+SSH.&nbsp; You can also use <code>https://github.com/cplusplus/lib-issues-software.git</code> 
+as the URL in the instructions above; this may work better if you are behind a 
+firewall.</p>
+
+<h2>Directory structure</h2>
+<p>&nbsp;</p>
 <h2>Setup for a new issues list</h2>
 <ul>
   <li>Set up a new repository containing only a README.md file on the ISO C++ 
@@ -43,20 +77,8 @@ list:</p>
 </ul>
 <h2>Setup to maintain an existing list</h2>
 <p dir="rtl">&nbsp;</p>
-<h2 dir="ltr">Tailoring <code>config.xml</code></h2>
-<p dir="ltr">&nbsp;</p>
-<h2>Repository organization and workflow</h2>
-<p>A <a href="https://github.com/cplusplus/lib-issues-software">public Git 
-repository</a> is maintained on the C++ committee's
-<a href="https://github.com/cplusplus">GitHub account</a>. </p>
-<p dir="ltr">The
-<a href="http://nvie.com/posts/a-successful-git-branching-model/">Git Flow</a> 
-model for repository workflow is at least roughly followed because it works well 
-and is familiar to many developers. Because this is a simple project, only the
-<i><b>master</b></i> and <b><i>develop</i></b> branches are always active. 
-Feature branches are used when new features are under development.</p>
 
-<h2 dir="ltr">History</h2>
+<h2 dir="ltr">history</h2>
 
 <p dir="ltr">Howard Hinnant was the original author. The current maintainer is 
 Alisdair Meredith, backed up by Beman Dawes and Daniel Krügler.</p>

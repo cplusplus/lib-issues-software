@@ -27,31 +27,33 @@ are automatically published by GitHub as web pages.</p>
 </blockquote>
 
 <h2>Prerequisites</h2>
-<ul>
-  <li>Git</li>
-  <li>A C++14 compiler and standard library. At the moment, that means GCC 4.9 or later.</li>
-  <li>Windows is a prerequisite to use the Windows <code>.bat</code> scripts, or
-  a POSIX environment is a prerequisite to use the equivalent <code>.sh</code>
-  scripts.</li>
-</ul>
 
-<h2>Initial setup</h2>
+<p>Follow the <a href="getting-started.html">Getting Started with Library Issues List Software</a> 
+installation instructions. Install the
+<a href="getting-started.html#Prerequisites">Prequisites given there</a> first 
+if necessary and set up the GitHub public repository.</p>
+
+<h2>Working copy setup</h2>
 <p><b>Do this once only:</b></p>
 <blockquote>
-<pre>cd path-to-where-you-want-to-keep-this-stuff
+<pre><i><b>POSIX and Windows:</b></i>
+cd <b><i>some-directory</i></b>
 git clone git@github.com:cplusplus/LWG.git issues
 git clone -b gh-pages git@github.com:cplusplus/LWG.git issues-gh-pages
 cd issues
-mkdir mailing</pre>
+mkdir mailing
+
+<i><b>Windows:</b></i>
+mklink /d bin <i><b>path</b></i>\library-issues-software\bin
+
+<i><b>POSIX:</b></i>
+ln <b><i>path</i></b>/library-issues-software/bin bin</pre>
 </blockquote>
 
-<h2>Build issues software</h2>
-<p>Do this after the initial setup, and then again whenever the source 
-code (in <code>issues/src</code>) changes.</p>
-<blockquote>
-  <pre>cd issues
-bin\build_pgms</pre>
-</blockquote>
+<p>The final instruction creates a symlink <code>bin</code> to the directory 
+containing the issues list software. An alternative would be to add that 
+directory to your path, but the names are fairly generic so that might well 
+result in unwelcome name clashes.</p>
 
 <h2>Add or change issues</h2>
 <p>There is one source file per issue, in <code>issues/xml</code>. The file
