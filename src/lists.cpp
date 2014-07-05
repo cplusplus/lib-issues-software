@@ -791,7 +791,7 @@ int main(int argc, char* argv[]) {
       generator.make_sort_by_num            (issues, {target_path + names.toc_name()});
       generator.make_sort_by_status         (issues, {target_path + names.status_index_name()});
       generator.make_sort_by_status_mod_date(issues, {target_path + names.status_date_index_name()});  // this report is useless, as git checkouts touch filestamps
-      generator.make_sort_by_section        (issues, {target_path + names.status_index_name()});
+      generator.make_sort_by_section        (issues, {target_path + names.section_index_name()});
 
       // Note that this additional document is very similar to unresolved-section-index below
       generator.make_sort_by_section        (issues, {target_path + names.open_index_name()}, true);
