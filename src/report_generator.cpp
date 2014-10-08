@@ -154,6 +154,14 @@ void print_list(std::ostream & out, Container const & source, char const * separ
 
 void print_file_header(std::ostream& out, std::string const & title) {
    out <<
+
+ // removed :   p {text-align:justify}
+ //             li{text-align:justify}
+ // I have no idea what the rationale for those was, but they badly
+ // mess up spacing of issues list Discussions and P/R's that have long
+ // <code>...</code> sequencess with no spaces.
+ //   --Beman
+
 R"(<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
     "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -161,8 +169,6 @@ R"(<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 <meta charset="utf-8"> 
 <title>)" << title << R"(</title>
 <style type="text/css">
-  p {text-align:justify}
-  li {text-align:justify}
   blockquote.note
   {
     background-color:#E0E0E0;
